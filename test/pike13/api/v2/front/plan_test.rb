@@ -1,0 +1,39 @@
+# frozen_string_literal: true
+
+require "test_helper"
+
+module Pike13
+  module API
+    module V2
+      module Front
+        class PlanTest < Minitest::Test
+          def setup
+            @client = default_client
+          end
+
+          def test_find_plan
+            stub_pike13_request(:get, "/front/plans/123", scope: "front", response_body: {
+                                  "plans" => [{ "id" => 123 }]
+                                })
+
+            plan = @client.front.plans.find(123)
+
+            assert_equal 123, plan.id
+          end
+
+          def test_plan_terms
+            plan = Pike13::API::V2::Front::Plan.new(session: @client, id: 123)
+
+            stub_pike13_request(:get, "/front/plans/123/plan_terms", scope: "front", response_body: {
+                                  "plan_terms" => [{ "id" => 456 }]
+                                })
+
+            terms = plan.plan_terms
+
+            assert_equal 1, terms.size
+          end
+        end
+      end
+    end
+  end
+end

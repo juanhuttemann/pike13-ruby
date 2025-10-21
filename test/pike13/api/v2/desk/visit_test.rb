@@ -1,0 +1,62 @@
+# frozen_string_literal: true
+
+require "test_helper"
+
+module Pike13
+  module API
+    module V2
+      module Desk
+        class VisitTest < Minitest::Test
+          def setup
+            @client = default_client
+          end
+
+          def test_all_visits
+            stub_pike13_request(:get, "/desk/visits", scope: "desk", response_body: {
+                                  "visits" => [
+                                    { "id" => 1, "state" => "completed" },
+                                    { "id" => 2, "state" => "upcoming" }
+                                  ]
+                                })
+
+            visits = @client.desk.visits.all
+
+            assert_instance_of Array, visits
+            assert_equal 2, visits.size
+            assert_instance_of Pike13::API::V2::Desk::Visit, visits.first
+          end
+
+          def test_find_visit
+            stub_pike13_request(:get, "/desk/visits/123", scope: "desk", response_body: {
+                                  "visits" => [{ "id" => 123, "state" => "completed" }]
+                                })
+
+            visit = @client.desk.visits.find(123)
+
+            assert_instance_of Pike13::API::V2::Desk::Visit, visit
+            assert_equal 123, visit.id
+          end
+
+          def test_summary
+            stub_pike13_request(:get, "/desk/people/123/visits/summary", scope: "desk", response_body: {
+                                  "visit_summary" => {
+                                    "first_visit_at" => "2020-01-01T00:00:00Z",
+                                    "last_visit_at" => "2025-10-21T00:00:00Z",
+                                    "total_visits" => 100
+                                  }
+                                })
+
+            summary = Pike13::API::V2::Desk::Visit.summary(person_id: 123, session: @client)
+
+            assert_instance_of Hash, summary
+            assert_equal({
+                           "first_visit_at" => "2020-01-01T00:00:00Z",
+                           "last_visit_at" => "2025-10-21T00:00:00Z",
+                           "total_visits" => 100
+                         }, summary)
+          end
+        end
+      end
+    end
+  end
+end

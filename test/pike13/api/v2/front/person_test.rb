@@ -1,0 +1,28 @@
+# frozen_string_literal: true
+
+require "test_helper"
+
+module Pike13
+  module API
+    module V2
+      module Front
+        class PersonTest < Minitest::Test
+          def setup
+            @client = default_client
+          end
+
+          def test_me
+            stub_pike13_request(:get, "/front/people/me", scope: "front", response_body: {
+                                  "people" => [{ "id" => 123, "first_name" => "John" }]
+                                })
+
+            person = @client.front.people.me
+
+            assert_instance_of Pike13::API::V2::Front::Person, person
+            assert_equal 123, person.id
+          end
+        end
+      end
+    end
+  end
+end
