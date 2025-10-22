@@ -1,6 +1,6 @@
 # Pike13 Ruby Client
 
-A Ruby gem for interacting with the Pike13 API.
+A Ruby gem for interacting with the [Pike13 Core API](https://developer.pike13.com/docs/api/v2).
 
 ## Installation
 
