@@ -99,6 +99,14 @@ module Pike13
           inspect
         end
 
+        def to_json(*args)
+          attributes.transform_keys(&:to_s).to_json(*args)
+        end
+
+        def as_json(options = nil)
+          attributes.transform_keys(&:to_s)
+        end
+
         private
 
         def inspect_attributes
