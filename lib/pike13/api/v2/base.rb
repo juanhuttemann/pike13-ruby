@@ -4,7 +4,13 @@ module Pike13
   module API
     module V2
       class Base
-        attr_reader :client, :attributes
+        include Attributes
+        include Serialization
+
+        # Minimum per_page value for count queries to minimize data transfer
+        COUNT_PER_PAGE = 1
+
+        attr_reader :client
 
         class << self
           attr_accessor :resource_name
@@ -35,34 +41,49 @@ module Pike13
           #   person.visits  # => [Visit, Visit, ...]
           #   person.visits(from: Time.now - 30.days, to: Time.now)  # => [Visit, Visit, ...]
           #   person.plans(include_holds: true, filter: 'active')  # => [Plan, Plan, ...]
-          # rubocop:disable Naming/PredicatePrefix
-          def has_many(resource_name)
+          def define_association(resource_name)
             define_method(resource_name) do |**params|
               path = "/#{self.class.scope}/#{self.class.resource_name}/#{id}/#{resource_name}"
               response = client.get(path, params: params)
               response[resource_name.to_s] || []
             end
           end
-          # rubocop:enable Naming/PredicatePrefix
+          alias has_many define_association
         end
 
         def initialize(client:, **attributes)
+          raise ArgumentError, "client is required" unless client
+
           @client = client
-          @attributes = attributes
-          attributes.each do |key, value|
-            instance_variable_set("@#{key}", value)
-            self.class.attr_reader(key) unless respond_to?(key)
-          end
+          initialize_attributes(**attributes)
         end
 
+        # Find a resource by ID
+        #
+        # @param id [Integer, String] The resource ID
+        # @param client [Pike13::Client] Client instance
+        # @param params [Hash] Additional query parameters
+        # @return [Base] Instance of the resource
+        # @raise [ArgumentError] if id or client is missing
         def self.find(id:, client:, **params)
+          raise ArgumentError, "id is required" if id.nil? || id.to_s.empty?
+          raise ArgumentError, "client is required" unless client
+
           path = "/#{scope}/#{resource_name}/#{id}"
           response = client.get(path, params: params)
           data = response[resource_name]&.first || {}
           new(client: client, **data.transform_keys(&:to_sym))
         end
 
+        # Get all resources with optional filtering
+        #
+        # @param client [Pike13::Client] Client instance
+        # @param params [Hash] Query parameters (page, per_page, filters, etc.)
+        # @return [Array<Base>] Array of resource instances
+        # @raise [ArgumentError] if client is missing
         def self.all(client:, **params)
+          raise ArgumentError, "client is required" unless client
+
           path = "/#{scope}/#{resource_name}"
           response = client.get(path, params: params)
           data = response[resource_name] || []
@@ -70,26 +91,29 @@ module Pike13
         end
 
         # Get total count of resources
-        # Uses per_page: 1 to minimize data transfer
+        # Uses minimal per_page value to reduce data transfer
         #
         # @param client [Pike13::Client] Client instance
         # @param params [Hash] Query parameters (filters, etc.)
         # @return [Integer] Total count from API
+        # @raise [ArgumentError] if client is missing
         #
         # @example
         #   Pike13::API::V2::Desk::Person.count(client: client)
         #   # => 56
         def self.count(client:, **params)
+          raise ArgumentError, "client is required" unless client
+
           path = "/#{scope}/#{resource_name}"
           # Request minimal data, we only need total_count from pagination
-          response = client.get(path, params: params.merge(per_page: 1))
+          response = client.get(path, params: params.merge(per_page: COUNT_PER_PAGE))
           response["total_count"] || 0
         end
 
-        def id
-          @id || attributes[:id]
-        end
-
+        # Reload the resource from the API
+        # Refreshes all attributes with latest data from server
+        #
+        # @return [self] The reloaded resource
         def reload
           reloaded = self.class.find(id: id, client: client)
           @attributes = reloaded.attributes
@@ -97,28 +121,6 @@ module Pike13
             instance_variable_set("@#{key}", value)
           end
           self
-        end
-
-        def inspect
-          "#<#{self.class.name}:0x#{object_id.to_s(16)} #{inspect_attributes}>"
-        end
-
-        def to_s
-          inspect
-        end
-
-        def to_json(*args)
-          attributes.transform_keys(&:to_s).to_json(*args)
-        end
-
-        def as_json(_options = nil)
-          attributes.transform_keys(&:to_s)
-        end
-
-        private
-
-        def inspect_attributes
-          attributes.map { |k, v| "@#{k}=#{v.inspect}" }.join(", ")
         end
       end
     end

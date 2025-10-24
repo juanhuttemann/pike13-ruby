@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Booking < Pike13::API::V2::FindOnlyResource
+        class Booking < Pike13::API::V2::IdOnlyResource
           @resource_name = "bookings"
 
           # Get a specific lease for a booking

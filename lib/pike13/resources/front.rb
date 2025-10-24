@@ -14,8 +14,8 @@ module Pike13
   #
   # @example Get branding information
   #   branding = client.front.branding.find
-  class FrontResources
-    RESOURCES = {
+  class FrontResources < ResourceCollection
+    register_resources(
       appointments: API::V2::Front::Appointment,
       business: API::V2::Front::Business,
       branding: API::V2::Front::Branding,
@@ -31,17 +31,6 @@ module Pike13
       plan_products: API::V2::Front::PlanProduct,
       bookings: API::V2::Front::Booking,
       waitlist_entries: API::V2::Front::WaitlistEntry
-    }.freeze
-
-    def initialize(client)
-      @client = client
-    end
-
-    # Dynamically define resource accessor methods
-    RESOURCES.each do |method_name, resource_class|
-      define_method(method_name) do
-        API::V2::ResourceProxy.new(resource_class, @client)
-      end
-    end
+    )
   end
 end

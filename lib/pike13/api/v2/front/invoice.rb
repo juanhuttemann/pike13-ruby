@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Invoice < Pike13::API::V2::FindOnlyResource
+        class Invoice < Pike13::API::V2::IdOnlyResource
           @resource_name = "invoices"
 
           # Nested resource methods using has_many DSL

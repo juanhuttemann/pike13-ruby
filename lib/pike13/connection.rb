@@ -7,6 +7,11 @@ require "json"
 module Pike13
   class Connection
     RATE_LIMIT_HEADER = "RateLimit-Reset"
+    DEFAULT_RETRY_MAX = 2
+    DEFAULT_RETRY_INTERVAL = 0.5
+    DEFAULT_RETRY_BACKOFF_FACTOR = 2
+    ACCOUNT_PATH_PREFIX = "/account"
+    UNSCOPED_BASE_URL = "https://pike13.com"
 
     attr_reader :config
 
@@ -22,9 +27,7 @@ module Pike13
     # @param params [Hash] Query parameters
     # @return [Hash] Parsed JSON response
     def get(path, params: {})
-      # Auto-detect scoping: /account/* is unscoped, everything else is scoped
-      scoped = !path.start_with?("/account")
-
+      scoped = scoped_path?(path)
       full_path = "#{config.api_version}#{build_path(path)}"
       response = connection(scoped).get do |req|
         req.url full_path
@@ -36,12 +39,35 @@ module Pike13
 
     private
 
+    # Check if the API path requires business subdomain scoping
+    # Account endpoints (/account/*) are unscoped and use pike13.com
+    # Desk and Front endpoints are scoped to business subdomain
+    #
+    # @param path [String] The API path
+    # @return [Boolean] true if path should use business subdomain
+    def scoped_path?(path)
+      !path.start_with?(ACCOUNT_PATH_PREFIX)
+    end
+
     def connection(scoped)
-      base_url = scoped ? config.normalized_base_url : "https://pike13.com"
+      base_url = scoped ? config.normalized_base_url : UNSCOPED_BASE_URL
+      connection_key = connection_pool_key(base_url, scoped)
 
       @connections ||= {}
-      @connections["#{base_url}_#{scoped}"] ||= Faraday.new(url: base_url) do |conn|
-        conn.request :retry, max: 2, interval: 0.5, backoff_factor: 2
+      @connections[connection_key] ||= build_connection(base_url)
+    end
+
+    def connection_pool_key(base_url, scoped)
+      scope_type = scoped ? "scoped" : "unscoped"
+      "#{base_url}:#{scope_type}"
+    end
+
+    def build_connection(base_url)
+      Faraday.new(url: base_url) do |conn|
+        conn.request :retry,
+                     max: DEFAULT_RETRY_MAX,
+                     interval: DEFAULT_RETRY_INTERVAL,
+                     backoff_factor: DEFAULT_RETRY_BACKOFF_FACTOR
         conn.response :json, content_type: /\bjson$/
         conn.headers["Authorization"] = "Bearer #{config.access_token}"
         conn.adapter Faraday.default_adapter
@@ -53,7 +79,7 @@ module Pike13
     end
 
     def handle_response(response)
-      return response.body if response.status.between?(200, 299)
+      return response.body if response.success?
 
       raise_error_for_status(response)
     end
@@ -70,11 +96,21 @@ module Pike13
     end
 
     def build_error(error_class, message, response)
+      enhanced_message = build_error_message(message, response)
       error_class.new(
-        message,
+        enhanced_message,
         http_status: response.status,
         response_body: response.body
       )
+    end
+
+    def build_error_message(base_message, response)
+      return base_message unless response.body.is_a?(Hash)
+
+      error_detail = response.body["error"] || response.body["message"]
+      return base_message unless error_detail
+
+      "#{base_message}: #{error_detail}"
     end
 
     def build_rate_limit_error(response)

@@ -17,8 +17,8 @@ module Pike13
   #
   # @example Get current authenticated person
   #   me = client.desk.people.me
-  class DeskResources
-    RESOURCES = {
+  class DeskResources < ResourceCollection
+    register_resources(
       appointments: API::V2::Desk::Appointment,
       business: API::V2::Desk::Business,
       people: API::V2::Desk::Person,
@@ -39,17 +39,6 @@ module Pike13
       pack_products: API::V2::Desk::PackProduct,
       punches: API::V2::Desk::Punch,
       waitlist_entries: API::V2::Desk::WaitlistEntry
-    }.freeze
-
-    def initialize(client)
-      @client = client
-    end
-
-    # Dynamically define resource accessor methods
-    RESOURCES.each do |method_name, resource_class|
-      define_method(method_name) do
-        API::V2::ResourceProxy.new(resource_class, @client)
-      end
-    end
+    )
   end
 end

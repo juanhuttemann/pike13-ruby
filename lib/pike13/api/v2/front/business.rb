@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Business < Pike13::API::V2::SingularResource
+        class Business < Pike13::API::V2::SingletonResource
           @resource_name = "business"
         end
       end

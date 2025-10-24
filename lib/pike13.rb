@@ -5,15 +5,21 @@ require_relative "pike13/configuration"
 require_relative "pike13/errors"
 require_relative "pike13/connection"
 
-# API v2 base and proxy
-require_relative "pike13/api/v2/base"
-require_relative "pike13/api/v2/find_only_resource"
-require_relative "pike13/api/v2/singular_resource"
-require_relative "pike13/api/v2/person_methods"
-require_relative "pike13/api/v2/resource_proxy"
+# API v2 concerns
+require_relative "pike13/api/v2/concerns/attributes"
+require_relative "pike13/api/v2/concerns/serialization"
+require_relative "pike13/api/v2/concerns/person_methods"
 
-# Account resources
-require_relative "pike13/api/v2/account/account"
+# API v2 base resource
+require_relative "pike13/api/v2/base"
+
+# API v2 resource types
+require_relative "pike13/api/v2/resource_types/id_only_resource"
+require_relative "pike13/api/v2/resource_types/singleton_resource"
+require_relative "pike13/api/v2/resource_types/resource_proxy"
+
+# Account namespace and resources
+require_relative "pike13/api/v2/account"
 require_relative "pike13/api/v2/account/business"
 require_relative "pike13/api/v2/account/person"
 
@@ -56,7 +62,8 @@ require_relative "pike13/api/v2/front/staff_member"
 require_relative "pike13/api/v2/front/visit"
 require_relative "pike13/api/v2/front/waitlist_entry"
 
-# Resources (must be loaded after API classes)
+# Resource collection base and implementations
+require_relative "pike13/resource_collection"
 require_relative "pike13/resources/account"
 require_relative "pike13/resources/desk"
 require_relative "pike13/resources/front"
