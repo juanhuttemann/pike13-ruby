@@ -4,10 +4,22 @@ module Pike13
   module API
     module V2
       class Base
-        attr_reader :session, :attributes
+        attr_reader :client, :attributes
 
         class << self
-          attr_accessor :scope, :resource_name
+          attr_accessor :resource_name
+
+          # Automatically infer scope from module namespace
+          # Pike13::API::V2::Desk::Person => "desk"
+          # Pike13::API::V2::Account::Business => "account"
+          # Pike13::API::V2::Front::Event => "front"
+          def scope
+            @scope ||= begin
+              # Get the namespace module (e.g., Desk, Account, Front)
+              namespace = name.split("::")[-2]
+              namespace&.downcase
+            end
+          end
 
           # DSL for declaring nested resources (has_many relationships)
           # Automatically generates methods to fetch related resources
@@ -27,15 +39,15 @@ module Pike13
           def has_many(resource_name)
             define_method(resource_name) do |**params|
               path = "/#{self.class.scope}/#{self.class.resource_name}/#{id}/#{resource_name}"
-              response = session.http_client.get(path, params: params, scoped: self.class.scoped?)
+              response = client.get(path, params: params)
               response[resource_name.to_s] || []
             end
           end
           # rubocop:enable Naming/PredicatePrefix
         end
 
-        def initialize(session:, **attributes)
-          @session = session
+        def initialize(client:, **attributes)
+          @client = client
           @attributes = attributes
           attributes.each do |key, value|
             instance_variable_set("@#{key}", value)
@@ -43,39 +55,35 @@ module Pike13
           end
         end
 
-        def self.find(id:, session:, **params)
+        def self.find(id:, client:, **params)
           path = "/#{scope}/#{resource_name}/#{id}"
-          response = session.http_client.get(path, params: params, scoped: scoped?)
+          response = client.get(path, params: params)
           data = response[resource_name]&.first || {}
-          new(session: session, **data.transform_keys(&:to_sym))
+          new(client: client, **data.transform_keys(&:to_sym))
         end
 
-        def self.all(session:, **params)
+        def self.all(client:, **params)
           path = "/#{scope}/#{resource_name}"
-          response = session.http_client.get(path, params: params, scoped: scoped?)
+          response = client.get(path, params: params)
           data = response[resource_name] || []
-          data.map { |item| new(session: session, **item.transform_keys(&:to_sym)) }
+          data.map { |item| new(client: client, **item.transform_keys(&:to_sym)) }
         end
 
         # Get total count of resources
         # Uses per_page: 1 to minimize data transfer
         #
-        # @param session [Pike13::Client] Client session
+        # @param client [Pike13::Client] Client instance
         # @param params [Hash] Query parameters (filters, etc.)
         # @return [Integer] Total count from API
         #
         # @example
-        #   Pike13::API::V2::Desk::Person.count(session: client)
+        #   Pike13::API::V2::Desk::Person.count(client: client)
         #   # => 56
-        def self.count(session:, **params)
+        def self.count(client:, **params)
           path = "/#{scope}/#{resource_name}"
           # Request minimal data, we only need total_count from pagination
-          response = session.http_client.get(path, params: params.merge(per_page: 1), scoped: scoped?)
+          response = client.get(path, params: params.merge(per_page: 1))
           response["total_count"] || 0
-        end
-
-        def self.scoped?
-          scope != "account"
         end
 
         def id
@@ -83,7 +91,7 @@ module Pike13
         end
 
         def reload
-          reloaded = self.class.find(id: id, session: session)
+          reloaded = self.class.find(id: id, client: client)
           @attributes = reloaded.attributes
           reloaded.attributes.each do |key, value|
             instance_variable_set("@#{key}", value)
@@ -103,7 +111,7 @@ module Pike13
           attributes.transform_keys(&:to_s).to_json(*args)
         end
 
-        def as_json(options = nil)
+        def as_json(_options = nil)
           attributes.transform_keys(&:to_s)
         end
 

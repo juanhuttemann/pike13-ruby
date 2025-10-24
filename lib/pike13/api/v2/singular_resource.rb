@@ -8,9 +8,9 @@ module Pike13
       #
       # Examples: Business (desk/front), Branding (front), Account (account)
       class SingularResource < Base
-        def self.find(session:, **params)
+        def self.find(client:, **params)
           path = "/#{scope}/#{resource_name}"
-          response = session.http_client.get(path, params: params, scoped: scoped?)
+          response = client.get(path, params: params)
 
           # API returns singular resources wrapped in a pluralized array
           # e.g., {"businesses": [{...}]}, {"brandings": [{...}]}
@@ -27,15 +27,15 @@ module Pike13
             data = response[resource_name] || {}
           end
 
-          new(session: session, **data.transform_keys(&:to_sym))
+          new(client: client, **data.transform_keys(&:to_sym))
         end
 
-        def self.all(session:, **params)
+        def self.all(client:, **params)
           raise NotImplementedError,
                 "#{name} is a singular resource. Use .find instead of .all"
         end
 
-        def self.count(session:, **params)
+        def self.count(client:, **params)
           raise NotImplementedError,
                 "#{name} is a singular resource and cannot be counted."
         end

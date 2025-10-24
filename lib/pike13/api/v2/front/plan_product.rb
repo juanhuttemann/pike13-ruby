@@ -5,7 +5,6 @@ module Pike13
     module V2
       module Front
         class PlanProduct < Pike13::API::V2::Base
-          @scope = "front"
           @resource_name = "plan_products"
         end
       end

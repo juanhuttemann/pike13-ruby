@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_business
-            stub_pike13_request(:get, "/front/business", scope: "front", response_body: {
+            stub_pike13_request(:get, "/front/business", response_body: {
                                   "business" => { "id" => 1 }
                                 })
 

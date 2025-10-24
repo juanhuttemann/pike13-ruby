@@ -10,8 +10,8 @@ module Pike13
 
     private
 
-    def get(path, params: {}, scoped: false)
-      client.http_client.get(path, params: params, scoped: scoped)
+    def get(path, params: {})
+      client.get(path, params: params, scoped: scoped)
     end
   end
 end

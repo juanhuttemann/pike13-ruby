@@ -5,7 +5,6 @@ module Pike13
     module V2
       module Desk
         class RevenueCategory < Pike13::API::V2::Base
-          @scope = "desk"
           @resource_name = "revenue_categories"
         end
       end

@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_visits
-            stub_pike13_request(:get, "/desk/visits", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/visits", response_body: {
                                   "visits" => [
                                     { "id" => 1, "state" => "completed" },
                                     { "id" => 2, "state" => "upcoming" }
@@ -27,7 +27,7 @@ module Pike13
           end
 
           def test_find_visit
-            stub_pike13_request(:get, "/desk/visits/123", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/visits/123", response_body: {
                                   "visits" => [{ "id" => 123, "state" => "completed" }]
                                 })
 
@@ -38,7 +38,7 @@ module Pike13
           end
 
           def test_summary
-            stub_pike13_request(:get, "/desk/people/123/visits/summary", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/people/123/visits/summary", response_body: {
                                   "visit_summary" => {
                                     "first_visit_at" => "2020-01-01T00:00:00Z",
                                     "last_visit_at" => "2025-10-21T00:00:00Z",
@@ -46,7 +46,7 @@ module Pike13
                                   }
                                 })
 
-            summary = Pike13::API::V2::Desk::Visit.summary(person_id: 123, session: @client)
+            summary = Pike13::API::V2::Desk::Visit.summary(person_id: 123, client: @client)
 
             assert_instance_of Hash, summary
             assert_equal({

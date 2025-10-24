@@ -13,34 +13,34 @@ module Pike13
         module ClassMethods
           # Get the currently authenticated person
           #
-          # @param session [Pike13::Client] Client session
+          # @param client [Pike13::Client] Client client
           # @return [Person] The authenticated person
           #
           # @example
-          #   me = Pike13::API::V2::Desk::Person.me(session: client)
-          def me(session:)
+          #   me = Pike13::API::V2::Desk::Person.me(client: client)
+          def me(client:)
             path = "/#{scope}/#{resource_name}/me"
-            response = session.http_client.get(path, scoped: scoped?)
+            response = client.get(path)
 
             data = response[resource_name]&.first || {}
-            new(session: session, **data.transform_keys(&:to_sym))
+            new(client: client, **data.transform_keys(&:to_sym))
           end
 
           # Search for people by query string
           #
           # @param query [String] Search query
-          # @param session [Pike13::Client] Client session
+          # @param client [Pike13::Client] Client client
           # @param params [Hash] Additional query parameters
           # @return [Array<Person>] Array of matching people
           #
           # @example
-          #   results = Pike13::API::V2::Desk::Person.search("john", session: client)
-          def search(query, session:, **params)
+          #   results = Pike13::API::V2::Desk::Person.search("john", client: client)
+          def search(query, client:, **params)
             path = "/#{scope}/#{resource_name}/search"
-            response = session.http_client.get(path, params: params.merge(q: query), scoped: scoped?)
+            response = client.get(path, params: params.merge(q: query))
 
             data = response[resource_name] || []
-            data.map { |item| new(session: session, **item.transform_keys(&:to_sym)) }
+            data.map { |item| new(client: client, **item.transform_keys(&:to_sym)) }
           end
         end
       end

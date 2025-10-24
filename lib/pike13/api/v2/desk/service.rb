@@ -5,21 +5,20 @@ module Pike13
     module V2
       module Desk
         class Service < Pike13::API::V2::Base
-          @scope = "desk"
           @resource_name = "services"
 
           # Get enrollment eligibilities for a service
           #
           # @param service_id [Integer] Service ID
-          # @param session [Pike13::Client] Client session
+          # @param client [Pike13::Client] Client client
           # @param params [Hash] Query parameters (filters, etc.)
           # @return [Array<Hash>] Array of enrollment eligibilities
           #
           # @example
-          #   Pike13::API::V2::Desk::Service.enrollment_eligibilities(service_id: 123, session: client)
-          def self.enrollment_eligibilities(service_id:, session:, **params)
+          #   Pike13::API::V2::Desk::Service.enrollment_eligibilities(service_id: 123, client: client)
+          def self.enrollment_eligibilities(service_id:, client:, **params)
             path = "/#{scope}/#{resource_name}/#{service_id}/enrollment_eligibilities"
-            response = session.http_client.get(path, params: params, scoped: scoped?)
+            response = client.get(path, params: params)
             response["enrollment_eligibilities"] || []
           end
         end

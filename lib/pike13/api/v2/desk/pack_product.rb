@@ -5,7 +5,6 @@ module Pike13
     module V2
       module Desk
         class PackProduct < Pike13::API::V2::Base
-          @scope = "desk"
           @resource_name = "pack_products"
         end
       end

@@ -5,7 +5,6 @@ module Pike13
     module V2
       module Front
         class Location < Pike13::API::V2::Base
-          @scope = "front"
           @resource_name = "locations"
         end
       end

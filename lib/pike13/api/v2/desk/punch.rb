@@ -5,7 +5,6 @@ module Pike13
     module V2
       module Desk
         class Punch < Pike13::API::V2::FindOnlyResource
-          @scope = "desk"
           @resource_name = "punches"
         end
       end

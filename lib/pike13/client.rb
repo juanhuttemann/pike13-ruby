@@ -47,6 +47,15 @@ module Pike13
       @http_client = HTTPClient.new(@config)
     end
 
+    # Perform a GET request to the API
+    #
+    # @param path [String] The API path
+    # @param params [Hash] Query parameters
+    # @return [Hash] Parsed JSON response
+    def get(path, params: {})
+      @http_client.get(path, params: params)
+    end
+
     # Access account namespace
     #
     # @return [Pike13::AccountNamespace]
@@ -89,20 +98,20 @@ module Pike13
       people: API::V2::Account::Person
     }.freeze
 
-    def initialize(session)
-      @session = session
+    def initialize(client)
+      @client = client
     end
 
     RESOURCES.each do |method_name, resource_class|
       define_method(method_name) do
-        API::V2::ResourceProxy.new(resource_class, @session)
+        API::V2::ResourceProxy.new(resource_class, @client)
       end
     end
 
     # Access businesses
     #
     # @return [ResourceProxy] Supports find(id), all(params)
-    # @example
+    # @example 
     #   business = client.account.businesses.find(123)
     #   all_businesses = client.account.businesses.all
     # @!method businesses
@@ -123,7 +132,7 @@ module Pike13
     # @example
     #   account = client.account.me
     def me
-      API::V2::Account::Account.me(session: @session)
+      API::V2::Account::Account.me(client: @client)
     end
   end
 
@@ -168,13 +177,13 @@ module Pike13
       waitlist_entries: API::V2::Desk::WaitlistEntry
     }.freeze
 
-    def initialize(session)
-      @session = session
+    def initialize(client)
+      @client = client
     end
 
     RESOURCES.each do |method_name, resource_class|
       define_method(method_name) do
-        API::V2::ResourceProxy.new(resource_class, @session)
+        API::V2::ResourceProxy.new(resource_class, @client)
       end
     end
 
@@ -359,13 +368,13 @@ module Pike13
       waitlist_entries: API::V2::Front::WaitlistEntry
     }.freeze
 
-    def initialize(session)
-      @session = session
+    def initialize(client)
+      @client = client
     end
 
     RESOURCES.each do |method_name, resource_class|
       define_method(method_name) do
-        API::V2::ResourceProxy.new(resource_class, @session)
+        API::V2::ResourceProxy.new(resource_class, @client)
       end
     end
 

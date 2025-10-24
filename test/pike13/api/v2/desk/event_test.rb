@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_events
-            stub_pike13_request(:get, "/desk/events", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/events", response_body: {
                                   "events" => [{ "id" => 1 }]
                                 })
 
@@ -22,7 +22,7 @@ module Pike13
           end
 
           def test_find_event
-            stub_pike13_request(:get, "/desk/events/123", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/events/123", response_body: {
                                   "events" => [{ "id" => 123 }]
                                 })
 

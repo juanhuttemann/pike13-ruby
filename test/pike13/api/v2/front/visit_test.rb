@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_visit
-            stub_pike13_request(:get, "/front/visits/123", scope: "front", response_body: {
+            stub_pike13_request(:get, "/front/visits/123", response_body: {
                                   "visits" => [{ "id" => 123 }]
                                 })
 

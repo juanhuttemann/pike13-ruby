@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_branding
-            stub_pike13_request(:get, "/front/branding", scope: "front", response_body: {
+            stub_pike13_request(:get, "/front/branding", response_body: {
                                   "branding" => { "id" => 1 }
                                 })
 

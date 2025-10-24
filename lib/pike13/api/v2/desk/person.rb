@@ -7,7 +7,6 @@ module Pike13
         class Person < Pike13::API::V2::Base
           include Pike13::API::V2::PersonMethods
 
-          @scope = "desk"
           @resource_name = "people"
 
           # Nested resource methods using has_many DSL
@@ -23,7 +22,7 @@ module Pike13
           # @param params [Hash] Optional query parameters (from, to, event_occurrence_id)
           # @return [Array<Pike13::API::V2::Desk::Visit>]
           def visits(**params)
-            Pike13::API::V2::Desk::Visit.all(person_id: id, session: session, **params)
+            Pike13::API::V2::Desk::Visit.all(person_id: id, client: client, **params)
           end
         end
       end

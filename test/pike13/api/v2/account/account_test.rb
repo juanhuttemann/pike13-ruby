@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_me
-            stub_pike13_request(:get, "/account", scope: "account", response_body: {
+            stub_pike13_request(:get, "/account", response_body: {
                                   "accounts" => [
                                     {
                                       "id" => 999,

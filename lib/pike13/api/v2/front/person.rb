@@ -7,14 +7,13 @@ module Pike13
         class Person < Pike13::API::V2::Base
           include Pike13::API::V2::PersonMethods
 
-          @scope = "front"
           @resource_name = "people"
 
           # The Pike13 API does not support listing people in the front namespace
           # Only the authenticated user's information is available
           #
           # @raise [NotImplementedError] Always raises as this endpoint doesn't exist
-          def self.all(session:, **params)
+          def self.all(client:, **params)
             raise NotImplementedError,
                   "The Pike13 API does not support listing people in the front namespace. " \
                   "Use client.front.people.me to retrieve the authenticated user."
@@ -23,7 +22,7 @@ module Pike13
           # The Pike13 API does not support counting people in the front namespace
           #
           # @raise [NotImplementedError] Always raises as this endpoint doesn't exist
-          def self.count(session:, **params)
+          def self.count(client:, **params)
             raise NotImplementedError,
                   "The Pike13 API does not support counting people in the front namespace."
           end

@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_custom_fields
-            stub_pike13_request(:get, "/desk/custom_fields", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/custom_fields", response_body: {
                                   "custom_fields" => [{ "id" => 1 }]
                                 })
 
@@ -22,7 +22,7 @@ module Pike13
           end
 
           def test_find_custom_field
-            stub_pike13_request(:get, "/desk/custom_fields/123", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/custom_fields/123", response_body: {
                                   "custom_fields" => [{ "id" => 123 }]
                                 })
 

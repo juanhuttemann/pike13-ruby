@@ -28,17 +28,18 @@ Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
 # end
 
 module TestHelpers
-  def stub_pike13_request(method, path, response_body: {}, status: 200, scope: nil)
-    # Build the full URL including /api/v2
-    # Account scope uses pike13.com (no base_url)
-    # Desk/Front scopes use base_url
-    base_url = if scope && scope != "account"
+  def stub_pike13_request(method, path, response_body: {}, status: 200)
+    # Infer scope from path
+    # /account/* => account scope (uses pike13.com)
+    # /desk/* or /front/* => scoped (uses base_url)
+    scoped = !path.start_with?("/account")
+
+    base_url = if scoped
                  "https://#{ENV.fetch("PIKE13_BASE_URL", "test.pike13.com")}/api/v2"
                else
                  "https://pike13.com/api/v2"
                end
 
-    # Path should already include the scope (desk/front) if needed
     full_url = "#{base_url}#{path}"
 
     stub_request(method, full_url)

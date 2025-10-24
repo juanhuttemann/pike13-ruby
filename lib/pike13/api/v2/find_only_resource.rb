@@ -8,13 +8,13 @@ module Pike13
       #
       # Examples: Booking, Pack, Punch, Invoice (front), WaitlistEntry (front)
       class FindOnlyResource < Base
-        def self.all(session:, **params)
+        def self.all(client:, **params)
           raise NotImplementedError,
                 "The Pike13 API does not support listing all #{resource_name}. " \
                 "Use client.#{scope}.#{resource_name}.find(id: ...) to retrieve a specific resource."
         end
 
-        def self.count(session:, **params)
+        def self.count(client:, **params)
           raise NotImplementedError,
                 "The Pike13 API does not support counting #{resource_name}."
         end

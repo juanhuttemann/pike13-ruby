@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_locations
-            stub_pike13_request(:get, "/desk/locations", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/locations", response_body: {
                                   "locations" => [{ "id" => 1, "name" => "Main" }]
                                 })
 
@@ -22,7 +22,7 @@ module Pike13
           end
 
           def test_find_location
-            stub_pike13_request(:get, "/desk/locations/123", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/locations/123", response_body: {
                                   "locations" => [{ "id" => 123, "name" => "Main" }]
                                 })
 

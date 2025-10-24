@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_available_slots
-            stub_pike13_request(:get, "/front/appointments/123/available_slots", scope: "front", response_body: {
+            stub_pike13_request(:get, "/front/appointments/123/available_slots", response_body: {
                                   "available_slots" => [
                                     { "start_time" => "2024-01-15T10:00:00Z", "end_time" => "2024-01-15T11:00:00Z" },
                                     { "start_time" => "2024-01-15T11:00:00Z", "end_time" => "2024-01-15T12:00:00Z" }
@@ -27,7 +27,6 @@ module Pike13
 
           def test_available_slots_summary
             stub_pike13_request(:get, "/front/appointments/123/available_slots/summary",
-                                scope: "front",
                                 response_body: {
                                   "2020-01-17" => 1.0,
                                   "2020-01-18" => 0,

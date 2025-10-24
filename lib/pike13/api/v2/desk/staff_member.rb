@@ -5,19 +5,18 @@ module Pike13
     module V2
       module Desk
         class StaffMember < Pike13::API::V2::Base
-          @scope = "desk"
           @resource_name = "staff_members"
 
           # Get current authenticated staff member
           #
-          # @param session [Pike13::Client] Client session
+          # @param client [Pike13::Client] Client client
           # @return [Pike13::API::V2::Desk::StaffMember]
-          def self.me(session:)
+          def self.me(client:)
             path = "/#{scope}/#{resource_name}/me"
-            response = session.http_client.get(path, scoped: true)
+            response = client.get(path)
 
             data = response[resource_name]&.first || {}
-            new(session: session, **data.transform_keys(&:to_sym))
+            new(client: client, **data.transform_keys(&:to_sym))
           end
         end
       end

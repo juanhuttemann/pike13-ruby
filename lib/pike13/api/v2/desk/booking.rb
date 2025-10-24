@@ -5,7 +5,6 @@ module Pike13
     module V2
       module Desk
         class Booking < Pike13::API::V2::FindOnlyResource
-          @scope = "desk"
           @resource_name = "bookings"
         end
       end

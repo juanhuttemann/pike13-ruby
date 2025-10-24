@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_people
-            stub_pike13_request(:get, "/desk/people", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/people", response_body: {
                                   "people" => [
                                     { "id" => 1, "first_name" => "John" },
                                     { "id" => 2, "first_name" => "Jane" }
@@ -27,7 +27,7 @@ module Pike13
           end
 
           def test_find_person
-            stub_pike13_request(:get, "/desk/people/123", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/people/123", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
@@ -38,7 +38,7 @@ module Pike13
           end
 
           def test_search
-            stub_pike13_request(:get, "/desk/people/search?q=john", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/people/search?q=john", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
@@ -49,7 +49,7 @@ module Pike13
           end
 
           def test_me
-            stub_pike13_request(:get, "/desk/people/me", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/people/me", response_body: {
                                   "people" => [{ "id" => 999, "first_name" => "Admin" }]
                                 })
 
@@ -66,7 +66,7 @@ module Pike13
                          body: { "visits" => [{ "id" => 456 }] }.to_json,
                          headers: { "Content-Type" => "application/json" })
 
-            person = Pike13::API::V2::Desk::Person.new(session: @client, id: 123)
+            person = Pike13::API::V2::Desk::Person.new(client: @client, id: 123)
             visits = person.visits
 
             assert_instance_of Array, visits
@@ -80,7 +80,7 @@ module Pike13
                          body: { "visits" => [{ "id" => 456 }, { "id" => 457 }] }.to_json,
                          headers: { "Content-Type" => "application/json" })
 
-            person = Pike13::API::V2::Desk::Person.new(session: @client, id: 123)
+            person = Pike13::API::V2::Desk::Person.new(client: @client, id: 123)
             visits = person.visits(from: "2025-01-01", to: "2025-01-31")
 
             assert_instance_of Array, visits
@@ -94,7 +94,7 @@ module Pike13
                          body: { "plans" => [{ "id" => 789 }] }.to_json,
                          headers: { "Content-Type" => "application/json" })
 
-            person = Pike13::API::V2::Desk::Person.new(session: @client, id: 123)
+            person = Pike13::API::V2::Desk::Person.new(client: @client, id: 123)
             plans = person.plans(include_holds: true, filter: "active")
 
             assert_instance_of Array, plans

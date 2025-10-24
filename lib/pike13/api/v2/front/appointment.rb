@@ -9,21 +9,21 @@ module Pike13
             # Find available appointment slots for a service
             #
             # @param service_id [Integer] Service ID
-            # @param session [Pike13::Client] Client session
+            # @param client [Pike13::Client] Client client
             # @param params [Hash] Query parameters (date, location_ids, staff_member_ids, etc.)
             # @return [Array<Hash>] Array of available slots
             #
             # @example
             #   Pike13::API::V2::Front::Appointment.find_available_slots(
             #     service_id: 123,
-            #     session: client,
+            #     client: client,
             #     date: '2015-09-01',
             #     location_ids: '1,2',
             #     staff_member_ids: '1,2'
             #   )
-            def find_available_slots(service_id:, session:, **params)
+            def find_available_slots(service_id:, client:, **params)
               path = "/front/appointments/#{service_id}/available_slots"
-              response = session.http_client.get(path, params: params, scoped: true)
+              response = client.get(path, params: params)
               response["available_slots"] || []
             end
 
@@ -35,22 +35,22 @@ module Pike13
             # while days with a score closer to 0 have less. Date range is limited to 90 days.
             #
             # @param service_id [Integer] Service ID
-            # @param session [Pike13::Client] Client session
+            # @param client [Pike13::Client] Client client
             # @param params [Hash] Query parameters (from, to, location_ids, staff_member_ids, etc.)
             # @return [Hash] Summary of available slots by date
             #
             # @example
             #   Pike13::API::V2::Front::Appointment.available_slots_summary(
             #     service_id: 123,
-            #     session: client,
+            #     client: client,
             #     from: '2020-01-01',
             #     to: '2020-02-10',
             #     staff_member_ids: '56',
             #     location_ids: '2,8'
             #   )
-            def available_slots_summary(service_id:, session:, **params)
+            def available_slots_summary(service_id:, client:, **params)
               path = "/front/appointments/#{service_id}/available_slots/summary"
-              response = session.http_client.get(path, params: params, scoped: true)
+              response = client.get(path, params: params)
 
               # Handle API-level errors (e.g., date range exceeds 90 days)
               if response.key?("errors")

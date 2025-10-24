@@ -5,13 +5,12 @@ module Pike13
     module V2
       module Desk
         class Business < Pike13::API::V2::SingularResource
-          @scope = "desk"
           @resource_name = "business"
 
           # Get franchisees
-          def self.franchisees(session:)
+          def self.franchisees(client:)
             path = "/#{scope}/#{resource_name}/franchisees"
-            response = session.http_client.get(path, scoped: true)
+            response = client.get(path)
             response["franchisees"] || []
           end
         end

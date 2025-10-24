@@ -5,7 +5,6 @@ module Pike13
     module V2
       module Desk
         class SalesTax < Pike13::API::V2::Base
-          @scope = "desk"
           @resource_name = "sales_taxes"
         end
       end

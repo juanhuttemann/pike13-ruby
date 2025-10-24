@@ -15,12 +15,16 @@ module Pike13
     end
 
     # Perform a GET request
+    # Automatically determines if request should be scoped based on path
+    # (/account/* uses pike13.com, everything else uses business subdomain)
     #
     # @param path [String] The API path
     # @param params [Hash] Query parameters
-    # @param scoped [Boolean] Whether to use scoped URL (with subdomain)
     # @return [Hash] Parsed JSON response
-    def get(path, params: {}, scoped: false)
+    def get(path, params: {})
+      # Auto-detect scoping: /account/* is unscoped, everything else is scoped
+      scoped = !path.start_with?("/account")
+
       full_path = "#{config.api_version}#{build_path(path)}"
       response = connection(scoped).get do |req|
         req.url full_path

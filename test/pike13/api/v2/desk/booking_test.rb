@@ -19,7 +19,7 @@ module Pike13
           end
 
           def test_find_booking
-            stub_pike13_request(:get, "/desk/bookings/123", scope: "desk", response_body: {
+            stub_pike13_request(:get, "/desk/bookings/123", response_body: {
                                   "bookings" => [{ "id" => 123 }]
                                 })
 
