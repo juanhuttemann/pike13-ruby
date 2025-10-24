@@ -3,12 +3,12 @@
 require "test_helper"
 
 module Pike13
-  class HTTPClientTest < Minitest::Test
+  class ConnectionTest < Minitest::Test
     def setup
       @config = Configuration.new
       @config.access_token = "test_token"
       @config.base_url = "test.pike13.com"
-      @client = HTTPClient.new(@config)
+      @client = Connection.new(@config)
     end
 
     def test_get_request_success

@@ -26,15 +26,15 @@ module Pike13
     end
 
     def test_account_returns_account_resource
-      assert_instance_of Pike13::AccountNamespace, @client.account
+      assert_instance_of Pike13::AccountResources, @client.account
     end
 
     def test_desk_returns_desk_resource
-      assert_instance_of Pike13::DeskNamespace, @client.desk
+      assert_instance_of Pike13::DeskResources, @client.desk
     end
 
     def test_front_returns_front_resource
-      assert_instance_of Pike13::FrontNamespace, @client.front
+      assert_instance_of Pike13::FrontResources, @client.front
     end
 
     def test_account_is_memoized

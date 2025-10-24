@@ -5,7 +5,7 @@ require "faraday/retry"
 require "json"
 
 module Pike13
-  class HTTPClient
+  class Connection
     RATE_LIMIT_HEADER = "RateLimit-Reset"
 
     attr_reader :config

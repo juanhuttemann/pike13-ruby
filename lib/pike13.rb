@@ -3,7 +3,7 @@
 require_relative "pike13/version"
 require_relative "pike13/configuration"
 require_relative "pike13/errors"
-require_relative "pike13/http_client"
+require_relative "pike13/connection"
 
 # API v2 base and proxy
 require_relative "pike13/api/v2/base"
@@ -55,6 +55,11 @@ require_relative "pike13/api/v2/front/service"
 require_relative "pike13/api/v2/front/staff_member"
 require_relative "pike13/api/v2/front/visit"
 require_relative "pike13/api/v2/front/waitlist_entry"
+
+# Resources (must be loaded after API classes)
+require_relative "pike13/resources/account"
+require_relative "pike13/resources/desk"
+require_relative "pike13/resources/front"
 
 # Client (must be loaded after all resources)
 require_relative "pike13/client"
