@@ -32,7 +32,7 @@ module Pike13
             assert_equal 123, refund["id"]
             assert_equal "completed", refund["state"]
             assert_equal "2025-10-25T00:46:32Z", refund["voided_at"]
-            assert_equal false, refund["is_voidable"]
+            refute refund["is_voidable"]
           end
 
           def test_void_refund_with_amount

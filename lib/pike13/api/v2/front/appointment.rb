@@ -21,10 +21,10 @@ module Pike13
               url += "?#{URI.encode_www_form(params)}" if params.any?
               response = connection.get(url)
               body = response.body
-              
+
               # Check if errors are present
               errors = body[:errors]
-              if errors && errors.any?
+              if errors&.any?
                 error_message = errors.is_a?(Array) ? errors.join(", ") : errors.to_s
                 raise Pike13::ValidationError.new(
                   error_message,
@@ -32,7 +32,7 @@ module Pike13
                   response_body: body
                 )
               end
-              
+
               # API returns flat hash like {"2020-01-17": 1.0, ...}, no resource wrapper
               # Pike13JSONParser treats first key as resource, extracts its value to data
               # Need to reconstruct: metadata has all but first key, data has first value
@@ -41,7 +41,7 @@ module Pike13
               if body[:data].is_a?(Array) && body[:data].size == 1
                 # Try to infer the missing key - it should be the earliest date
                 # Find all date-like keys in metadata
-                date_keys = result.keys.select { |k| k.match?(/^\d{4}-\d{2}-\d{2}$/) }.sort
+                date_keys = result.keys.grep(/^\d{4}-\d{2}-\d{2}$/).sort
                 if date_keys.any?
                   # The missing key is one day before the first key in metadata
                   first_meta_date = Date.parse(date_keys.first)

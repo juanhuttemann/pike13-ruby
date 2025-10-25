@@ -93,6 +93,7 @@ module Pike13
       Pike13::API::V2::Front::Appointment.connection = @connection.faraday_connection
 
       # Account namespace (uses unscoped connection)
+      Pike13::API::V2::Account::Base.connection = @connection.unscoped_faraday_connection
       Pike13::API::V2::Account::Business.connection = @connection.unscoped_faraday_connection
       Pike13::API::V2::Account::Person.connection = @connection.unscoped_faraday_connection
       Pike13::API::V2::Account::Password.connection = @connection.unscoped_faraday_connection
@@ -105,48 +106,6 @@ module Pike13
 
       # Front Payment resource
       Pike13::API::V2::Front::Payment.connection = @connection.faraday_connection
-    end
-
-    # Perform a GET request to the API (internal use)
-    #
-    # @param path [String] The API path
-    # @param params [Hash] Query parameters
-    # @return [Hash] Parsed JSON response
-    # @api private
-    def get(path, params: {})
-      @connection.get(path, params: params)
-    end
-
-    # Perform a POST request to the API (internal use)
-    #
-    # @param path [String] The API path
-    # @param body [Hash] Request body
-    # @param params [Hash] Query parameters
-    # @return [Hash] Parsed JSON response
-    # @api private
-    def post(path, body: {}, params: {})
-      @connection.post(path, body: body, params: params)
-    end
-
-    # Perform a PUT request to the API (internal use)
-    #
-    # @param path [String] The API path
-    # @param body [Hash] Request body
-    # @param params [Hash] Query parameters
-    # @return [Hash] Parsed JSON response
-    # @api private
-    def put(path, body: {}, params: {})
-      @connection.put(path, body: body, params: params)
-    end
-
-    # Perform a DELETE request to the API (internal use)
-    #
-    # @param path [String] The API path
-    # @param params [Hash] Query parameters
-    # @return [Hash] Parsed JSON response
-    # @api private
-    def delete(path, params: {})
-      @connection.delete(path, params: params)
     end
 
     # Access account namespace

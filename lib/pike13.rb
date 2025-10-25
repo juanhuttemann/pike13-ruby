@@ -60,8 +60,7 @@ require_relative "pike13/api/v2/front/visit"
 require_relative "pike13/api/v2/front/waitlist_entry"
 require_relative "pike13/api/v2/front/payment"
 
-# Resource collection base and implementations
-require_relative "pike13/resource_collection"
+# Resource namespace implementations
 require_relative "pike13/resources/account"
 require_relative "pike13/resources/desk"
 require_relative "pike13/resources/front"

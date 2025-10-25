@@ -24,11 +24,11 @@ module Pike13
 
           account = @client.account.me
 
-          assert_instance_of Hash, account
-          assert_equal 999, account["id"]
-          assert_equal "user@example.com", account["email"]
-          assert_equal "John", account["first_name"]
-          assert_equal "Doe", account["last_name"]
+          assert_instance_of Pike13::API::V2::Account::Base, account
+          assert_equal 999, account.id
+          assert_equal "user@example.com", account.email
+          assert_equal "John", account.first_name
+          assert_equal "Doe", account.last_name
         end
       end
     end

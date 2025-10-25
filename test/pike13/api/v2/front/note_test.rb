@@ -39,7 +39,7 @@ module Pike13
             assert_instance_of Pike13::API::V2::Front::Note, note
             assert_equal 456, note.id
             assert_equal "Important note", note.note
-            assert_equal true, note.pinned
+            assert note.pinned
           end
         end
       end

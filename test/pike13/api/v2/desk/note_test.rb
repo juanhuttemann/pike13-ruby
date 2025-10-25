@@ -40,7 +40,7 @@ module Pike13
             assert_instance_of Pike13::API::V2::Desk::Note, note
             assert_equal 456, note.id
             assert_equal "Important note", note.note
-            assert_equal true, note.pinned
+            assert note.pinned
           end
 
           # CREATE tests
@@ -65,7 +65,7 @@ module Pike13
             assert_instance_of Pike13::API::V2::Desk::Note, note
             assert_equal 789, note.id
             assert_equal "New note", note.note
-            assert_equal true, note.pinned
+            assert note.pinned
             assert_equal 123, note.person_id
           end
 
@@ -101,7 +101,7 @@ module Pike13
             assert_instance_of Pike13::API::V2::Desk::Note, note
             assert_equal 456, note.id
             assert_equal "Updated note text", note.note
-            assert_equal false, note.pinned
+            refute note.pinned
           end
 
           # UPDATE tests - via instance (2 requests: find + update)
@@ -127,7 +127,7 @@ module Pike13
             note.update_attributes(note: "Updated text", pinned: true)
 
             assert_equal "Updated text", note.note
-            assert_equal true, note.pinned
+            assert note.pinned
           end
 
           # DELETE tests - via class method
@@ -137,7 +137,8 @@ module Pike13
                                     { "id" => 456, "note" => "Note to delete", "person_id" => 123 }
                                   ]
                                 })
-            delete_endpoint = stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {})
+            delete_endpoint = stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123/notes/456",
+                                                  response_body: {})
 
             note = Pike13::API::V2::Desk::Note.where(person_id: 123).find(456)
             note.destroy
@@ -159,7 +160,8 @@ module Pike13
             assert_equal 456, note.id
 
             # Second request: delete
-            delete_endpoint = stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {})
+            delete_endpoint = stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123/notes/456",
+                                                  response_body: {})
 
             note.destroy
 

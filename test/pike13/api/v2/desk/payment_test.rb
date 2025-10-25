@@ -30,15 +30,15 @@ module Pike13
 
             assert_equal 123, payment["id"]
             assert_equal "2025-10-25T00:00:00Z", payment["voided_at"]
-            assert_equal false, payment["is_voidable"]
+            refute payment["is_voidable"]
           end
 
           def test_configuration
             stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/payments/configuration", response_body: {
                                   "payment_configuration" => {
-                                    "accepted_types" => ["creditcard", "check", "cash"],
+                                    "accepted_types" => %w[creditcard check cash],
                                     "creditcard" => {
-                                      "accepted_card_types" => ["visa", "mastercard", "discover"],
+                                      "accepted_card_types" => %w[visa mastercard discover],
                                       "required_fields" => {
                                         "cvv" => true,
                                         "address" => false
@@ -50,8 +50,8 @@ module Pike13
             config = Pike13::API::V2::Desk::Payment.configuration
 
             assert_instance_of Hash, config
-            assert_equal ["creditcard", "check", "cash"], config["accepted_types"]
-            assert_equal ["visa", "mastercard", "discover"], config["creditcard"]["accepted_card_types"]
+            assert_equal %w[creditcard check cash], config["accepted_types"]
+            assert_equal %w[visa mastercard discover], config["creditcard"]["accepted_card_types"]
           end
 
           def test_void_payment_with_empty_invoice_items

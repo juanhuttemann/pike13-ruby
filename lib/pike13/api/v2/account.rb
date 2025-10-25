@@ -3,21 +3,24 @@
 module Pike13
   module API
     module V2
-      # Account-level API resources and methods
       module Account
-        # Get current account details
-        #
-        # @param client [Pike13::Client] Client instance
-        # @return [Hash] Account data
-        #
-        # @example
-        #   account = Pike13::API::V2::Account.me(client: client)
-        #   puts account[:email]
-        def self.me(client:)
-          raise ArgumentError, "client is required" unless client
+        # Account resource for fetching current account details
+        class Base < Spyke::Base
+          uri "account"
+          include_root_in_json :account
 
-          response = client.get("/account")
-          response["accounts"]&.first || {}
+          # Get current account details
+          #
+          # @return [Pike13::API::V2::Account::Base] Account instance
+          #
+          # @example
+          #   account = Pike13::API::V2::Account::Base.me
+          #   puts account.email
+          def self.me
+            # GET /account returns { accounts: [...] }
+            # Spyke will handle the response through Pike13JSONParser
+            all.first
+          end
         end
       end
     end
