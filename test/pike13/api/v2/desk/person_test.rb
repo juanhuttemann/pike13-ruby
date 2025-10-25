@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            people = @client.desk.people.all.to_a
+            people = Pike13::API::V2::Desk::Person.all.to_a
 
             assert_instance_of Array, people
             assert_equal 2, people.size
@@ -31,7 +31,7 @@ module Pike13
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
-            person = @client.desk.people.find(123)
+            person = Pike13::API::V2::Desk::Person.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::Person, person
             assert_equal 123, person.id
@@ -42,7 +42,7 @@ module Pike13
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
-            people = @client.desk.people.search("john").to_a
+            people = Pike13::API::V2::Desk::Person.search("john").to_a
 
             assert_instance_of Array, people
             assert_equal 1, people.size
@@ -53,7 +53,7 @@ module Pike13
                                   "people" => [{ "id" => 999, "first_name" => "Admin" }]
                                 })
 
-            person = @client.desk.people.me
+            person = Pike13::API::V2::Desk::Person.me
 
             assert_instance_of Pike13::API::V2::Desk::Person, person
             assert_equal 999, person.id
@@ -71,7 +71,7 @@ module Pike13
                          body: { "visits" => [{ "id" => 456 }] }.to_json,
                          headers: { "Content-Type" => "application/json" })
 
-            person = @client.desk.people.find(123)
+            person = Pike13::API::V2::Desk::Person.find(123)
             visits = person.visits.to_a
 
             assert_instance_of Array, visits
@@ -117,7 +117,7 @@ module Pike13
                                   }]
                                 })
 
-            person = @client.desk.people.create(
+            person = Pike13::API::V2::Desk::Person.create(
               first_name: "Jane",
               last_name: "Doe",
               email: "jane@example.com"
@@ -150,7 +150,7 @@ module Pike13
                                   }]
                                 })
 
-            person = @client.desk.people.find(123)
+            person = Pike13::API::V2::Desk::Person.find(123)
             person.update_attributes(last_name: "Updated", email: "john.updated@example.com")
 
             assert_equal 123, person.id
@@ -169,7 +169,7 @@ module Pike13
                                   }]
                                 })
 
-            person = @client.desk.people.find(123)
+            person = Pike13::API::V2::Desk::Person.find(123)
 
             assert_equal "Doe", person.last_name
 
@@ -197,7 +197,7 @@ module Pike13
                                 })
             stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123", response_body: {})
 
-            person = @client.desk.people.find(123)
+            person = Pike13::API::V2::Desk::Person.find(123)
             person.destroy
 
             # Just verify the delete was called
@@ -214,7 +214,7 @@ module Pike13
                                   }]
                                 })
 
-            person = @client.desk.people.find(123)
+            person = Pike13::API::V2::Desk::Person.find(123)
 
             assert_equal 123, person.id
 

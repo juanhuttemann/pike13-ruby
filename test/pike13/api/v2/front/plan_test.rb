@@ -16,7 +16,7 @@ module Pike13
                                   "plans" => [{ "id" => 123 }]
                                 })
 
-            plan = @client.front.plans.find(123)
+            plan = Pike13::API::V2::Front::Plan.find(123)
 
             assert_instance_of Pike13::API::V2::Front::Plan, plan
             assert_equal 123, plan.id

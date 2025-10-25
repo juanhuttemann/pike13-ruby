@@ -16,7 +16,7 @@ module Pike13
                                   "waitlist_entries" => [{ "id" => 123 }]
                                 })
 
-            waitlist_entry = @client.desk.waitlist_entries.find(123)
+            waitlist_entry = Pike13::API::V2::Desk::WaitlistEntry.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::WaitlistEntry, waitlist_entry
             assert_equal 123, waitlist_entry.id

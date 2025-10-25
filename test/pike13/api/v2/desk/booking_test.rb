@@ -17,7 +17,7 @@ module Pike13
                                   "bookings" => []
                                 })
 
-            bookings = @client.desk.bookings.all.to_a
+            bookings = Pike13::API::V2::Desk::Booking.all.to_a
 
             assert_instance_of Array, bookings
           end
@@ -27,7 +27,7 @@ module Pike13
                                   "bookings" => [{ "id" => 123 }]
                                 })
 
-            booking = @client.desk.bookings.find(123)
+            booking = Pike13::API::V2::Desk::Booking.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::Booking, booking
             assert_equal 123, booking.id

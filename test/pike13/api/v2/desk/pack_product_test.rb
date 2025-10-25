@@ -16,7 +16,7 @@ module Pike13
                                   "pack_products" => [{ "id" => 1 }]
                                 })
 
-            pack_products = @client.desk.pack_products.all.to_a
+            pack_products = Pike13::API::V2::Desk::PackProduct.all.to_a
 
             assert_instance_of Array, pack_products
             assert_equal 1, pack_products.size
@@ -28,7 +28,7 @@ module Pike13
                                   "pack_products" => [{ "id" => 123 }]
                                 })
 
-            pack_product = @client.desk.pack_products.find(123)
+            pack_product = Pike13::API::V2::Desk::PackProduct.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::PackProduct, pack_product
             assert_equal 123, pack_product.id

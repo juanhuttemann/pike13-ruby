@@ -16,7 +16,7 @@ module Pike13
                                   "services" => [{ "id" => 1 }]
                                 })
 
-            services = @client.desk.services.all.to_a
+            services = Pike13::API::V2::Desk::Service.all.to_a
 
             assert_instance_of Array, services
             assert_equal 1, services.size
@@ -28,7 +28,7 @@ module Pike13
                                   "services" => [{ "id" => 123 }]
                                 })
 
-            service = @client.desk.services.find(123)
+            service = Pike13::API::V2::Desk::Service.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::Service, service
             assert_equal 123, service.id

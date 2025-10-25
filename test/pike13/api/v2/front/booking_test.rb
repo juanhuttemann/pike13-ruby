@@ -16,7 +16,7 @@ module Pike13
                                   "bookings" => [{ "id" => 123 }]
                                 })
 
-            booking = @client.front.bookings.find(123)
+            booking = Pike13::API::V2::Front::Booking.find(123)
 
             assert_instance_of Pike13::API::V2::Front::Booking, booking
             assert_equal 123, booking.id
@@ -27,7 +27,7 @@ module Pike13
                                   "leases" => [{ "id" => 456, "booking_id" => 123, "status" => "active" }]
                                 })
 
-            lease = @client.front.bookings.find_lease(booking_id: 123, id: 456)
+            lease = Pike13::API::V2::Front::Booking.find_lease(booking_id: 123, id: 456)
 
             assert_equal 456, lease["id"]
             assert_equal 123, lease["booking_id"]

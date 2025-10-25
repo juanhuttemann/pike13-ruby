@@ -26,7 +26,7 @@ module Pike13
                                   }
                                 })
 
-            config = @client.front.payments.configuration
+            config = Pike13::API::V2::Front::Payment.configuration
 
             assert_instance_of Hash, config
             assert_equal %w[creditcard check], config["accepted_types"]
@@ -45,7 +45,7 @@ module Pike13
                                   }
                                 })
 
-            config = @client.front.payments.configuration
+            config = Pike13::API::V2::Front::Payment.configuration
 
             assert_includes config["accepted_types"], "ach"
             refute config["creditcard"]["required_fields"]["cvv"]

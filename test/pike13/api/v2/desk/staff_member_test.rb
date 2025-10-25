@@ -16,7 +16,7 @@ module Pike13
                                   "staff_members" => [{ "id" => 1, "name" => "Staff" }]
                                 })
 
-            staff_members = @client.desk.staff_members.all.to_a
+            staff_members = Pike13::API::V2::Desk::StaffMember.all.to_a
 
             assert_instance_of Array, staff_members
             assert_equal 1, staff_members.size
@@ -28,7 +28,7 @@ module Pike13
                                   "staff_members" => [{ "id" => 123, "name" => "Staff" }]
                                 })
 
-            staff_member = @client.desk.staff_members.find(123)
+            staff_member = Pike13::API::V2::Desk::StaffMember.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_member
             assert_equal 123, staff_member.id
@@ -39,7 +39,7 @@ module Pike13
                                   "staff_members" => [{ "id" => 999, "name" => "Current Staff" }]
                                 })
 
-            staff_member = @client.desk.staff_members.me
+            staff_member = Pike13::API::V2::Desk::StaffMember.me
 
             assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_member
             assert_equal 999, staff_member.id

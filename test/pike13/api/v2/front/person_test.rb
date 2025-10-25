@@ -16,7 +16,7 @@ module Pike13
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
-            person = @client.front.people.me
+            person = Pike13::API::V2::Front::Person.me
 
             assert_instance_of Pike13::API::V2::Front::Person, person
             assert_equal 123, person.id

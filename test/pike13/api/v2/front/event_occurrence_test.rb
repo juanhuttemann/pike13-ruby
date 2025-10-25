@@ -16,7 +16,7 @@ module Pike13
                                   "event_occurrences" => [{ "id" => 1 }]
                                 })
 
-            event_occurrences = @client.front.event_occurrences.all.to_a
+            event_occurrences = Pike13::API::V2::Front::EventOccurrence.all.to_a
 
             assert_instance_of Array, event_occurrences
             assert_equal 1, event_occurrences.size
@@ -28,7 +28,7 @@ module Pike13
                                   "event_occurrences" => [{ "id" => 123 }]
                                 })
 
-            event_occurrence = @client.front.event_occurrences.find(123)
+            event_occurrence = Pike13::API::V2::Front::EventOccurrence.find(123)
 
             assert_instance_of Pike13::API::V2::Front::EventOccurrence, event_occurrence
             assert_equal 123, event_occurrence.id
@@ -42,7 +42,7 @@ module Pike13
                                   ]
                                 })
 
-            summaries = @client.front.event_occurrences.summary
+            summaries = Pike13::API::V2::Front::EventOccurrence.summary
 
             assert_equal 2, summaries.size
             assert_equal 1, summaries.first["event_id"]
@@ -60,7 +60,7 @@ module Pike13
                                   ]
                                 })
 
-            eligibilities = @client.front.event_occurrences.enrollment_eligibilities(id: 123)
+            eligibilities = Pike13::API::V2::Front::EventOccurrence.enrollment_eligibilities(id: 123)
 
             assert_equal 2, eligibilities.size
             assert eligibilities.first["eligible"]

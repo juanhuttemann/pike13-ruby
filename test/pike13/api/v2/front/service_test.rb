@@ -16,7 +16,7 @@ module Pike13
                                   "services" => [{ "id" => 1 }]
                                 })
 
-            services = @client.front.services.all.to_a
+            services = Pike13::API::V2::Front::Service.all.to_a
 
             assert_instance_of Array, services
             assert_equal 1, services.size
@@ -28,7 +28,7 @@ module Pike13
                                   "services" => [{ "id" => 123 }]
                                 })
 
-            service = @client.front.services.find(123)
+            service = Pike13::API::V2::Front::Service.find(123)
 
             assert_instance_of Pike13::API::V2::Front::Service, service
             assert_equal 123, service.id
@@ -42,7 +42,7 @@ module Pike13
                                   ]
                                 })
 
-            eligibilities = @client.front.services.enrollment_eligibilities(service_id: 123)
+            eligibilities = Pike13::API::V2::Front::Service.enrollment_eligibilities(service_id: 123)
 
             assert_equal 2, eligibilities.size
             assert eligibilities.first["eligible"]

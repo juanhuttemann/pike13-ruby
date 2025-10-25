@@ -16,7 +16,7 @@ module Pike13
                                   "packs" => [{ "id" => 123 }]
                                 })
 
-            pack = @client.desk.packs.find(123)
+            pack = Pike13::API::V2::Desk::Pack.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::Pack, pack
             assert_equal 123, pack.id

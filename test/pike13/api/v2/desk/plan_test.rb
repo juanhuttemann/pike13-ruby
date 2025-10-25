@@ -16,7 +16,7 @@ module Pike13
                                   "plans" => [{ "id" => 1 }]
                                 })
 
-            plans = @client.desk.plans.all.to_a
+            plans = Pike13::API::V2::Desk::Plan.all.to_a
 
             assert_instance_of Array, plans
             assert_equal 1, plans.size
@@ -28,7 +28,7 @@ module Pike13
                                   "plans" => [{ "id" => 123 }]
                                 })
 
-            plan = @client.desk.plans.find(123)
+            plan = Pike13::API::V2::Desk::Plan.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::Plan, plan
             assert_equal 123, plan.id

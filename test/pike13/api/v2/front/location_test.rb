@@ -16,7 +16,7 @@ module Pike13
                                   "locations" => [{ "id" => 1, "name" => "Main" }]
                                 })
 
-            locations = @client.front.locations.all.to_a
+            locations = Pike13::API::V2::Front::Location.all.to_a
 
             assert_instance_of Array, locations
             assert_equal 1, locations.size
@@ -28,7 +28,7 @@ module Pike13
                                   "locations" => [{ "id" => 123, "name" => "Main" }]
                                 })
 
-            location = @client.front.locations.find(123)
+            location = Pike13::API::V2::Front::Location.find(123)
 
             assert_instance_of Pike13::API::V2::Front::Location, location
             assert_equal 123, location.id

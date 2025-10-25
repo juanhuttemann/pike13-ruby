@@ -24,29 +24,5 @@ module Pike13
       assert_equal "global_token", client.config.access_token
       assert_equal "global.pike13.com", client.config.base_url
     end
-
-    def test_account_returns_account_resource
-      assert_instance_of Pike13::AccountResources, @client.account
-    end
-
-    def test_desk_returns_desk_resource
-      assert_instance_of Pike13::DeskResources, @client.desk
-    end
-
-    def test_front_returns_front_resource
-      assert_instance_of Pike13::FrontResources, @client.front
-    end
-
-    def test_account_is_memoized
-      assert_same @client.account, @client.account
-    end
-
-    def test_desk_is_memoized
-      assert_same @client.desk, @client.desk
-    end
-
-    def test_front_is_memoized
-      assert_same @client.front, @client.front
-    end
   end
 end

@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            visits = @client.desk.visits.all.to_a
+            visits = Pike13::API::V2::Desk::Visit.all.to_a
 
             assert_instance_of Array, visits
             assert_equal 2, visits.size
@@ -31,7 +31,7 @@ module Pike13
                                   "visits" => [{ "id" => 123, "state" => "completed" }]
                                 })
 
-            visit = @client.desk.visits.find(123)
+            visit = Pike13::API::V2::Desk::Visit.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::Visit, visit
             assert_equal 123, visit.id

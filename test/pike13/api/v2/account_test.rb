@@ -22,7 +22,7 @@ module Pike13
                                 ]
                               })
 
-          account = @client.account.me
+          account = Pike13::API::V2::Account::Base.me
 
           assert_instance_of Pike13::API::V2::Account::Base, account
           assert_equal 999, account.id

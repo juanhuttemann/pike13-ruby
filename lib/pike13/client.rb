@@ -6,6 +6,9 @@ module Pike13
 
     # Initialize a new Pike13 client
     #
+    # Configures Spyke model connections to use this client's credentials.
+    # After initialization, use the Spyke models directly.
+    #
     # @param access_token [String] Optional access token (defaults to global config)
     # @param base_url [String] Optional base URL (defaults to global config)
     #
@@ -17,22 +20,23 @@ module Pike13
     #
     # @example Find and update a person
     #   client = Pike13::Client.new(access_token: "token", base_url: "mybusiness.pike13.com")
-    #   person = client.desk.people.find(123)
+    #   person = Pike13::API::V2::Desk::Person.find(123)
     #   puts person.name
     #
     # @example List resources with pagination
-    #   events = client.desk.events.all(page: 1, per_page: 50)
+    #   client = Pike13::Client.new(access_token: "token", base_url: "mybusiness.pike13.com")
+    #   events = Pike13::API::V2::Desk::Event.all(page: 1, per_page: 50)
     #   events.each { |event| puts event.name }
     #
     # @example Search for people
-    #   results = client.desk.people.search("john doe")
+    #   results = Pike13::API::V2::Desk::Person.search("john doe")
     #
     # @example Get current user
-    #   me = client.desk.people.me
+    #   me = Pike13::API::V2::Desk::Person.me
     #
     # @example Handle errors
     #   begin
-    #     person = client.desk.people.find(999999)
+    #     person = Pike13::API::V2::Desk::Person.find(999999)
     #   rescue Pike13::NotFoundError => e
     #     puts "Person not found: #{e.message}"
     #   rescue Pike13::RateLimitError => e
@@ -106,27 +110,6 @@ module Pike13
 
       # Front Payment resource
       Pike13::API::V2::Front::Payment.connection = @connection.faraday_connection
-    end
-
-    # Access account namespace
-    #
-    # @return [Pike13::AccountResources]
-    def account
-      @account ||= AccountResources.new(self)
-    end
-
-    # Access desk namespace (staff interface)
-    #
-    # @return [Pike13::DeskResources]
-    def desk
-      @desk ||= DeskResources.new(self)
-    end
-
-    # Access front namespace (client interface)
-    #
-    # @return [Pike13::FrontResources]
-    def front
-      @front ||= FrontResources.new(self)
     end
   end
 end

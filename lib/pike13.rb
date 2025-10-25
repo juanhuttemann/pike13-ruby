@@ -60,17 +60,13 @@ require_relative "pike13/api/v2/front/visit"
 require_relative "pike13/api/v2/front/waitlist_entry"
 require_relative "pike13/api/v2/front/payment"
 
-# Resource namespace implementations
-require_relative "pike13/resources/account"
-require_relative "pike13/resources/desk"
-require_relative "pike13/resources/front"
-
 # Client (must be loaded after all resources)
 require_relative "pike13/client"
 
 # Pike13 Ruby Client
 #
 # A Ruby gem for interacting with the Pike13 API.
+# Built on Spyke for ActiveRecord-like models.
 # Supports both global configuration and per-client credentials.
 #
 # @example Global configuration
@@ -80,27 +76,27 @@ require_relative "pike13/client"
 #   end
 #
 #   client = Pike13.new
-#   people = client.desk.people.all
+#   people = Pike13::API::V2::Desk::Person.all
 #
 # @example Per-client configuration
 #   client = Pike13.new(
 #     access_token: "your_access_token",
 #     base_url: "mybusiness.pike13.com"
 #   )
-#   person = client.desk.people.find(123)
+#   person = Pike13::API::V2::Desk::Person.find(123)
 #
 # @example Using different namespaces
 #   # Account namespace (not scoped to business subdomain)
-#   account = client.account.me
-#   businesses = client.account.businesses.all
+#   account = Pike13::API::V2::Account::Base.me
+#   businesses = Pike13::API::V2::Account::Business.all
 #
 #   # Desk namespace (staff interface)
-#   people = client.desk.people.all
-#   events = client.desk.events.all
+#   people = Pike13::API::V2::Desk::Person.all
+#   events = Pike13::API::V2::Desk::Event.all
 #
 #   # Front namespace (client interface)
-#   locations = client.front.locations.all
-#   branding = client.front.branding.find
+#   locations = Pike13::API::V2::Front::Location.all
+#   branding = Pike13::API::V2::Front::Branding.find
 module Pike13
   # Backward-compatible alias
   Rest = API::V2

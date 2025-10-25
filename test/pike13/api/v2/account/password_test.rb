@@ -16,7 +16,7 @@ module Pike13
                                 status: 201,
                                 response_body: {})
 
-            result = @client.account.passwords.create(email: "test@example.com")
+            result = Pike13::API::V2::Account::Password.create(email: "test@example.com")
 
             assert result
           end

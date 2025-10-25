@@ -16,7 +16,7 @@ module Pike13
                                   "plan_products" => [{ "id" => 1 }]
                                 })
 
-            plan_products = @client.front.plan_products.all.to_a
+            plan_products = Pike13::API::V2::Front::PlanProduct.all.to_a
 
             assert_instance_of Array, plan_products
             assert_equal 1, plan_products.size
@@ -28,7 +28,7 @@ module Pike13
                                   "plan_products" => [{ "id" => 123 }]
                                 })
 
-            plan_product = @client.front.plan_products.find(123)
+            plan_product = Pike13::API::V2::Front::PlanProduct.find(123)
 
             assert_instance_of Pike13::API::V2::Front::PlanProduct, plan_product
             assert_equal 123, plan_product.id

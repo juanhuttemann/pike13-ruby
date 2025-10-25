@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            invoices = @client.desk.invoices.all.to_a
+            invoices = Pike13::API::V2::Desk::Invoice.all.to_a
 
             assert_instance_of Array, invoices
             assert_equal 2, invoices.size
@@ -31,7 +31,7 @@ module Pike13
                                   "invoices" => [{ "id" => 123, "total_cents" => 5000 }]
                                 })
 
-            invoice = @client.desk.invoices.find(123)
+            invoice = Pike13::API::V2::Desk::Invoice.find(123)
 
             assert_instance_of Pike13::API::V2::Desk::Invoice, invoice
             assert_equal 123, invoice.id

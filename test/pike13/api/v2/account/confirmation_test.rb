@@ -16,7 +16,7 @@ module Pike13
                                 status: 201,
                                 response_body: {})
 
-            result = @client.account.confirmations.create(email: "test@example.com")
+            result = Pike13::API::V2::Account::Confirmation.create(email: "test@example.com")
 
             assert result
           end
