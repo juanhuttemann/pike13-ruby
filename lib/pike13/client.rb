@@ -45,6 +45,14 @@ module Pike13
       @config.validate!
 
       @connection = Connection.new(@config)
+      configure_spyke_models
+    end
+
+    def configure_spyke_models
+      # Configure Spyke models to use this client's Faraday connection
+      Pike13::API::V2::Desk::Person.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Visit.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Plan.connection = @connection.faraday_connection
     end
 
     # Perform a GET request to the API (internal use)

@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            people = @client.desk.people.all
+            people = @client.desk.people.all.to_a
 
             assert_instance_of Array, people
             assert_equal 2, people.size
@@ -42,7 +42,7 @@ module Pike13
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
-            people = @client.desk.people.search("john")
+            people = @client.desk.people.search("john").to_a
 
             assert_instance_of Array, people
             assert_equal 1, people.size
@@ -60,14 +60,18 @@ module Pike13
           end
 
           def test_nested_visits
+            stub_pike13_request(:get, "/desk/people/123", response_body: {
+                                  "people" => [{ "id" => 123, "first_name" => "John" }]
+                                })
+
             stub_request(:get, "https://test.pike13.com/api/v2/desk/people/123/visits")
               .with(headers: { "Authorization" => "Bearer test_token" })
               .to_return(status: 200,
                          body: { "visits" => [{ "id" => 456 }] }.to_json,
                          headers: { "Content-Type" => "application/json" })
 
-            person = Pike13::API::V2::Desk::Person.new(client: @client, id: 123)
-            visits = person.visits
+            person = @client.desk.people.find(123)
+            visits = person.visits.to_a
 
             assert_instance_of Array, visits
             assert_equal 1, visits.size

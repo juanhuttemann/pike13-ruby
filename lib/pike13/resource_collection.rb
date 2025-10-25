@@ -25,7 +25,7 @@ module Pike13
 
         resources.each do |method_name, resource_class|
           define_method(method_name) do
-            API::V2::ResourceProxy.new(resource_class, @client)
+            resource_class
           end
         end
       end
