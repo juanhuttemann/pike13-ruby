@@ -37,6 +37,63 @@ module Pike13
       handle_response(response)
     end
 
+    # Perform a POST request
+    # Automatically determines if request should be scoped based on path
+    #
+    # @param path [String] The API path
+    # @param body [Hash] Request body
+    # @param params [Hash] Query parameters
+    # @return [Hash] Parsed JSON response
+    def post(path, body: {}, params: {})
+      scoped = scoped_path?(path)
+      full_path = "#{config.api_version}#{build_path(path)}"
+      response = connection(scoped).post do |req|
+        req.url full_path
+        req.params = params if params.any?
+        req.headers["Content-Type"] = "application/json"
+        req.body = body.to_json if body.any?
+      end
+
+      handle_response(response)
+    end
+
+    # Perform a PUT request
+    # Automatically determines if request should be scoped based on path
+    #
+    # @param path [String] The API path
+    # @param body [Hash] Request body
+    # @param params [Hash] Query parameters
+    # @return [Hash] Parsed JSON response
+    def put(path, body: {}, params: {})
+      scoped = scoped_path?(path)
+      full_path = "#{config.api_version}#{build_path(path)}"
+      response = connection(scoped).put do |req|
+        req.url full_path
+        req.params = params if params.any?
+        req.headers["Content-Type"] = "application/json"
+        req.body = body.to_json if body.any?
+      end
+
+      handle_response(response)
+    end
+
+    # Perform a DELETE request
+    # Automatically determines if request should be scoped based on path
+    #
+    # @param path [String] The API path
+    # @param params [Hash] Query parameters
+    # @return [Hash] Parsed JSON response
+    def delete(path, params: {})
+      scoped = scoped_path?(path)
+      full_path = "#{config.api_version}#{build_path(path)}"
+      response = connection(scoped).delete do |req|
+        req.url full_path
+        req.params = params if params.any?
+      end
+
+      handle_response(response)
+    end
+
     private
 
     # Check if the API path requires business subdomain scoping

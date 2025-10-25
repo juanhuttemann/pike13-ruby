@@ -48,6 +48,45 @@ module Pike13
           @resource_class.all(client: @client, **params)
         end
 
+        # Create a new resource
+        #
+        # @param attributes [Hash] Resource attributes
+        # @return [Base] Newly created resource instance
+        #
+        # @example
+        #   person = client.desk.people.create(
+        #     first_name: "John",
+        #     last_name: "Doe",
+        #     email: "john@example.com"
+        #   )
+        def create(**attributes)
+          @resource_class.create(client: @client, **attributes)
+        end
+
+        # Update a resource by ID
+        #
+        # @param id [Integer, String] The resource ID
+        # @param attributes [Hash] Attributes to update
+        # @return [Base] Updated resource instance
+        #
+        # @example
+        #   person = client.desk.people.update(123, email: "newemail@example.com")
+        def update(id, **attributes)
+          @resource_class.update(id: id, client: @client, **attributes)
+        end
+
+        # Delete a resource by ID
+        #
+        # @param id [Integer, String] The resource ID
+        # @return [Boolean] true if successful
+        #
+        # @example
+        #   client.desk.people.destroy(123)
+        #   # => true
+        def destroy(id)
+          @resource_class.destroy(id: id, client: @client)
+        end
+
         # Forward any other method calls to the resource class
         # Automatically injects the client parameter
         #

@@ -100,6 +100,111 @@ module Pike13
             assert_instance_of Array, plans
             assert_equal 1, plans.size
           end
+
+          # CREATE tests
+          def test_create_person_via_proxy
+            stub_pike13_request(:post, "/desk/people", response_body: {
+                                  "people" => [{
+                                    "id" => 456,
+                                    "first_name" => "Jane",
+                                    "last_name" => "Doe",
+                                    "email" => "jane@example.com"
+                                  }]
+                                })
+
+            person = @client.desk.people.create(
+              first_name: "Jane",
+              last_name: "Doe",
+              email: "jane@example.com"
+            )
+
+            assert_instance_of Pike13::API::V2::Desk::Person, person
+            assert_equal 456, person.id
+            assert_equal "Jane", person.first_name
+            assert_equal "Doe", person.last_name
+            assert_equal "jane@example.com", person.email
+          end
+
+          # UPDATE tests - via proxy (1 request)
+          def test_update_person_via_proxy
+            stub_pike13_request(:put, "/desk/people/123", response_body: {
+                                  "people" => [{
+                                    "id" => 123,
+                                    "first_name" => "John",
+                                    "last_name" => "Updated",
+                                    "email" => "john.updated@example.com"
+                                  }]
+                                })
+
+            person = @client.desk.people.update(123, last_name: "Updated", email: "john.updated@example.com")
+
+            assert_instance_of Pike13::API::V2::Desk::Person, person
+            assert_equal 123, person.id
+            assert_equal "Updated", person.last_name
+            assert_equal "john.updated@example.com", person.email
+          end
+
+          # UPDATE tests - via instance (2 requests: find + update)
+          def test_update_person_via_instance
+            # First request: find
+            stub_pike13_request(:get, "/desk/people/123", response_body: {
+                                  "people" => [{
+                                    "id" => 123,
+                                    "first_name" => "John",
+                                    "last_name" => "Doe",
+                                    "email" => "john@example.com"
+                                  }]
+                                })
+
+            person = @client.desk.people.find(123)
+            assert_equal "Doe", person.last_name
+
+            # Second request: update
+            stub_pike13_request(:put, "/desk/people/123", response_body: {
+                                  "people" => [{
+                                    "id" => 123,
+                                    "first_name" => "John",
+                                    "last_name" => "Updated",
+                                    "email" => "john.updated@example.com"
+                                  }]
+                                })
+
+            person.update(last_name: "Updated", email: "john.updated@example.com")
+
+            assert_equal "Updated", person.last_name
+            assert_equal "john.updated@example.com", person.email
+          end
+
+          # DELETE tests - via proxy (1 request)
+          def test_destroy_person_via_proxy
+            stub_pike13_request(:delete, "/desk/people/123", response_body: {})
+
+            result = @client.desk.people.destroy(123)
+
+            assert_equal true, result
+          end
+
+          # DELETE tests - via instance (2 requests: find + delete)
+          def test_destroy_person_via_instance
+            # First request: find
+            stub_pike13_request(:get, "/desk/people/123", response_body: {
+                                  "people" => [{
+                                    "id" => 123,
+                                    "first_name" => "John",
+                                    "last_name" => "Doe"
+                                  }]
+                                })
+
+            person = @client.desk.people.find(123)
+            assert_equal 123, person.id
+
+            # Second request: delete
+            stub_pike13_request(:delete, "/desk/people/123", response_body: {})
+
+            result = person.destroy
+
+            assert_equal true, result
+          end
         end
       end
     end

@@ -57,6 +57,38 @@ module Pike13
       @connection.get(path, params: params)
     end
 
+    # Perform a POST request to the API (internal use)
+    #
+    # @param path [String] The API path
+    # @param body [Hash] Request body
+    # @param params [Hash] Query parameters
+    # @return [Hash] Parsed JSON response
+    # @api private
+    def post(path, body: {}, params: {})
+      @connection.post(path, body: body, params: params)
+    end
+
+    # Perform a PUT request to the API (internal use)
+    #
+    # @param path [String] The API path
+    # @param body [Hash] Request body
+    # @param params [Hash] Query parameters
+    # @return [Hash] Parsed JSON response
+    # @api private
+    def put(path, body: {}, params: {})
+      @connection.put(path, body: body, params: params)
+    end
+
+    # Perform a DELETE request to the API (internal use)
+    #
+    # @param path [String] The API path
+    # @param params [Hash] Query parameters
+    # @return [Hash] Parsed JSON response
+    # @api private
+    def delete(path, params: {})
+      @connection.delete(path, params: params)
+    end
+
     # Access account namespace
     #
     # @return [Pike13::AccountResources]

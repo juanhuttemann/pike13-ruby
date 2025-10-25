@@ -110,6 +110,76 @@ module Pike13
           response["total_count"] || 0
         end
 
+        # Create a new resource
+        #
+        # @param client [Pike13::Client] Client instance
+        # @param attributes [Hash] Resource attributes
+        # @return [Base] Newly created resource instance
+        # @raise [ArgumentError] if client is missing
+        #
+        # @example
+        #   person = Pike13::API::V2::Desk::Person.create(
+        #     client: client,
+        #     first_name: "John",
+        #     last_name: "Doe",
+        #     email: "john@example.com"
+        #   )
+        def self.create(client:, **attributes)
+          raise ArgumentError, "client is required" unless client
+
+          path = "/#{scope}/#{resource_name}"
+          singular_name = resource_name.sub(/s$/, "")  # Simple singularization
+          body = { singular_name => attributes }
+          response = client.post(path, body: body)
+          data = response[resource_name]&.first || {}
+          new(client: client, **data.transform_keys(&:to_sym))
+        end
+
+        # Update a resource by ID
+        #
+        # @param id [Integer, String] The resource ID
+        # @param client [Pike13::Client] Client instance
+        # @param attributes [Hash] Attributes to update
+        # @return [Base] Updated resource instance
+        # @raise [ArgumentError] if id or client is missing
+        #
+        # @example
+        #   person = Pike13::API::V2::Desk::Person.update(
+        #     id: 123,
+        #     client: client,
+        #     email: "newemail@example.com"
+        #   )
+        def self.update(id:, client:, **attributes)
+          raise ArgumentError, "id is required" if id.nil? || id.to_s.empty?
+          raise ArgumentError, "client is required" unless client
+
+          path = "/#{scope}/#{resource_name}/#{id}"
+          singular_name = resource_name.sub(/s$/, "")  # Simple singularization
+          body = { singular_name => attributes }
+          response = client.put(path, body: body)
+          data = response[resource_name]&.first || {}
+          new(client: client, **data.transform_keys(&:to_sym))
+        end
+
+        # Delete a resource by ID
+        #
+        # @param id [Integer, String] The resource ID
+        # @param client [Pike13::Client] Client instance
+        # @return [Boolean] true if successful
+        # @raise [ArgumentError] if id or client is missing
+        #
+        # @example
+        #   Pike13::API::V2::Desk::Person.destroy(id: 123, client: client)
+        #   # => true
+        def self.destroy(id:, client:)
+          raise ArgumentError, "id is required" if id.nil? || id.to_s.empty?
+          raise ArgumentError, "client is required" unless client
+
+          path = "/#{scope}/#{resource_name}/#{id}"
+          client.delete(path)
+          true
+        end
+
         # Reload the resource from the API
         # Refreshes all attributes with latest data from server
         #
@@ -121,6 +191,37 @@ module Pike13
             instance_variable_set("@#{key}", value)
           end
           self
+        end
+
+        # Update this resource with new attributes
+        # Sends a PUT request and updates the instance with the response
+        #
+        # @param attributes [Hash] Attributes to update
+        # @return [self] The updated resource
+        #
+        # @example
+        #   person = client.desk.people.find(123)
+        #   person.update(email: "newemail@example.com", phone: "555-1234")
+        def update(**attributes)
+          updated = self.class.update(id: id, client: client, **attributes)
+          @attributes = updated.attributes
+          updated.attributes.each do |key, value|
+            instance_variable_set("@#{key}", value)
+          end
+          self
+        end
+
+        # Delete this resource
+        # Sends a DELETE request to remove the resource
+        #
+        # @return [Boolean] true if successful
+        #
+        # @example
+        #   person = client.desk.people.find(123)
+        #   person.destroy
+        #   # => true
+        def destroy
+          self.class.destroy(id: id, client: client)
         end
       end
     end

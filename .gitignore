@@ -63,3 +63,6 @@ test/vcr_cassettes/
 
 # Logs
 *.log
+
+# Docs
+docs
