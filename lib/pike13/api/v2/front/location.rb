@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Location < Spyke::Base
+        class Location < Base
           uri "front/locations(/:id)"
           include_root_in_json :location
         end

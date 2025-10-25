@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Pack < Spyke::Base
+        class Pack < Base
           uri "desk/packs(/:id)"
           include_root_in_json :pack
         end

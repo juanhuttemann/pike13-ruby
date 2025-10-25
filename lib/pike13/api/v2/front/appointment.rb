@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Appointment < Spyke::Base
+        class Appointment < Base
           uri "front/appointments(/:id)"
 
           class << self

@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Account
-        class Confirmation < Spyke::Base
+        class Confirmation < Base
           uri "account/confirmations(/:id)"
 
           class << self

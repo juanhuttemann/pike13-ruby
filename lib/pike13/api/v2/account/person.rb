@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Account
-        class Person < Spyke::Base
+        class Person < Base
           uri "account/people(/:id)"
           include_root_in_json :person
         end

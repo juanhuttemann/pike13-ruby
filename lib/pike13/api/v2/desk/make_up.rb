@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class MakeUp < Spyke::Base
+        class MakeUp < Base
           uri "desk/make_ups(/:id)"
 
           class << self

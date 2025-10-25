@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Payment < Spyke::Base
+        class Payment < Base
           uri "desk/payments(/:id)"
 
           class << self

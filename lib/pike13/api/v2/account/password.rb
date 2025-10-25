@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Account
-        class Password < Spyke::Base
+        class Password < Base
           uri "account/passwords(/:id)"
 
           class << self

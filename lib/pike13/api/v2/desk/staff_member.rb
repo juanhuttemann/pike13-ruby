@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class StaffMember < Spyke::Base
+        class StaffMember < Base
           uri "desk/staff_members(/:id)"
           include_root_in_json :staff_member
 

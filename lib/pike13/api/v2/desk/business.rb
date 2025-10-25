@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Business < Spyke::Base
+        class Business < Base
           uri "desk/business"
           include_root_in_json :business
         end

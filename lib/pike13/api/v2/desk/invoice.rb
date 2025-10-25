@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Invoice < Spyke::Base
+        class Invoice < Base
           uri "desk/invoices(/:id)"
           include_root_in_json :invoice
 

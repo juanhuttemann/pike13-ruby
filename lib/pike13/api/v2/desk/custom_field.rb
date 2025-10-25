@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class CustomField < Spyke::Base
+        class CustomField < Base
           uri "desk/custom_fields(/:id)"
           include_root_in_json :custom_field
         end

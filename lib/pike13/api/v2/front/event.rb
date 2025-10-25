@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Event < Spyke::Base
+        class Event < Base
           uri "front/events(/:id)"
           include_root_in_json :event
         end

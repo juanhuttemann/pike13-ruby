@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Refund < Spyke::Base
+        class Refund < Base
           uri "desk/refunds(/:id)"
 
           class << self

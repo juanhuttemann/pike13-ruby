@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class EventOccurrence < Spyke::Base
+        class EventOccurrence < Base
           uri "desk/event_occurrences(/:id)"
           include_root_in_json :event_occurrence
 

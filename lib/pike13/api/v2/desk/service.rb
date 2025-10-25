@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Service < Spyke::Base
+        class Service < Base
           uri "desk/services(/:id)"
           include_root_in_json :service
 

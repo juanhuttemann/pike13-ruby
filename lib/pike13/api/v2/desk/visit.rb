@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Visit < Spyke::Base
+        class Visit < Base
           uri "desk/visits(/:id)"
           include_root_in_json :visit
 

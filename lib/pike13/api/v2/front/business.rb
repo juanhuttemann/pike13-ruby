@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Business < Spyke::Base
+        class Business < Base
           uri "front/business"
           include_root_in_json :business
         end

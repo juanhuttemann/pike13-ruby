@@ -2,7 +2,7 @@
 
 module Pike13
   class Client
-    attr_reader :config, :connection
+    attr_reader :config
 
     # Initialize a new Pike13 client
     #
@@ -48,68 +48,10 @@ module Pike13
       @config.base_url = base_url || Pike13.configuration&.base_url
       @config.validate!
 
-      @connection = Connection.new(@config)
-      configure_spyke_models
-    end
-
-    def configure_spyke_models
-      # Configure Spyke models to use this client's Faraday connection
-
-      # Desk namespace
-      Pike13::API::V2::Desk::Person.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Visit.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Plan.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Location.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::StaffMember.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Event.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::EventOccurrence.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::WaitlistEntry.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Service.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Invoice.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Pack.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::CustomField.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::PackProduct.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::PlanProduct.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::RevenueCategory.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::SalesTax.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Booking.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Punch.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Business.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Appointment.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Note.connection = @connection.faraday_connection
-
-      # Front namespace
-      Pike13::API::V2::Front::Person.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Visit.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Event.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::EventOccurrence.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Location.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Service.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::StaffMember.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Plan.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::PlanProduct.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::WaitlistEntry.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Invoice.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Business.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Branding.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Booking.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Note.connection = @connection.faraday_connection
-      Pike13::API::V2::Front::Appointment.connection = @connection.faraday_connection
-
-      # Account namespace (uses unscoped connection)
-      Pike13::API::V2::Account::Base.connection = @connection.unscoped_faraday_connection
-      Pike13::API::V2::Account::Business.connection = @connection.unscoped_faraday_connection
-      Pike13::API::V2::Account::Person.connection = @connection.unscoped_faraday_connection
-      Pike13::API::V2::Account::Password.connection = @connection.unscoped_faraday_connection
-      Pike13::API::V2::Account::Confirmation.connection = @connection.unscoped_faraday_connection
-
-      # Desk Payment/Refund/MakeUp resources
-      Pike13::API::V2::Desk::Payment.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::Refund.connection = @connection.faraday_connection
-      Pike13::API::V2::Desk::MakeUp.connection = @connection.faraday_connection
-
-      # Front Payment resource
-      Pike13::API::V2::Front::Payment.connection = @connection.faraday_connection
+      # Each base class builds its own connection
+      Pike13::API::V2::Desk::Base.configure(@config)
+      Pike13::API::V2::Front::Base.configure(@config)
+      Pike13::API::V2::Account::Base.configure(@config)
     end
   end
 end

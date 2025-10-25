@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Booking < Spyke::Base
+        class Booking < Base
           uri "front/bookings(/:id)"
           include_root_in_json :booking
 

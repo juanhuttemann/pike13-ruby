@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Punch < Spyke::Base
+        class Punch < Base
           uri "desk/punches(/:id)"
           include_root_in_json :punch
         end

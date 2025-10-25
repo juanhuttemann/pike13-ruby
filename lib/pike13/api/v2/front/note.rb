@@ -6,7 +6,7 @@ module Pike13
       module Front
         # Notes in Front API are nested under people
         # Use: person.notes or with custom uri
-        class Note < Spyke::Base
+        class Note < Base
           uri "front/people/:person_id/notes(/:id)"
           include_root_in_json :note
         end

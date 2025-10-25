@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class SalesTax < Spyke::Base
+        class SalesTax < Base
           uri "desk/sales_taxes(/:id)"
           include_root_in_json :sales_tax
         end

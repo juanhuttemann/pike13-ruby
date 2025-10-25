@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Payment < Spyke::Base
+        class Payment < Base
           uri "front/payments(/:id)"
 
           class << self

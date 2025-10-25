@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Plan < Spyke::Base
+        class Plan < Base
           uri "desk/plans(/:id)"
           include_root_in_json :plan
         end

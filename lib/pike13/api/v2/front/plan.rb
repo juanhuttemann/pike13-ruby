@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Plan < Spyke::Base
+        class Plan < Base
           uri "front/plans(/:id)"
           include_root_in_json :plan
 

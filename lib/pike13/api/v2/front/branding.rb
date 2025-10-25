@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Front
-        class Branding < Spyke::Base
+        class Branding < Base
           uri "front/branding"
           include_root_in_json :branding
         end

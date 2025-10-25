@@ -4,7 +4,7 @@ module Pike13
   module API
     module V2
       module Desk
-        class Appointment < Spyke::Base
+        class Appointment < Base
           uri "desk/appointments(/:id)"
 
           class << self
