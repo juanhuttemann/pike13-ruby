@@ -8,7 +8,10 @@ module Pike13
           uri "desk/invoices(/:id)"
           include_root_in_json :invoice
 
-          # TODO: Add payment_methods association if PaymentMethod model exists
+          def payment_methods
+            result = self.class.request(:get, "desk/invoices/#{id}/payment_methods")
+            result.data || []
+          end
         end
       end
     end

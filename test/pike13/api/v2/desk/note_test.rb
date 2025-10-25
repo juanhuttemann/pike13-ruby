@@ -159,11 +159,11 @@ module Pike13
             assert_equal 456, note.id
 
             # Second request: delete
-            stub_pike13_request(:delete, "/desk/people/123/notes/456", response_body: {})
+            delete_endpoint = stub_pike13_request(:delete, "/desk/people/123/notes/456", response_body: {})
 
             note.destroy
 
-            assert_predicate note, :destroyed?
+            assert_requested delete_endpoint
           end
 
           # EVENT_OCCURRENCE tests

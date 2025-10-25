@@ -52,15 +52,30 @@ module Pike13
     ACCOUNT_PATH_PREFIX = "/account"
     UNSCOPED_BASE_URL = "https://pike13.com"
 
-    attr_reader :config, :faraday_connection
+    attr_reader :config, :faraday_connection, :unscoped_faraday_connection
 
     def initialize(config)
       @config = config
       @faraday_connection = build_faraday_connection
+      @unscoped_faraday_connection = build_unscoped_faraday_connection
     end
 
     def build_faraday_connection
       Faraday.new(url: "#{config.normalized_base_url}#{config.api_version}") do |c|
+        c.request :retry,
+                  max: DEFAULT_RETRY_MAX,
+                  interval: DEFAULT_RETRY_INTERVAL,
+                  backoff_factor: DEFAULT_RETRY_BACKOFF_FACTOR
+        c.request :json
+        c.use Pike13JSONParser
+        c.response :json, content_type: /\bjson$/
+        c.headers["Authorization"] = "Bearer #{config.access_token}"
+        c.adapter Faraday.default_adapter
+      end
+    end
+
+    def build_unscoped_faraday_connection
+      Faraday.new(url: "#{UNSCOPED_BASE_URL}#{config.api_version}") do |c|
         c.request :retry,
                   max: DEFAULT_RETRY_MAX,
                   interval: DEFAULT_RETRY_INTERVAL,

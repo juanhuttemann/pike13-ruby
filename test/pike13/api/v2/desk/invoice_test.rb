@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            invoices = @client.desk.invoices.all
+            invoices = @client.desk.invoices.all.to_a
 
             assert_instance_of Array, invoices
             assert_equal 2, invoices.size

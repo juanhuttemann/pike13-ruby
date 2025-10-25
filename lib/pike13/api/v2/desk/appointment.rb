@@ -8,35 +8,26 @@ module Pike13
           uri "desk/appointments(/:id)"
 
           class << self
-            def find_available_slots(service_id:, **params)
-              result = request(:get, "desk/appointments/#{service_id}/available_slots", params)
-              # Pike13JSONParser extracts "available_slots" and puts it in data
-              result.data || []
+            def find_available_slots(service_id:, client:, **params)
+              response = client.get("/desk/appointments/#{service_id}/available_slots", params: params)
+              response["available_slots"] || []
             end
 
-            def available_slots_summary(service_id:, **params)
-              result = request(:get, "desk/appointments/#{service_id}/available_slots/summary", params)
-
-              # This endpoint returns raw data without a resource wrapper
-              # Pike13JSONParser misinterprets the first date key as the resource key
-              # Build response hash from result - it will have each date as an attribute
-              response_hash = {}
-              result.instance_variables.each do |ivar|
-                key = ivar.to_s.delete("@")
-                value = result.instance_variable_get(ivar)
-                response_hash[key] = value unless %w[metadata errors uri attributes].include?(key)
-              end
-
+            def available_slots_summary(service_id:, client:, **params)
+              response = client.get("/desk/appointments/#{service_id}/available_slots/summary", params: params)
+              
               # Check if errors are present
-              if response_hash["errors"]
+              if response["errors"]
+                errors = response["errors"]
+                error_message = errors.is_a?(Array) ? errors.join(", ") : errors.to_s
                 raise Pike13::ValidationError.new(
-                  response_hash["errors"].join(", "),
+                  error_message,
                   http_status: 422,
-                  response_body: response_hash
+                  response_body: response
                 )
               end
-
-              response_hash
+              
+              response
             end
           end
         end

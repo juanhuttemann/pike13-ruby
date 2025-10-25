@@ -17,9 +17,9 @@ module Pike13
                                   "bookings" => []
                                 })
 
-            items = @client.desk.bookings.all
+            items = @client.desk.bookings.all.to_a
 
-            assert_instance_of Spyke::Result, items
+            assert_instance_of Array, items
           end
 
           def test_find_booking

@@ -10,13 +10,13 @@ module Pike13
 
           class << self
             def summary(**params)
-              result = with("front/event_occurrences/summary").where(params).get
-              result.data["event_occurrence_summaries"] || []
+              result = request(:get, "front/event_occurrences/summary", params)
+              result.data || []
             end
 
             def enrollment_eligibilities(id:, **params)
-              result = with("front/event_occurrences/#{id}/enrollment_eligibilities").where(params).get
-              result.data["enrollment_eligibilities"] || []
+              result = request(:get, "front/event_occurrences/#{id}/enrollment_eligibilities", params)
+              result.data || []
             end
           end
         end

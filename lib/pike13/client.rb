@@ -92,9 +92,9 @@ module Pike13
       Pike13::API::V2::Front::Note.connection = @connection.faraday_connection
       Pike13::API::V2::Front::Appointment.connection = @connection.faraday_connection
 
-      # Account namespace
-      Pike13::API::V2::Account::Business.connection = @connection.faraday_connection
-      Pike13::API::V2::Account::Person.connection = @connection.faraday_connection
+      # Account namespace (uses unscoped connection)
+      Pike13::API::V2::Account::Business.connection = @connection.unscoped_faraday_connection
+      Pike13::API::V2::Account::Person.connection = @connection.unscoped_faraday_connection
     end
 
     # Perform a GET request to the API (internal use)

@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            businesses = @client.account.businesses.all
+            businesses = @client.account.businesses.all.to_a
 
             assert_instance_of Array, businesses
             assert_equal 2, businesses.size

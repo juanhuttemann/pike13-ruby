@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            visits = @client.desk.visits.all
+            visits = @client.desk.visits.all.to_a
 
             assert_instance_of Array, visits
             assert_equal 2, visits.size

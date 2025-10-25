@@ -10,8 +10,9 @@ module Pike13
 
           class << self
             def find_lease(booking_id:, id:, **params)
-              result = with("front/bookings/#{booking_id}/leases/#{id}").where(params).get
-              result.data["leases"]&.first || {}
+              result = request(:get, "front/bookings/#{booking_id}/leases/#{id}", params)
+              # result.data is already a Hash (not an array) for single resource endpoints
+              result.data.is_a?(Hash) ? result.data.stringify_keys : {}
             end
           end
         end
