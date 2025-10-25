@@ -16,10 +16,11 @@ module Pike13
                                   "event_occurrences" => [{ "id" => 1 }]
                                 })
 
-            items = @client.desk.event_occurrences.all.to_a
+            event_occurrences = @client.desk.event_occurrences.all.to_a
 
-            assert_equal 1, items.size
-            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, items.first
+            assert_instance_of Array, event_occurrences
+            assert_equal 1, event_occurrences.size
+            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, event_occurrences.first
           end
 
           def test_find_event_occurrence
@@ -27,10 +28,10 @@ module Pike13
                                   "event_occurrences" => [{ "id" => 123 }]
                                 })
 
-            item = @client.desk.event_occurrences.find(123)
+            event_occurrence = @client.desk.event_occurrences.find(123)
 
-            assert_equal 123, item.id
-            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, item
+            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, event_occurrence
+            assert_equal 123, event_occurrence.id
           end
 
           def test_summary

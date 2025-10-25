@@ -16,9 +16,11 @@ module Pike13
                                   "pack_products" => [{ "id" => 1 }]
                                 })
 
-            items = @client.desk.pack_products.all
+            pack_products = @client.desk.pack_products.all.to_a
 
-            assert_equal 1, items.size
+            assert_instance_of Array, pack_products
+            assert_equal 1, pack_products.size
+            assert_instance_of Pike13::API::V2::Desk::PackProduct, pack_products.first
           end
 
           def test_find_pack_product
@@ -26,9 +28,10 @@ module Pike13
                                   "pack_products" => [{ "id" => 123 }]
                                 })
 
-            item = @client.desk.pack_products.find(123)
+            pack_product = @client.desk.pack_products.find(123)
 
-            assert_equal 123, item.id
+            assert_instance_of Pike13::API::V2::Desk::PackProduct, pack_product
+            assert_equal 123, pack_product.id
           end
         end
       end

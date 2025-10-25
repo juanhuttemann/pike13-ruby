@@ -95,6 +95,16 @@ module Pike13
       # Account namespace (uses unscoped connection)
       Pike13::API::V2::Account::Business.connection = @connection.unscoped_faraday_connection
       Pike13::API::V2::Account::Person.connection = @connection.unscoped_faraday_connection
+      Pike13::API::V2::Account::Password.connection = @connection.unscoped_faraday_connection
+      Pike13::API::V2::Account::Confirmation.connection = @connection.unscoped_faraday_connection
+
+      # Desk Payment/Refund/MakeUp resources
+      Pike13::API::V2::Desk::Payment.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Refund.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::MakeUp.connection = @connection.faraday_connection
+
+      # Front Payment resource
+      Pike13::API::V2::Front::Payment.connection = @connection.faraday_connection
     end
 
     # Perform a GET request to the API (internal use)

@@ -38,7 +38,10 @@ module Pike13
       packs: API::V2::Desk::Pack,
       pack_products: API::V2::Desk::PackProduct,
       punches: API::V2::Desk::Punch,
-      waitlist_entries: API::V2::Desk::WaitlistEntry
+      waitlist_entries: API::V2::Desk::WaitlistEntry,
+      payments: API::V2::Desk::Payment,
+      refunds: API::V2::Desk::Refund,
+      make_ups: API::V2::Desk::MakeUp
     )
   end
 end

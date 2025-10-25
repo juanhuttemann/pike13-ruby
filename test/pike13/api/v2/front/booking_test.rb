@@ -18,6 +18,7 @@ module Pike13
 
             booking = @client.front.bookings.find(123)
 
+            assert_instance_of Pike13::API::V2::Front::Booking, booking
             assert_equal 123, booking.id
           end
 

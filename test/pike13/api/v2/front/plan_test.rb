@@ -18,6 +18,7 @@ module Pike13
 
             plan = @client.front.plans.find(123)
 
+            assert_instance_of Pike13::API::V2::Front::Plan, plan
             assert_equal 123, plan.id
           end
 

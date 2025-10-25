@@ -16,9 +16,11 @@ module Pike13
                                   "services" => [{ "id" => 1 }]
                                 })
 
-            items = @client.desk.services.all
+            services = @client.desk.services.all.to_a
 
-            assert_equal 1, items.size
+            assert_instance_of Array, services
+            assert_equal 1, services.size
+            assert_instance_of Pike13::API::V2::Desk::Service, services.first
           end
 
           def test_find_service
@@ -26,9 +28,10 @@ module Pike13
                                   "services" => [{ "id" => 123 }]
                                 })
 
-            item = @client.desk.services.find(123)
+            service = @client.desk.services.find(123)
 
-            assert_equal 123, item.id
+            assert_instance_of Pike13::API::V2::Desk::Service, service
+            assert_equal 123, service.id
           end
 
           def test_enrollment_eligibilities

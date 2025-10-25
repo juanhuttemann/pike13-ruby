@@ -17,7 +17,9 @@ module Pike13
   class AccountResources < ResourceCollection
     register_resources(
       businesses: API::V2::Account::Business,
-      people: API::V2::Account::Person
+      people: API::V2::Account::Person,
+      passwords: API::V2::Account::Password,
+      confirmations: API::V2::Account::Confirmation
     )
 
     # Get current account details

@@ -18,6 +18,7 @@ module Pike13
 
             pack = @client.desk.packs.find(123)
 
+            assert_instance_of Pike13::API::V2::Desk::Pack, pack
             assert_equal 123, pack.id
           end
         end

@@ -16,9 +16,11 @@ module Pike13
                                   "services" => [{ "id" => 1 }]
                                 })
 
-            services = @client.front.services.all
+            services = @client.front.services.all.to_a
 
+            assert_instance_of Array, services
             assert_equal 1, services.size
+            assert_instance_of Pike13::API::V2::Front::Service, services.first
           end
 
           def test_find_service
@@ -28,6 +30,7 @@ module Pike13
 
             service = @client.front.services.find(123)
 
+            assert_instance_of Pike13::API::V2::Front::Service, service
             assert_equal 123, service.id
           end
 

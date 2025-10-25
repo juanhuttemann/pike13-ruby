@@ -16,9 +16,11 @@ module Pike13
                                   "staff_members" => [{ "id" => 1 }]
                                 })
 
-            staff = @client.front.staff_members.all
+            staff_members = @client.front.staff_members.all.to_a
 
-            assert_equal 1, staff.size
+            assert_instance_of Array, staff_members
+            assert_equal 1, staff_members.size
+            assert_instance_of Pike13::API::V2::Front::StaffMember, staff_members.first
           end
 
           def test_find_staff_member
@@ -26,9 +28,10 @@ module Pike13
                                   "staff_members" => [{ "id" => 123 }]
                                 })
 
-            staff = @client.front.staff_members.find(123)
+            staff_member = @client.front.staff_members.find(123)
 
-            assert_equal 123, staff.id
+            assert_instance_of Pike13::API::V2::Front::StaffMember, staff_member
+            assert_equal 123, staff_member.id
           end
         end
       end

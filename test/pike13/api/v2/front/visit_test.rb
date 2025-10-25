@@ -18,6 +18,7 @@ module Pike13
 
             visit = @client.front.visits.find(123)
 
+            assert_instance_of Pike13::API::V2::Front::Visit, visit
             assert_equal 123, visit.id
           end
         end

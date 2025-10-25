@@ -18,6 +18,7 @@ module Pike13
 
             invoice = @client.front.invoices.find(123)
 
+            assert_instance_of Pike13::API::V2::Front::Invoice, invoice
             assert_equal 123, invoice.id
           end
 

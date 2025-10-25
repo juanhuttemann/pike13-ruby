@@ -12,6 +12,8 @@ require "spyke"
 require_relative "pike13/api/v2/account"
 require_relative "pike13/api/v2/account/business"
 require_relative "pike13/api/v2/account/person"
+require_relative "pike13/api/v2/account/password"
+require_relative "pike13/api/v2/account/confirmation"
 
 # Desk resources
 require_relative "pike13/api/v2/desk/appointment"
@@ -35,6 +37,9 @@ require_relative "pike13/api/v2/desk/service"
 require_relative "pike13/api/v2/desk/staff_member"
 require_relative "pike13/api/v2/desk/visit"
 require_relative "pike13/api/v2/desk/waitlist_entry"
+require_relative "pike13/api/v2/desk/payment"
+require_relative "pike13/api/v2/desk/refund"
+require_relative "pike13/api/v2/desk/make_up"
 
 # Front resources
 require_relative "pike13/api/v2/front/appointment"
@@ -53,6 +58,7 @@ require_relative "pike13/api/v2/front/service"
 require_relative "pike13/api/v2/front/staff_member"
 require_relative "pike13/api/v2/front/visit"
 require_relative "pike13/api/v2/front/waitlist_entry"
+require_relative "pike13/api/v2/front/payment"
 
 # Resource collection base and implementations
 require_relative "pike13/resource_collection"

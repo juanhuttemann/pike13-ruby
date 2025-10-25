@@ -30,7 +30,8 @@ module Pike13
       plans: API::V2::Front::Plan,
       plan_products: API::V2::Front::PlanProduct,
       bookings: API::V2::Front::Booking,
-      waitlist_entries: API::V2::Front::WaitlistEntry
+      waitlist_entries: API::V2::Front::WaitlistEntry,
+      payments: API::V2::Front::Payment
     )
   end
 end

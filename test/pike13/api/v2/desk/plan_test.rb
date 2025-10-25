@@ -16,9 +16,11 @@ module Pike13
                                   "plans" => [{ "id" => 1 }]
                                 })
 
-            items = @client.desk.plans.all
+            plans = @client.desk.plans.all.to_a
 
-            assert_equal 1, items.size
+            assert_instance_of Array, plans
+            assert_equal 1, plans.size
+            assert_instance_of Pike13::API::V2::Desk::Plan, plans.first
           end
 
           def test_find_plan
@@ -26,9 +28,10 @@ module Pike13
                                   "plans" => [{ "id" => 123 }]
                                 })
 
-            item = @client.desk.plans.find(123)
+            plan = @client.desk.plans.find(123)
 
-            assert_equal 123, item.id
+            assert_instance_of Pike13::API::V2::Desk::Plan, plan
+            assert_equal 123, plan.id
           end
         end
       end

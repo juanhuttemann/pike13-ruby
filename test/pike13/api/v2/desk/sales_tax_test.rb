@@ -16,9 +16,11 @@ module Pike13
                                   "sales_taxes" => [{ "id" => 1 }]
                                 })
 
-            items = @client.desk.sales_taxes.all
+            sales_taxes = @client.desk.sales_taxes.all.to_a
 
-            assert_equal 1, items.size
+            assert_instance_of Array, sales_taxes
+            assert_equal 1, sales_taxes.size
+            assert_instance_of Pike13::API::V2::Desk::SalesTax, sales_taxes.first
           end
 
           def test_find_sales_tax
@@ -26,9 +28,10 @@ module Pike13
                                   "sales_taxes" => [{ "id" => 123 }]
                                 })
 
-            item = @client.desk.sales_taxes.find(123)
+            sales_tax = @client.desk.sales_taxes.find(123)
 
-            assert_equal 123, item.id
+            assert_instance_of Pike13::API::V2::Desk::SalesTax, sales_tax
+            assert_equal 123, sales_tax.id
           end
         end
       end

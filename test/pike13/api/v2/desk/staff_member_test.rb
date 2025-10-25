@@ -16,10 +16,11 @@ module Pike13
                                   "staff_members" => [{ "id" => 1, "name" => "Staff" }]
                                 })
 
-            staff = @client.desk.staff_members.all.to_a
+            staff_members = @client.desk.staff_members.all.to_a
 
-            assert_equal 1, staff.size
-            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff.first
+            assert_instance_of Array, staff_members
+            assert_equal 1, staff_members.size
+            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_members.first
           end
 
           def test_find_staff_member
@@ -27,10 +28,10 @@ module Pike13
                                   "staff_members" => [{ "id" => 123, "name" => "Staff" }]
                                 })
 
-            staff = @client.desk.staff_members.find(123)
+            staff_member = @client.desk.staff_members.find(123)
 
-            assert_equal 123, staff.id
-            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff
+            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_member
+            assert_equal 123, staff_member.id
           end
 
           def test_me
@@ -38,10 +39,10 @@ module Pike13
                                   "staff_members" => [{ "id" => 999, "name" => "Current Staff" }]
                                 })
 
-            staff = @client.desk.staff_members.me
+            staff_member = @client.desk.staff_members.me
 
-            assert_equal 999, staff.id
-            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff
+            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_member
+            assert_equal 999, staff_member.id
           end
         end
       end
