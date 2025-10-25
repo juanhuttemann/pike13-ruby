@@ -9,7 +9,7 @@ require "multi_json"
 module Pike13
   # Custom JSON parser for Pike13 API responses
   # Transforms Pike13 response format to Spyke's expected format:
-  # { data: [...], metadata: {...}, errors: {} }
+  # { data: {...} or [{...}], metadata: {...}, errors: {} }
   class Pike13JSONParser < Faraday::Middleware
     def on_complete(env)
       # Handle both parsed and unparsed JSON
@@ -17,11 +17,17 @@ module Pike13
 
       # Extract the first key as the resource name (e.g., :people, :events)
       resource_key = json.keys.find { |k| k != :total_count && k != :errors }
-      resource_data = json[resource_key] || []
+      resource_data = json[resource_key]
 
-      # For single resource (array with 1 item), unwrap it
-      # Spyke expects a hash for find() but array for all()
-      data = if resource_data.is_a?(Array) && resource_data.size == 1
+      # Spyke expects single hash for find() and array for collections
+      # Pike13 API always returns arrays. Unwrap single-element arrays for:
+      # - GETs to /resource/id or /resource/me
+      # - POSTs (create) and PUTs (update)
+      path = env.url.path
+      method = env.method
+      is_single_resource = path.match?(%r{/(\d+|me)$}) || [:post, :put].include?(method)
+      
+      data = if resource_data.is_a?(Array) && resource_data.size == 1 && is_single_resource
                resource_data.first
              else
                resource_data
