@@ -50,10 +50,51 @@ module Pike13
 
     def configure_spyke_models
       # Configure Spyke models to use this client's Faraday connection
+
+      # Desk namespace
       Pike13::API::V2::Desk::Person.connection = @connection.faraday_connection
       Pike13::API::V2::Desk::Visit.connection = @connection.faraday_connection
       Pike13::API::V2::Desk::Plan.connection = @connection.faraday_connection
       Pike13::API::V2::Desk::Location.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::StaffMember.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Event.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::EventOccurrence.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::WaitlistEntry.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Service.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Invoice.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Pack.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::CustomField.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::PackProduct.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::PlanProduct.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::RevenueCategory.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::SalesTax.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Booking.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Punch.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Business.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Appointment.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Note.connection = @connection.faraday_connection
+
+      # Front namespace
+      Pike13::API::V2::Front::Person.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Visit.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Event.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::EventOccurrence.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Location.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Service.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::StaffMember.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Plan.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::PlanProduct.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::WaitlistEntry.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Invoice.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Business.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Branding.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Booking.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Note.connection = @connection.faraday_connection
+      Pike13::API::V2::Front::Appointment.connection = @connection.faraday_connection
+
+      # Account namespace
+      Pike13::API::V2::Account::Business.connection = @connection.faraday_connection
+      Pike13::API::V2::Account::Person.connection = @connection.faraday_connection
     end
 
     # Perform a GET request to the API (internal use)

@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Front
-        class PlanProduct < Pike13::API::V2::Base
-          @resource_name = "plan_products"
+        class PlanProduct < Spyke::Base
+          uri "front/plan_products(/:id)"
+          include_root_in_json :plan_product
         end
       end
     end

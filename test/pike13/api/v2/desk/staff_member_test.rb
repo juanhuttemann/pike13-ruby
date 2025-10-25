@@ -16,9 +16,10 @@ module Pike13
                                   "staff_members" => [{ "id" => 1, "name" => "Staff" }]
                                 })
 
-            staff = @client.desk.staff_members.all
+            staff = @client.desk.staff_members.all.to_a
 
             assert_equal 1, staff.size
+            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff.first
           end
 
           def test_find_staff_member
@@ -29,6 +30,18 @@ module Pike13
             staff = @client.desk.staff_members.find(123)
 
             assert_equal 123, staff.id
+            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff
+          end
+
+          def test_me
+            stub_pike13_request(:get, "/desk/staff_members/me", response_body: {
+                                  "staff_members" => [{ "id" => 999, "name" => "Current Staff" }]
+                                })
+
+            staff = @client.desk.staff_members.me
+
+            assert_equal 999, staff.id
+            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff
           end
         end
       end

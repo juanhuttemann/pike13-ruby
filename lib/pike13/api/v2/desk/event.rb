@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Desk
-        class Event < Pike13::API::V2::Base
-          @resource_name = "events"
+        class Event < Spyke::Base
+          uri "desk/events(/:id)"
+          include_root_in_json :event
         end
       end
     end

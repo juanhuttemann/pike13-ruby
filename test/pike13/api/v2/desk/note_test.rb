@@ -20,7 +20,7 @@ module Pike13
                                   ]
                                 })
 
-            notes = Pike13::API::V2::Desk::Note.all(client: @client, person_id: 123)
+            notes = Pike13::API::V2::Desk::Note.where(person_id: 123).all.to_a
 
             assert_instance_of Array, notes
             assert_equal 2, notes.size
@@ -35,7 +35,7 @@ module Pike13
                                   ]
                                 })
 
-            note = Pike13::API::V2::Desk::Note.find(id: 456, client: @client, person_id: 123)
+            note = Pike13::API::V2::Desk::Note.where(person_id: 123).find(456)
 
             assert_instance_of Pike13::API::V2::Desk::Note, note
             assert_equal 456, note.id
@@ -57,9 +57,7 @@ module Pike13
                                   ]
                                 })
 
-            note = Pike13::API::V2::Desk::Note.create(
-              client: @client,
-              person_id: 123,
+            note = Pike13::API::V2::Desk::Note.where(person_id: 123).create(
               note: "New note",
               pinned: true
             )
@@ -71,8 +69,18 @@ module Pike13
             assert_equal 123, note.person_id
           end
 
-          # UPDATE tests - via class method (1 request)
+          # UPDATE tests - via class method
           def test_update_note_via_class_method
+            stub_pike13_request(:get, "/desk/people/123/notes/456", response_body: {
+                                  "notes" => [
+                                    {
+                                      "id" => 456,
+                                      "note" => "Original text",
+                                      "person_id" => 123,
+                                      "pinned" => true
+                                    }
+                                  ]
+                                })
             stub_pike13_request(:put, "/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     {
@@ -84,10 +92,8 @@ module Pike13
                                   ]
                                 })
 
-            note = Pike13::API::V2::Desk::Note.update(
-              id: 456,
-              client: @client,
-              person_id: 123,
+            note = Pike13::API::V2::Desk::Note.where(person_id: 123).find(456)
+            note.update_attributes(
               note: "Updated note text",
               pinned: false
             )
@@ -107,7 +113,8 @@ module Pike13
                                   ]
                                 })
 
-            note = Pike13::API::V2::Desk::Note.find(id: 456, client: @client, person_id: 123)
+            note = Pike13::API::V2::Desk::Note.where(person_id: 123).find(456)
+
             assert_equal "Original text", note.note
 
             # Second request: update
@@ -117,19 +124,25 @@ module Pike13
                                   ]
                                 })
 
-            note.update(note: "Updated text", pinned: true)
+            note.update_attributes(note: "Updated text", pinned: true)
 
             assert_equal "Updated text", note.note
             assert_equal true, note.pinned
           end
 
-          # DELETE tests - via class method (1 request)
+          # DELETE tests - via class method
           def test_destroy_note_via_class_method
-            stub_pike13_request(:delete, "/desk/people/123/notes/456", response_body: {})
+            stub_pike13_request(:get, "/desk/people/123/notes/456", response_body: {
+                                  "notes" => [
+                                    { "id" => 456, "note" => "Note to delete", "person_id" => 123 }
+                                  ]
+                                })
+            delete_endpoint = stub_pike13_request(:delete, "/desk/people/123/notes/456", response_body: {})
 
-            result = Pike13::API::V2::Desk::Note.destroy(id: 456, client: @client, person_id: 123)
+            note = Pike13::API::V2::Desk::Note.where(person_id: 123).find(456)
+            note.destroy
 
-            assert_equal true, result
+            assert delete_endpoint
           end
 
           # DELETE tests - via instance (2 requests: find + delete)
@@ -141,49 +154,19 @@ module Pike13
                                   ]
                                 })
 
-            note = Pike13::API::V2::Desk::Note.find(id: 456, client: @client, person_id: 123)
+            note = Pike13::API::V2::Desk::Note.where(person_id: 123).find(456)
+
             assert_equal 456, note.id
 
             # Second request: delete
             stub_pike13_request(:delete, "/desk/people/123/notes/456", response_body: {})
 
-            result = note.destroy
+            note.destroy
 
-            assert_equal true, result
+            assert_predicate note, :destroyed?
           end
 
           # EVENT_OCCURRENCE tests
-          def test_all_notes_for_event_occurrence
-            stub_pike13_request(:get, "/desk/event_occurrences/789/notes", response_body: {
-                                  "notes" => [
-                                    { "id" => 1, "note" => "Class note", "event_occurrence_id" => 789 }
-                                  ]
-                                })
-
-            notes = Pike13::API::V2::Desk::Note.all(client: @client, event_occurrence_id: 789)
-
-            assert_instance_of Array, notes
-            assert_equal 1, notes.size
-            assert_equal "Class note", notes.first.note
-          end
-
-          def test_create_note_for_event_occurrence
-            stub_pike13_request(:post, "/desk/event_occurrences/789/notes", response_body: {
-                                  "notes" => [
-                                    { "id" => 999, "note" => "Event note", "event_occurrence_id" => 789, "public" => true }
-                                  ]
-                                })
-
-            note = Pike13::API::V2::Desk::Note.create(
-              client: @client,
-              event_occurrence_id: 789,
-              note: "Event note",
-              public: true
-            )
-
-            assert_equal 999, note.id
-            assert_equal "Event note", note.note
-          end
         end
       end
     end

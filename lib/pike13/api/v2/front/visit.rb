@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Front
-        class Visit < Pike13::API::V2::Base
-          @resource_name = "visits"
+        class Visit < Spyke::Base
+          uri "front/visits(/:id)"
+          include_root_in_json :visit
         end
       end
     end

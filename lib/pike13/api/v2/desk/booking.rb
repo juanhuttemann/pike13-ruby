@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Desk
-        class Booking < Pike13::API::V2::IdOnlyResource
-          @resource_name = "bookings"
+        class Booking < Spyke::Base
+          uri "desk/bookings(/:id)"
+          include_root_in_json :booking
         end
       end
     end

@@ -170,6 +170,7 @@ module Pike13
                                 })
 
             person = @client.desk.people.find(123)
+
             assert_equal "Doe", person.last_name
 
             stub_pike13_request(:put, "/desk/people/123", response_body: {
@@ -214,6 +215,7 @@ module Pike13
                                 })
 
             person = @client.desk.people.find(123)
+
             assert_equal 123, person.id
 
             stub_pike13_request(:delete, "/desk/people/123", response_body: {})

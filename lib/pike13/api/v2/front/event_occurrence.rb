@@ -4,36 +4,20 @@ module Pike13
   module API
     module V2
       module Front
-        class EventOccurrence < Pike13::API::V2::Base
-          @resource_name = "event_occurrences"
+        class EventOccurrence < Spyke::Base
+          uri "front/event_occurrences(/:id)"
+          include_root_in_json :event_occurrence
 
-          # Get summary of event occurrences
-          #
-          # @param client [Pike13::Client] Client client
-          # @param params [Hash] Query parameters (filters, etc.)
-          # @return [Array<Hash>] Array of event occurrence summaries
-          #
-          # @example
-          #   Pike13::API::V2::Front::EventOccurrence.summary(client: client)
-          def self.summary(client:, **params)
-            path = "/#{scope}/#{resource_name}/summary"
-            response = client.get(path, params: params)
-            response["event_occurrence_summaries"] || []
-          end
+          class << self
+            def summary(**params)
+              result = with("front/event_occurrences/summary").where(params).get
+              result.data["event_occurrence_summaries"] || []
+            end
 
-          # Get enrollment eligibilities for an event occurrence
-          #
-          # @param id [Integer] Event occurrence ID
-          # @param client [Pike13::Client] Client client
-          # @param params [Hash] Query parameters (filters, etc.)
-          # @return [Array<Hash>] Array of enrollment eligibilities
-          #
-          # @example
-          #   Pike13::API::V2::Front::EventOccurrence.enrollment_eligibilities(id: 123, client: client)
-          def self.enrollment_eligibilities(id:, client:, **params)
-            path = "/#{scope}/#{resource_name}/#{id}/enrollment_eligibilities"
-            response = client.get(path, params: params)
-            response["enrollment_eligibilities"] || []
+            def enrollment_eligibilities(id:, **params)
+              result = with("front/event_occurrences/#{id}/enrollment_eligibilities").where(params).get
+              result.data["enrollment_eligibilities"] || []
+            end
           end
         end
       end

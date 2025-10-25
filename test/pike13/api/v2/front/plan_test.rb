@@ -22,7 +22,7 @@ module Pike13
           end
 
           def test_plan_terms
-            plan = Pike13::API::V2::Front::Plan.new(client: @client, id: 123)
+            plan = Pike13::API::V2::Front::Plan.new(id: 123)
 
             stub_pike13_request(:get, "/front/plans/123/plan_terms", response_body: {
                                   "plan_terms" => [{ "id" => 456 }]

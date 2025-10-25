@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Desk
-        class PackProduct < Pike13::API::V2::Base
-          @resource_name = "pack_products"
+        class PackProduct < Spyke::Base
+          uri "desk/pack_products(/:id)"
+          include_root_in_json :pack_product
         end
       end
     end

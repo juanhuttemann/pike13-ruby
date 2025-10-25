@@ -4,11 +4,11 @@ module Pike13
   module API
     module V2
       module Front
-        class Invoice < Pike13::API::V2::IdOnlyResource
-          @resource_name = "invoices"
+        class Invoice < Spyke::Base
+          uri "front/invoices(/:id)"
+          include_root_in_json :invoice
 
-          # Nested resource methods using has_many DSL
-          has_many :payment_methods
+          # TODO: Add payment_methods association if PaymentMethod model exists
         end
       end
     end

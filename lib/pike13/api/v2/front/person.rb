@@ -4,32 +4,19 @@ module Pike13
   module API
     module V2
       module Front
-        class Person < Pike13::API::V2::Base
-          include Pike13::API::V2::PersonMethods
+        class Person < Spyke::Base
+          uri "front/people(/:id)"
+          include_root_in_json :person
 
-          @resource_name = "people"
+          has_many :visits, class_name: "Pike13::API::V2::Front::Visit", uri: "front/people/:person_id/visits"
+          has_many :waitlist_entries, class_name: "Pike13::API::V2::Front::WaitlistEntry",
+                                      uri: "front/people/:person_id/waitlist_entries"
 
-          # The Pike13 API does not support listing people in the front namespace
-          # Only the authenticated user's information is available
-          #
-          # @raise [NotImplementedError] Always raises as this endpoint doesn't exist
-          def self.all(client:, **params)
-            raise NotImplementedError,
-                  "The Pike13 API does not support listing people in the front namespace. " \
-                  "Use client.front.people.me to retrieve the authenticated user."
+          class << self
+            def me
+              find(:me)
+            end
           end
-
-          # The Pike13 API does not support counting people in the front namespace
-          #
-          # @raise [NotImplementedError] Always raises as this endpoint doesn't exist
-          def self.count(client:, **params)
-            raise NotImplementedError,
-                  "The Pike13 API does not support counting people in the front namespace."
-          end
-
-          # Nested resource methods using has_many DSL
-          has_many :visits
-          has_many :waitlist_entries
         end
       end
     end

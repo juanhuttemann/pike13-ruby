@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Desk
-        class CustomField < Pike13::API::V2::Base
-          @resource_name = "custom_fields"
+        class CustomField < Spyke::Base
+          uri "desk/custom_fields(/:id)"
+          include_root_in_json :custom_field
         end
       end
     end

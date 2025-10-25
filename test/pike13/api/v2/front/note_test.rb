@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            notes = Pike13::API::V2::Front::Note.all(client: @client, person_id: 123)
+            notes = Pike13::API::V2::Front::Note.where(person_id: 123).all.to_a
 
             assert_instance_of Array, notes
             assert_equal 2, notes.size
@@ -34,7 +34,7 @@ module Pike13
                                   ]
                                 })
 
-            note = Pike13::API::V2::Front::Note.find(id: 456, client: @client, person_id: 123)
+            note = Pike13::API::V2::Front::Note.where(person_id: 123).find(456)
 
             assert_instance_of Pike13::API::V2::Front::Note, note
             assert_equal 456, note.id

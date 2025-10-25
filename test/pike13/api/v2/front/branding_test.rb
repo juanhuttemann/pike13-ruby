@@ -16,7 +16,7 @@ module Pike13
                                   "branding" => { "id" => 1 }
                                 })
 
-            item = @client.front.branding.find
+            item = Pike13::API::V2::Front::Branding.all.first
 
             assert_equal 1, item.id
           end

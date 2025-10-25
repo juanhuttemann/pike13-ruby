@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Desk
-        class RevenueCategory < Pike13::API::V2::Base
-          @resource_name = "revenue_categories"
+        class RevenueCategory < Spyke::Base
+          uri "desk/revenue_categories(/:id)"
+          include_root_in_json :revenue_category
         end
       end
     end

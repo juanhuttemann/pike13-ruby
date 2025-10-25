@@ -19,7 +19,7 @@ module Pike13
                                   ]
                                 })
 
-            slots = @client.front.appointments.find_available_slots(service_id: 123)
+            slots = Pike13::API::V2::Front::Appointment.find_available_slots(service_id: 123)
 
             assert_equal 2, slots.size
             assert_equal "2024-01-15T10:00:00Z", slots.first["start_time"]
@@ -33,7 +33,7 @@ module Pike13
                                   "2020-01-19" => 0.5
                                 })
 
-            summary = @client.front.appointments.available_slots_summary(service_id: 123)
+            summary = Pike13::API::V2::Front::Appointment.available_slots_summary(service_id: 123)
 
             assert_in_delta(1.0, summary["2020-01-17"])
             assert_equal 0, summary["2020-01-18"]
@@ -53,7 +53,7 @@ module Pike13
               )
 
             error = assert_raises(Pike13::ValidationError) do
-              @client.front.appointments.available_slots_summary(
+              Pike13::API::V2::Front::Appointment.available_slots_summary(
                 service_id: 123,
                 from: "2020-01-20",
                 to: "2021-01-20"

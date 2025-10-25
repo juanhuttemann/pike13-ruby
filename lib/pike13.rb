@@ -5,18 +5,8 @@ require_relative "pike13/configuration"
 require_relative "pike13/errors"
 require_relative "pike13/connection"
 
-# API v2 concerns
-require_relative "pike13/api/v2/concerns/attributes"
-require_relative "pike13/api/v2/concerns/serialization"
-require_relative "pike13/api/v2/concerns/person_methods"
-
-# API v2 base resource
-require_relative "pike13/api/v2/base"
-
-# API v2 resource types
-require_relative "pike13/api/v2/resource_types/id_only_resource"
-require_relative "pike13/api/v2/resource_types/singleton_resource"
-require_relative "pike13/api/v2/resource_types/resource_proxy"
+# Spyke dependency
+require "spyke"
 
 # Account namespace and resources
 require_relative "pike13/api/v2/account"

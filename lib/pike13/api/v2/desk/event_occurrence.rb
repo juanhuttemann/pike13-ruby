@@ -4,40 +4,30 @@ module Pike13
   module API
     module V2
       module Desk
-        class EventOccurrence < Pike13::API::V2::Base
-          @resource_name = "event_occurrences"
+        class EventOccurrence < Spyke::Base
+          uri "desk/event_occurrences(/:id)"
+          include_root_in_json :event_occurrence
 
-          # Nested resource methods using has_many DSL
-          has_many :visits
-          has_many :waitlist_entries
+          # Associations
+          has_many :visits, class_name: "Pike13::API::V2::Desk::Visit",
+                            uri: "desk/event_occurrences/:event_occurrence_id/visits"
+          has_many :waitlist_entries, class_name: "Pike13::API::V2::Desk::WaitlistEntry",
+                                      uri: "desk/event_occurrences/:event_occurrence_id/waitlist_entries"
 
-          # Get summary of event occurrences
-          #
-          # @param client [Pike13::Client] Client client
-          # @param params [Hash] Query parameters (filters, etc.)
-          # @return [Array<Hash>] Array of event occurrence summaries
-          #
-          # @example
-          #   Pike13::API::V2::Desk::EventOccurrence.summary(client: client)
-          def self.summary(client:, **params)
-            path = "/#{scope}/#{resource_name}/summary"
-            response = client.get(path, params: params)
-            response["event_occurrence_summaries"] || []
-          end
+          class << self
+            # Get summary of event occurrences
+            # Returns raw hash data, not Spyke models
+            def summary(client:, **params)
+              response = client.get("/desk/event_occurrences/summary", params: params)
+              response["event_occurrence_summaries"] || []
+            end
 
-          # Get enrollment eligibilities for an event occurrence
-          #
-          # @param id [Integer] Event occurrence ID
-          # @param client [Pike13::Client] Client client
-          # @param params [Hash] Query parameters (filters, etc.)
-          # @return [Array<Hash>] Array of enrollment eligibilities
-          #
-          # @example
-          #   Pike13::API::V2::Desk::EventOccurrence.enrollment_eligibilities(id: 123, client: client)
-          def self.enrollment_eligibilities(id:, client:, **params)
-            path = "/#{scope}/#{resource_name}/#{id}/enrollment_eligibilities"
-            response = client.get(path, params: params)
-            response["enrollment_eligibilities"] || []
+            # Get enrollment eligibilities for an event occurrence
+            # Returns raw hash data, not Spyke models
+            def enrollment_eligibilities(id:, client:, **params)
+              response = client.get("/desk/event_occurrences/#{id}/enrollment_eligibilities", params: params)
+              response["enrollment_eligibilities"] || []
+            end
           end
         end
       end

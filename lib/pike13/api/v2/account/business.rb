@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Account
-        class Business < Pike13::API::V2::Base
-          @resource_name = "businesses"
+        class Business < Spyke::Base
+          uri "account/businesses(/:id)"
+          include_root_in_json :business
         end
       end
     end

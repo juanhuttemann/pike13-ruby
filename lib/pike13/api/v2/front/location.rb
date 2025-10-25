@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Front
-        class Location < Pike13::API::V2::Base
-          @resource_name = "locations"
+        class Location < Spyke::Base
+          uri "front/locations(/:id)"
+          include_root_in_json :location
         end
       end
     end

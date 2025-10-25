@@ -20,17 +20,20 @@ module Pike13
       resource_data = json[resource_key]
 
       # Spyke expects single hash for find() and array for collections
-      # Pike13 API always returns arrays. Unwrap single-element arrays for:
-      # - GETs to /resource/id or /resource/me
-      # - POSTs (create) and PUTs (update)
+      # Pike13 API usually returns arrays, but some singleton endpoints return objects
+      # - GETs to /resource/id or /resource/me should unwrap single-element arrays
+      # - POSTs (create) and PUTs (update) should unwrap single-element arrays
+      # - Singleton resources (returning Hash, not Array) should be wrapped in arrays for .all
       path = env.url.path
       method = env.method
-      is_single_resource = path.match?(%r{/(\d+|me)$}) || [:post, :put].include?(method)
-      
-      data = if resource_data.is_a?(Array) && resource_data.size == 1 && is_single_resource
-               resource_data.first
+      is_single_resource = path.match?(%r{/(\d+|me)$}) || %i[post put].include?(method)
+
+      data = if resource_data.is_a?(Array)
+               # Array data: unwrap if single element and single resource request
+               resource_data.size == 1 && is_single_resource ? resource_data.first : resource_data
              else
-               resource_data
+               # Hash data (singleton resources): wrap in array unless single resource request
+               is_single_resource ? resource_data : [resource_data]
              end
 
       env.body = {

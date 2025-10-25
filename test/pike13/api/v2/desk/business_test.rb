@@ -16,7 +16,7 @@ module Pike13
                                   "business" => { "id" => 1, "name" => "Test Business" }
                                 })
 
-            business = @client.desk.business.find
+            business = Pike13::API::V2::Desk::Business.all.first
 
             assert_instance_of Pike13::API::V2::Desk::Business, business
             assert_equal 1, business.id

@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Desk
-        class Pack < Pike13::API::V2::IdOnlyResource
-          @resource_name = "packs"
+        class Pack < Spyke::Base
+          uri "desk/packs(/:id)"
+          include_root_in_json :pack
         end
       end
     end

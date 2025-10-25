@@ -16,9 +16,10 @@ module Pike13
                                   "event_occurrences" => [{ "id" => 1 }]
                                 })
 
-            items = @client.desk.event_occurrences.all
+            items = @client.desk.event_occurrences.all.to_a
 
             assert_equal 1, items.size
+            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, items.first
           end
 
           def test_find_event_occurrence
@@ -29,6 +30,7 @@ module Pike13
             item = @client.desk.event_occurrences.find(123)
 
             assert_equal 123, item.id
+            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, item
           end
 
           def test_summary
@@ -39,7 +41,7 @@ module Pike13
                                   ]
                                 })
 
-            summaries = @client.desk.event_occurrences.summary
+            summaries = Pike13::API::V2::Desk::EventOccurrence.summary(client: @client)
 
             assert_equal 2, summaries.size
             assert_equal 1, summaries.first["event_id"]
@@ -57,7 +59,7 @@ module Pike13
                                   ]
                                 })
 
-            eligibilities = @client.desk.event_occurrences.enrollment_eligibilities(id: 123)
+            eligibilities = Pike13::API::V2::Desk::EventOccurrence.enrollment_eligibilities(id: 123, client: @client)
 
             assert_equal 2, eligibilities.size
             assert eligibilities.first["eligible"]

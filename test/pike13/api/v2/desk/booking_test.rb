@@ -12,10 +12,14 @@ module Pike13
           end
 
           def test_all_bookings
-            # Bookings don't support listing - should raise NotImplementedError
-            assert_raises(NotImplementedError) do
-              @client.desk.bookings.all
-            end
+            # Bookings support listing with Spyke
+            stub_pike13_request(:get, "/desk/bookings", response_body: {
+                                  "bookings" => []
+                                })
+
+            items = @client.desk.bookings.all
+
+            assert_instance_of Spyke::Result, items
           end
 
           def test_find_booking

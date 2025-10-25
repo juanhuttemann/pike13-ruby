@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Front
-        class Business < Pike13::API::V2::SingletonResource
-          @resource_name = "business"
+        class Business < Spyke::Base
+          uri "front/business"
+          include_root_in_json :business
         end
       end
     end

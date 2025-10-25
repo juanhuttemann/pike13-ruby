@@ -4,15 +4,9 @@ module Pike13
   module API
     module V2
       module Desk
-        class Business < Pike13::API::V2::SingletonResource
-          @resource_name = "business"
-
-          # Get franchisees
-          def self.franchisees(client:)
-            path = "/#{scope}/#{resource_name}/franchisees"
-            response = client.get(path)
-            response["franchisees"] || []
-          end
+        class Business < Spyke::Base
+          uri "desk/business"
+          include_root_in_json :business
         end
       end
     end

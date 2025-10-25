@@ -39,7 +39,7 @@ module Pike13
                                   ]
                                 })
 
-            eligibilities = @client.desk.services.enrollment_eligibilities(service_id: 123)
+            eligibilities = Pike13::API::V2::Desk::Service.enrollment_eligibilities(service_id: 123)
 
             assert_equal 2, eligibilities.size
             assert eligibilities.first["eligible"]

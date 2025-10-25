@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Front
-        class Branding < Pike13::API::V2::SingletonResource
-          @resource_name = "branding"
+        class Branding < Spyke::Base
+          uri "front/branding"
+          include_root_in_json :branding
         end
       end
     end

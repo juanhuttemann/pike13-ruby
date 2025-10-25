@@ -4,8 +4,9 @@ module Pike13
   module API
     module V2
       module Front
-        class StaffMember < Pike13::API::V2::Base
-          @resource_name = "staff_members"
+        class StaffMember < Spyke::Base
+          uri "front/staff_members(/:id)"
+          include_root_in_json :staff_member
         end
       end
     end
