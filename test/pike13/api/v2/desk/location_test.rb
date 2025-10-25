@@ -16,9 +16,10 @@ module Pike13
                                   "locations" => [{ "id" => 1, "name" => "Main" }]
                                 })
 
-            locations = @client.desk.locations.all
+            locations = @client.desk.locations.all.to_a
 
             assert_equal 1, locations.size
+            assert_instance_of Pike13::API::V2::Desk::Location, locations.first
           end
 
           def test_find_location
@@ -29,6 +30,7 @@ module Pike13
             location = @client.desk.locations.find(123)
 
             assert_equal 123, location.id
+            assert_instance_of Pike13::API::V2::Desk::Location, location
           end
         end
       end

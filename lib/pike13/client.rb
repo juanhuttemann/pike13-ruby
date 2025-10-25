@@ -53,6 +53,7 @@ module Pike13
       Pike13::API::V2::Desk::Person.connection = @connection.faraday_connection
       Pike13::API::V2::Desk::Visit.connection = @connection.faraday_connection
       Pike13::API::V2::Desk::Plan.connection = @connection.faraday_connection
+      Pike13::API::V2::Desk::Location.connection = @connection.faraday_connection
     end
 
     # Perform a GET request to the API (internal use)
