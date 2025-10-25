@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_pack
-            stub_pike13_request(:get, "/desk/packs/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/packs/123", response_body: {
                                   "packs" => [{ "id" => 123 }]
                                 })
 

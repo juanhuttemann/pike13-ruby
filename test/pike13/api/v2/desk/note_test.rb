@@ -13,7 +13,7 @@ module Pike13
 
           # READ tests
           def test_all_notes_for_person
-            stub_pike13_request(:get, "/desk/people/123/notes", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/notes", response_body: {
                                   "notes" => [
                                     { "id" => 1, "note" => "First note", "person_id" => 123 },
                                     { "id" => 2, "note" => "Second note", "person_id" => 123 }
@@ -29,7 +29,7 @@ module Pike13
           end
 
           def test_find_note_for_person
-            stub_pike13_request(:get, "/desk/people/123/notes/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     { "id" => 456, "note" => "Important note", "person_id" => 123, "pinned" => true }
                                   ]
@@ -45,7 +45,7 @@ module Pike13
 
           # CREATE tests
           def test_create_note_for_person
-            stub_pike13_request(:post, "/desk/people/123/notes", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/people/123/notes", response_body: {
                                   "notes" => [
                                     {
                                       "id" => 789,
@@ -71,7 +71,7 @@ module Pike13
 
           # UPDATE tests - via class method
           def test_update_note_via_class_method
-            stub_pike13_request(:get, "/desk/people/123/notes/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     {
                                       "id" => 456,
@@ -81,7 +81,7 @@ module Pike13
                                     }
                                   ]
                                 })
-            stub_pike13_request(:put, "/desk/people/123/notes/456", response_body: {
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     {
                                       "id" => 456,
@@ -107,7 +107,7 @@ module Pike13
           # UPDATE tests - via instance (2 requests: find + update)
           def test_update_note_via_instance
             # First request: find
-            stub_pike13_request(:get, "/desk/people/123/notes/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     { "id" => 456, "note" => "Original text", "person_id" => 123, "pinned" => false }
                                   ]
@@ -118,7 +118,7 @@ module Pike13
             assert_equal "Original text", note.note
 
             # Second request: update
-            stub_pike13_request(:put, "/desk/people/123/notes/456", response_body: {
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     { "id" => 456, "note" => "Updated text", "person_id" => 123, "pinned" => true }
                                   ]
@@ -132,12 +132,12 @@ module Pike13
 
           # DELETE tests - via class method
           def test_destroy_note_via_class_method
-            stub_pike13_request(:get, "/desk/people/123/notes/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     { "id" => 456, "note" => "Note to delete", "person_id" => 123 }
                                   ]
                                 })
-            delete_endpoint = stub_pike13_request(:delete, "/desk/people/123/notes/456", response_body: {})
+            delete_endpoint = stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {})
 
             note = Pike13::API::V2::Desk::Note.where(person_id: 123).find(456)
             note.destroy
@@ -148,7 +148,7 @@ module Pike13
           # DELETE tests - via instance (2 requests: find + delete)
           def test_destroy_note_via_instance
             # First request: find
-            stub_pike13_request(:get, "/desk/people/123/notes/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {
                                   "notes" => [
                                     { "id" => 456, "note" => "Note to delete", "person_id" => 123 }
                                   ]
@@ -159,7 +159,7 @@ module Pike13
             assert_equal 456, note.id
 
             # Second request: delete
-            delete_endpoint = stub_pike13_request(:delete, "/desk/people/123/notes/456", response_body: {})
+            delete_endpoint = stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123/notes/456", response_body: {})
 
             note.destroy
 

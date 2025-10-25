@@ -10,18 +10,17 @@ module Pike13
           class << self
             # Void a refund
             #
-            # @param client [Pike13::Client] Client instance
             # @param refund_id [Integer] Refund ID
             # @return [Hash] Refund data
             #
             # @example
             #   refund = Pike13::API::V2::Desk::Refund.void(
-            #     client: client,
             #     refund_id: 123
             #   )
-            def void(client:, refund_id:)
-              response = client.post("/desk/refunds/#{refund_id}/voids")
-              response["refunds"]&.first || {}
+            def void(refund_id:)
+              response = connection.post("/api/v2/desk/refunds/#{refund_id}/voids")
+              # API returns {"refunds": [...]}, Pike13JSONParser unwraps for POST to single hash
+              (response.body[:data] || {}).deep_stringify_keys
             end
           end
         end

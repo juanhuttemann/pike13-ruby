@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_void_payment
-            stub_pike13_request(:post, "/desk/payments/123/voids", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/payments/123/voids", response_body: {
                                   "payments" => [{
                                     "id" => 123,
                                     "description" => "Visa 1111, 1/20",
@@ -24,7 +24,6 @@ module Pike13
                                 })
 
             payment = Pike13::API::V2::Desk::Payment.void(
-              client: @client,
               payment_id: 123,
               invoice_item_ids_to_cancel: [1, 2]
             )
@@ -35,7 +34,7 @@ module Pike13
           end
 
           def test_configuration
-            stub_pike13_request(:get, "/desk/payments/configuration", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/payments/configuration", response_body: {
                                   "payment_configuration" => {
                                     "accepted_types" => ["creditcard", "check", "cash"],
                                     "creditcard" => {
@@ -48,7 +47,7 @@ module Pike13
                                   }
                                 })
 
-            config = Pike13::API::V2::Desk::Payment.configuration(client: @client)
+            config = Pike13::API::V2::Desk::Payment.configuration
 
             assert_instance_of Hash, config
             assert_equal ["creditcard", "check", "cash"], config["accepted_types"]
@@ -56,7 +55,7 @@ module Pike13
           end
 
           def test_void_payment_with_empty_invoice_items
-            stub_pike13_request(:post, "/desk/payments/456/voids", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/payments/456/voids", response_body: {
                                   "payments" => [{
                                     "id" => 456,
                                     "state" => "completed",
@@ -65,7 +64,6 @@ module Pike13
                                 })
 
             payment = Pike13::API::V2::Desk::Payment.void(
-              client: @client,
               payment_id: 456
             )
 

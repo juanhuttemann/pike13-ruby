@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_notes_for_person
-            stub_pike13_request(:get, "/front/people/123/notes", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/people/123/notes", response_body: {
                                   "notes" => [
                                     { "id" => 1, "note" => "First note", "person_id" => 123, "pinned" => true },
                                     { "id" => 2, "note" => "Second note", "person_id" => 123, "pinned" => false }
@@ -28,7 +28,7 @@ module Pike13
           end
 
           def test_find_note_for_person
-            stub_pike13_request(:get, "/front/people/123/notes/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/people/123/notes/456", response_body: {
                                   "notes" => [
                                     { "id" => 456, "note" => "Important note", "person_id" => 123, "pinned" => true }
                                   ]

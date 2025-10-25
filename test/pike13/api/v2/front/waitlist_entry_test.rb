@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_waitlist_entry
-            stub_pike13_request(:get, "/front/waitlist_entries/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/waitlist_entries/123", response_body: {
                                   "waitlist_entries" => [{ "id" => 123 }]
                                 })
 

@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_invoice
-            stub_pike13_request(:get, "/front/invoices/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/invoices/123", response_body: {
                                   "invoices" => [{ "id" => 123 }]
                                 })
 
@@ -23,9 +23,9 @@ module Pike13
           end
 
           def test_payment_methods
-            invoice = Pike13::API::V2::Front::Invoice.new(client: @client, id: 123)
+            invoice = Pike13::API::V2::Front::Invoice.new(id: 123)
 
-            stub_pike13_request(:get, "/front/invoices/123/payment_methods", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/invoices/123/payment_methods", response_body: {
                                   "payment_methods" => [{ "id" => 456 }]
                                 })
 

@@ -12,11 +12,11 @@ module Pike13
           end
 
           def test_create_confirmation
-            stub_pike13_request(:post, "/account/confirmations",
+            stub_pike13_request(:post, "https://pike13.com/api/v2/account/confirmations",
                                 status: 201,
                                 response_body: {})
 
-            result = @client.account.confirmations.create(email: "test@example.com", client: @client)
+            result = @client.account.confirmations.create(email: "test@example.com")
 
             assert result
           end

@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_services
-            stub_pike13_request(:get, "/desk/services", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/services", response_body: {
                                   "services" => [{ "id" => 1 }]
                                 })
 
@@ -24,7 +24,7 @@ module Pike13
           end
 
           def test_find_service
-            stub_pike13_request(:get, "/desk/services/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/services/123", response_body: {
                                   "services" => [{ "id" => 123 }]
                                 })
 
@@ -35,7 +35,7 @@ module Pike13
           end
 
           def test_enrollment_eligibilities
-            stub_pike13_request(:get, "/desk/services/123/enrollment_eligibilities", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/services/123/enrollment_eligibilities", response_body: {
                                   "enrollment_eligibilities" => [
                                     { "person_id" => 1, "eligible" => true, "reasons" => [] },
                                     { "person_id" => 2, "eligible" => false, "reasons" => ["Max enrollments reached"] }

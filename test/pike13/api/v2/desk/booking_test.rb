@@ -13,7 +13,7 @@ module Pike13
 
           def test_all_bookings
             # Bookings support listing with Spyke
-            stub_pike13_request(:get, "/desk/bookings", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/bookings", response_body: {
                                   "bookings" => []
                                 })
 
@@ -23,7 +23,7 @@ module Pike13
           end
 
           def test_find_booking
-            stub_pike13_request(:get, "/desk/bookings/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/bookings/123", response_body: {
                                   "bookings" => [{ "id" => 123 }]
                                 })
 

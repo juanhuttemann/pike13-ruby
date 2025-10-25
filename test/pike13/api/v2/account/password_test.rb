@@ -12,11 +12,11 @@ module Pike13
           end
 
           def test_create_password_reset
-            stub_pike13_request(:post, "/account/passwords",
+            stub_pike13_request(:post, "https://pike13.com/api/v2/account/passwords",
                                 status: 201,
                                 response_body: {})
 
-            result = @client.account.passwords.create(email: "test@example.com", client: @client)
+            result = @client.account.passwords.create(email: "test@example.com")
 
             assert result
           end

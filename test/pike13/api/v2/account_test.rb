@@ -11,7 +11,7 @@ module Pike13
         end
 
         def test_me
-          stub_pike13_request(:get, "/account", response_body: {
+          stub_pike13_request(:get, "https://pike13.com/api/v2/account", response_body: {
                                 "accounts" => [
                                   {
                                     "id" => 999,

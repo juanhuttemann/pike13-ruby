@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_booking
-            stub_pike13_request(:get, "/front/bookings/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/bookings/123", response_body: {
                                   "bookings" => [{ "id" => 123 }]
                                 })
 
@@ -23,7 +23,7 @@ module Pike13
           end
 
           def test_find_lease
-            stub_pike13_request(:get, "/front/bookings/123/leases/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/bookings/123/leases/456", response_body: {
                                   "leases" => [{ "id" => 456, "booking_id" => 123, "status" => "active" }]
                                 })
 

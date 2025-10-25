@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_sales_taxes
-            stub_pike13_request(:get, "/desk/sales_taxes", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/sales_taxes", response_body: {
                                   "sales_taxes" => [{ "id" => 1 }]
                                 })
 
@@ -24,7 +24,7 @@ module Pike13
           end
 
           def test_find_sales_tax
-            stub_pike13_request(:get, "/desk/sales_taxes/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/sales_taxes/123", response_body: {
                                   "sales_taxes" => [{ "id" => 123 }]
                                 })
 

@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_plan
-            stub_pike13_request(:get, "/front/plans/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/plans/123", response_body: {
                                   "plans" => [{ "id" => 123 }]
                                 })
 
@@ -25,7 +25,7 @@ module Pike13
           def test_plan_terms
             plan = Pike13::API::V2::Front::Plan.new(id: 123)
 
-            stub_pike13_request(:get, "/front/plans/123/plan_terms", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/plans/123/plan_terms", response_body: {
                                   "plan_terms" => [{ "id" => 456 }]
                                 })
 

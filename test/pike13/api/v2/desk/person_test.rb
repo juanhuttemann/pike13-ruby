@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_people
-            stub_pike13_request(:get, "/desk/people", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people", response_body: {
                                   "people" => [
                                     { "id" => 1, "first_name" => "John" },
                                     { "id" => 2, "first_name" => "Jane" }
@@ -27,7 +27,7 @@ module Pike13
           end
 
           def test_find_person
-            stub_pike13_request(:get, "/desk/people/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
@@ -38,7 +38,7 @@ module Pike13
           end
 
           def test_search
-            stub_pike13_request(:get, "/desk/people/search?q=john", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/search?q=john", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
@@ -49,7 +49,7 @@ module Pike13
           end
 
           def test_me
-            stub_pike13_request(:get, "/desk/people/me", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/me", response_body: {
                                   "people" => [{ "id" => 999, "first_name" => "Admin" }]
                                 })
 
@@ -60,7 +60,7 @@ module Pike13
           end
 
           def test_nested_visits
-            stub_pike13_request(:get, "/desk/people/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
@@ -108,7 +108,7 @@ module Pike13
 
           # CREATE tests
           def test_create_person_via_proxy
-            stub_pike13_request(:post, "/desk/people", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/people", response_body: {
                                   "people" => [{
                                     "id" => 456,
                                     "first_name" => "Jane",
@@ -132,7 +132,7 @@ module Pike13
 
           # UPDATE tests - via instance (find + update)
           def test_update_person_direct
-            stub_pike13_request(:get, "/desk/people/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{
                                     "id" => 123,
                                     "first_name" => "John",
@@ -141,7 +141,7 @@ module Pike13
                                   }]
                                 })
 
-            stub_pike13_request(:put, "/desk/people/123", response_body: {
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{
                                     "id" => 123,
                                     "first_name" => "John",
@@ -160,7 +160,7 @@ module Pike13
 
           # UPDATE tests - via Spyke save
           def test_update_person_with_save
-            stub_pike13_request(:get, "/desk/people/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{
                                     "id" => 123,
                                     "first_name" => "John",
@@ -173,7 +173,7 @@ module Pike13
 
             assert_equal "Doe", person.last_name
 
-            stub_pike13_request(:put, "/desk/people/123", response_body: {
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{
                                     "id" => 123,
                                     "first_name" => "John",
@@ -192,10 +192,10 @@ module Pike13
 
           # DELETE tests - Spyke's destroy returns attributes
           def test_destroy_person_class_method
-            stub_pike13_request(:get, "/desk/people/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
-            stub_pike13_request(:delete, "/desk/people/123", response_body: {})
+            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123", response_body: {})
 
             person = @client.desk.people.find(123)
             person.destroy
@@ -206,7 +206,7 @@ module Pike13
 
           # DELETE tests - via instance (2 requests: find + delete)
           def test_destroy_person_via_instance
-            stub_pike13_request(:get, "/desk/people/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{
                                     "id" => 123,
                                     "first_name" => "John",
@@ -218,7 +218,7 @@ module Pike13
 
             assert_equal 123, person.id
 
-            stub_pike13_request(:delete, "/desk/people/123", response_body: {})
+            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123", response_body: {})
 
             person.destroy
 

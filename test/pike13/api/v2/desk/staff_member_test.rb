@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_staff_members
-            stub_pike13_request(:get, "/desk/staff_members", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/staff_members", response_body: {
                                   "staff_members" => [{ "id" => 1, "name" => "Staff" }]
                                 })
 
@@ -24,7 +24,7 @@ module Pike13
           end
 
           def test_find_staff_member
-            stub_pike13_request(:get, "/desk/staff_members/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/staff_members/123", response_body: {
                                   "staff_members" => [{ "id" => 123, "name" => "Staff" }]
                                 })
 
@@ -35,7 +35,7 @@ module Pike13
           end
 
           def test_me
-            stub_pike13_request(:get, "/desk/staff_members/me", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/staff_members/me", response_body: {
                                   "staff_members" => [{ "id" => 999, "name" => "Current Staff" }]
                                 })
 

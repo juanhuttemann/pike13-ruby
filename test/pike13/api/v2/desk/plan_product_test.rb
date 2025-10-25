@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_plan_products
-            stub_pike13_request(:get, "/desk/plan_products", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/plan_products", response_body: {
                                   "plan_products" => [{ "id" => 1 }]
                                 })
 
@@ -24,7 +24,7 @@ module Pike13
           end
 
           def test_find_plan_product
-            stub_pike13_request(:get, "/desk/plan_products/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/plan_products/123", response_body: {
                                   "plan_products" => [{ "id" => 123 }]
                                 })
 

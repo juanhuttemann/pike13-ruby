@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_punch
-            stub_pike13_request(:get, "/desk/punches/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/punches/123", response_body: {
                                   "punches" => [{ "id" => 123 }]
                                 })
 

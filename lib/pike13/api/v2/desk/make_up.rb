@@ -10,19 +10,18 @@ module Pike13
           class << self
             # Get make up reasons
             #
-            # @param client [Pike13::Client] Client instance
             # @return [Array<Hash>] Make up reasons
             #
             # @example
-            #   reasons = Pike13::API::V2::Desk::MakeUp.reasons(client: client)
-            def reasons(client:)
-              response = client.get("/desk/make_ups/reasons")
-              response["make_up_reasons"] || []
+            #   reasons = Pike13::API::V2::Desk::MakeUp.reasons
+            def reasons
+              response = connection.get("/api/v2/desk/make_ups/reasons")
+              # API returns {"make_up_reasons": [...]}, Pike13JSONParser extracts this as data array
+              (response.body[:data] || []).map(&:deep_stringify_keys)
             end
 
             # Generate make up pass
             #
-            # @param client [Pike13::Client] Client instance
             # @param visit_id [Integer] Visit ID (required)
             # @param make_up_reason_id [Integer] Make up reason ID (required)
             # @param free_form_reason [String] Optional free-form reason
@@ -30,12 +29,11 @@ module Pike13
             #
             # @example
             #   make_up = Pike13::API::V2::Desk::MakeUp.generate(
-            #     client: client,
             #     visit_id: 123,
             #     make_up_reason_id: 1,
             #     free_form_reason: "Student was ill"
             #   )
-            def generate(client:, visit_id:, make_up_reason_id:, free_form_reason: nil)
+            def generate(visit_id:, make_up_reason_id:, free_form_reason: nil)
               body = {
                 visit_id: visit_id,
                 make_up: {
@@ -44,8 +42,11 @@ module Pike13
               }
               body[:make_up][:free_form_reason] = free_form_reason if free_form_reason
 
-              response = client.post("/desk/make_ups/generate", body: body)
-              response["make_up"] || {}
+              response = connection.post("/api/v2/desk/make_ups/generate") do |req|
+                req.body = body.to_json
+              end
+              # API returns {"make_up": {...}}, Pike13JSONParser unwraps for POST to single hash
+              (response.body[:data] || {}).deep_stringify_keys
             end
           end
         end

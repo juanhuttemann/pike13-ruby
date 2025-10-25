@@ -10,14 +10,16 @@ module Pike13
           class << self
             # Get payment configuration
             #
-            # @param client [Pike13::Client] Client instance
             # @return [Hash] Configuration data
             #
             # @example
-            #   config = Pike13::API::V2::Front::Payment.configuration(client: client)
-            def configuration(client:)
-              response = client.get("/front/payments/configuration")
-              response["payment_configuration"] || {}
+            #   config = Pike13::API::V2::Front::Payment.configuration
+            def configuration
+              response = connection.get("/api/v2/front/payments/configuration")
+              # API returns {"payment_configuration": {...}}, Pike13JSONParser wraps singleton in array for non-single-resource GET
+              data = response.body[:data]
+              result = data.is_a?(Array) ? data.first || {} : data || {}
+              result.deep_stringify_keys
             end
           end
         end

@@ -17,16 +17,22 @@ module Pike13
           class << self
             # Get summary of event occurrences
             # Returns raw hash data, not Spyke models
-            def summary(client:, **params)
-              response = client.get("/desk/event_occurrences/summary", params: params)
-              response["event_occurrence_summaries"] || []
+            def summary(**params)
+              url = "/api/v2/desk/event_occurrences/summary"
+              url += "?#{URI.encode_www_form(params)}" if params.any?
+              response = connection.get(url)
+              # API returns {"event_occurrence_summaries": [...]}, Pike13JSONParser extracts this as data array
+              (response.body[:data] || []).map(&:deep_stringify_keys)
             end
 
             # Get enrollment eligibilities for an event occurrence
             # Returns raw hash data, not Spyke models
-            def enrollment_eligibilities(id:, client:, **params)
-              response = client.get("/desk/event_occurrences/#{id}/enrollment_eligibilities", params: params)
-              response["enrollment_eligibilities"] || []
+            def enrollment_eligibilities(id:, **params)
+              url = "/api/v2/desk/event_occurrences/#{id}/enrollment_eligibilities"
+              url += "?#{URI.encode_www_form(params)}" if params.any?
+              response = connection.get(url)
+              # API returns {"enrollment_eligibilities": [...]}, Pike13JSONParser extracts this as data array
+              (response.body[:data] || []).map(&:deep_stringify_keys)
             end
           end
         end

@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_find_business
-            stub_pike13_request(:get, "/desk/business", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/business", response_body: {
                                   "business" => { "id" => 1, "name" => "Test Business" }
                                 })
 

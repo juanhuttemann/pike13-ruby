@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_me
-            stub_pike13_request(:get, "/front/people/me", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/people/me", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 

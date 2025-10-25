@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_void_refund
-            stub_pike13_request(:post, "/desk/refunds/123/voids", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/refunds/123/voids", response_body: {
                                   "refunds" => [{
                                     "id" => 123,
                                     "amount_cents" => 100,
@@ -26,7 +26,6 @@ module Pike13
                                 })
 
             refund = Pike13::API::V2::Desk::Refund.void(
-              client: @client,
               refund_id: 123
             )
 
@@ -37,7 +36,7 @@ module Pike13
           end
 
           def test_void_refund_with_amount
-            stub_pike13_request(:post, "/desk/refunds/456/voids", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/refunds/456/voids", response_body: {
                                   "refunds" => [{
                                     "id" => 456,
                                     "amount_cents" => 5000,
@@ -49,7 +48,6 @@ module Pike13
                                 })
 
             refund = Pike13::API::V2::Desk::Refund.void(
-              client: @client,
               refund_id: 456
             )
 

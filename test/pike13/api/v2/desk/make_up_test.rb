@@ -12,14 +12,14 @@ module Pike13
           end
 
           def test_reasons
-            stub_pike13_request(:get, "/desk/make_ups/reasons", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/make_ups/reasons", response_body: {
                                   "make_up_reasons" => [
                                     { "id" => 1, "name" => "Illness", "description" => "Student was ill" },
                                     { "id" => 2, "name" => "Weather", "description" => "Bad weather conditions" }
                                   ]
                                 })
 
-            reasons = Pike13::API::V2::Desk::MakeUp.reasons(client: @client)
+            reasons = Pike13::API::V2::Desk::MakeUp.reasons
 
             assert_instance_of Array, reasons
             assert_equal 2, reasons.size
@@ -28,7 +28,7 @@ module Pike13
           end
 
           def test_generate
-            stub_pike13_request(:post, "/desk/make_ups/generate", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/make_ups/generate", response_body: {
                                   "make_up" => {
                                     "id" => 1,
                                     "make_up_reason_id" => 1,
@@ -38,7 +38,6 @@ module Pike13
                                 })
 
             make_up = Pike13::API::V2::Desk::MakeUp.generate(
-              client: @client,
               visit_id: 123,
               make_up_reason_id: 1,
               free_form_reason: "Student had the flu"
@@ -51,7 +50,7 @@ module Pike13
           end
 
           def test_generate_without_free_form_reason
-            stub_pike13_request(:post, "/desk/make_ups/generate", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/make_ups/generate", response_body: {
                                   "make_up" => {
                                     "id" => 2,
                                     "make_up_reason_id" => 2,
@@ -61,7 +60,6 @@ module Pike13
                                 })
 
             make_up = Pike13::API::V2::Desk::MakeUp.generate(
-              client: @client,
               visit_id: 456,
               make_up_reason_id: 2
             )

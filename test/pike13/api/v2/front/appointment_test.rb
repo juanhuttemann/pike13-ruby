@@ -12,27 +12,27 @@ module Pike13
           end
 
           def test_find_available_slots
-            stub_pike13_request(:get, "/front/appointments/123/available_slots", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/appointments/123/available_slots", response_body: {
                                   "available_slots" => [
                                     { "start_time" => "2024-01-15T10:00:00Z", "end_time" => "2024-01-15T11:00:00Z" },
                                     { "start_time" => "2024-01-15T11:00:00Z", "end_time" => "2024-01-15T12:00:00Z" }
                                   ]
                                 })
 
-            slots = Pike13::API::V2::Front::Appointment.find_available_slots(service_id: 123, client: @client)
+            slots = Pike13::API::V2::Front::Appointment.find_available_slots(service_id: 123)
 
             assert_equal 2, slots.size
             assert_equal "2024-01-15T10:00:00Z", slots.first["start_time"]
           end
 
           def test_available_slots_summary
-            stub_pike13_request(:get, "/front/appointments/123/available_slots/summary", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/appointments/123/available_slots/summary", response_body: {
                                   "2020-01-17" => 1.0,
                                   "2020-01-18" => 0,
                                   "2020-01-19" => 0.5
                                 })
 
-            summary = Pike13::API::V2::Front::Appointment.available_slots_summary(service_id: 123, client: @client)
+            summary = Pike13::API::V2::Front::Appointment.available_slots_summary(service_id: 123)
 
             assert_in_delta(1.0, summary["2020-01-17"])
             assert_equal 0, summary["2020-01-18"]
@@ -54,7 +54,6 @@ module Pike13
             error = assert_raises(Pike13::ValidationError) do
               Pike13::API::V2::Front::Appointment.available_slots_summary(
                 service_id: 123,
-                client: @client,
                 from: "2020-01-20",
                 to: "2021-01-20"
               )

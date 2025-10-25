@@ -10,19 +10,17 @@ module Pike13
           class << self
             # Send confirmation email
             #
-            # @param client [Pike13::Client] Client instance
             # @param email [String] Email address
             # @return [Boolean] Success status
             #
             # @example
             #   Pike13::API::V2::Account::Confirmation.create(
-            #     email: "user@example.com",
-            #     client: client
+            #     email: "user@example.com"
             #   )
-            def create(email:, client:)
-              response = client.post("/account/confirmations", body: {
-                account: { email: email }
-              })
+            def create(email:)
+              connection.post("/api/v2/account/confirmations") do |req|
+                req.body = { account: { email: email } }.to_json
+              end
               true
             rescue StandardError
               false

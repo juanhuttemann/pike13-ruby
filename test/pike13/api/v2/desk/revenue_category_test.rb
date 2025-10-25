@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_revenue_categories
-            stub_pike13_request(:get, "/desk/revenue_categories", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/revenue_categories", response_body: {
                                   "revenue_categories" => [{ "id" => 1 }]
                                 })
 
@@ -24,7 +24,7 @@ module Pike13
           end
 
           def test_find_revenue_category
-            stub_pike13_request(:get, "/desk/revenue_categories/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/revenue_categories/123", response_body: {
                                   "revenue_categories" => [{ "id" => 123 }]
                                 })
 

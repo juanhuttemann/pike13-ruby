@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_configuration
-            stub_pike13_request(:get, "/front/payments/configuration", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/payments/configuration", response_body: {
                                   "payment_configuration" => {
                                     "accepted_types" => ["creditcard", "check"],
                                     "creditcard" => {
@@ -26,7 +26,7 @@ module Pike13
                                   }
                                 })
 
-            config = @client.front.payments.configuration(client: @client)
+            config = @client.front.payments.configuration
 
             assert_instance_of Hash, config
             assert_equal ["creditcard", "check"], config["accepted_types"]
@@ -35,7 +35,7 @@ module Pike13
           end
 
           def test_configuration_with_ach
-            stub_pike13_request(:get, "/front/payments/configuration", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/payments/configuration", response_body: {
                                   "payment_configuration" => {
                                     "accepted_types" => ["creditcard", "ach"],
                                     "creditcard" => {
@@ -45,7 +45,7 @@ module Pike13
                                   }
                                 })
 
-            config = @client.front.payments.configuration(client: @client)
+            config = @client.front.payments.configuration
 
             assert_includes config["accepted_types"], "ach"
             refute config["creditcard"]["required_fields"]["cvv"]

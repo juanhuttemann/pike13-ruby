@@ -12,7 +12,7 @@ module Pike13
           end
 
           def test_all_invoices
-            stub_pike13_request(:get, "/desk/invoices", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/invoices", response_body: {
                                   "invoices" => [
                                     { "id" => 1, "total_cents" => 5000 },
                                     { "id" => 2, "total_cents" => 10_000 }
@@ -27,7 +27,7 @@ module Pike13
           end
 
           def test_find_invoice
-            stub_pike13_request(:get, "/desk/invoices/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/invoices/123", response_body: {
                                   "invoices" => [{ "id" => 123, "total_cents" => 5000 }]
                                 })
 
@@ -38,9 +38,9 @@ module Pike13
           end
 
           def test_payment_methods
-            invoice = Pike13::API::V2::Desk::Invoice.new(client: @client, id: 123)
+            invoice = Pike13::API::V2::Desk::Invoice.new(id: 123)
 
-            stub_pike13_request(:get, "/desk/invoices/123/payment_methods", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/invoices/123/payment_methods", response_body: {
                                   "payment_methods" => [{ "id" => 456, "type" => "credit_card" }]
                                 })
 
