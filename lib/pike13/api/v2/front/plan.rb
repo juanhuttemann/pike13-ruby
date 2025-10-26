@@ -9,8 +9,7 @@ module Pike13
           include_root_in_json :plan
 
           def plan_terms
-            result = self.class.request(:get, "front/plans/#{id}/plan_terms")
-            result.data || []
+            self.class.with("front/plans/#{id}/plan_terms").to_a
           end
         end
       end

@@ -8,12 +8,8 @@ module Pike13
           uri "front/services(/:id)"
           include_root_in_json :service
 
-          class << self
-            def enrollment_eligibilities(service_id:, **params)
-              result = request(:get, "front/services/#{service_id}/enrollment_eligibilities", params)
-              # Pike13JSONParser extracts "enrollment_eligibilities" and puts it in data
-              result.data || []
-            end
+          def self.enrollment_eligibilities(service_id:, **params)
+            with("front/services/#{service_id}/enrollment_eligibilities").where(params).to_a
           end
         end
       end

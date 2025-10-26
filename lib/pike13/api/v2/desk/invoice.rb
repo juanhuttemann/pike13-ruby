@@ -9,8 +9,7 @@ module Pike13
           include_root_in_json :invoice
 
           def payment_methods
-            result = self.class.request(:get, "desk/invoices/#{id}/payment_methods")
-            result.data || []
+            self.class.with("desk/invoices/#{id}/payment_methods").to_a
           end
         end
       end

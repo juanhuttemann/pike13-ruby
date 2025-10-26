@@ -8,16 +8,12 @@ module Pike13
           uri "front/event_occurrences(/:id)"
           include_root_in_json :event_occurrence
 
-          class << self
-            def summary(**params)
-              result = request(:get, "front/event_occurrences/summary", params)
-              result.data || []
-            end
+          def self.summary(**params)
+            with("front/event_occurrences/summary").where(params).to_a
+          end
 
-            def enrollment_eligibilities(id:, **params)
-              result = request(:get, "front/event_occurrences/#{id}/enrollment_eligibilities", params)
-              result.data || []
-            end
+          def self.enrollment_eligibilities(id:, **params)
+            with("front/event_occurrences/#{id}/enrollment_eligibilities").where(params).to_a
           end
         end
       end
