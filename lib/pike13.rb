@@ -4,6 +4,7 @@ require_relative "pike13/version"
 require_relative "pike13/configuration"
 require_relative "pike13/errors"
 require_relative "pike13/middleware/json_parser"
+require_relative "pike13/connection_builder"
 
 # Spyke dependency
 require "spyke"
@@ -65,34 +66,24 @@ require_relative "pike13/api/v2/front/visit"
 require_relative "pike13/api/v2/front/waitlist_entry"
 require_relative "pike13/api/v2/front/payment"
 
-# Client (must be loaded after all resources)
-require_relative "pike13/client"
-
 # Pike13 Ruby Client
 #
 # A Ruby gem for interacting with the Pike13 API.
 # Built on Spyke for ActiveRecord-like models.
-# Supports both global configuration and per-client credentials.
 #
-# @example Global configuration
+# @example Configuration
 #   Pike13.configure do |config|
 #     config.access_token = "your_access_token"
 #     config.base_url = "mybusiness.pike13.com"
 #   end
 #
-#   client = Pike13.new
-#   people = Pike13::API::V2::Desk::Person.all
-#
-# @example Per-client configuration
-#   client = Pike13.new(
-#     access_token: "your_access_token",
-#     base_url: "mybusiness.pike13.com"
-#   )
+#   # Then use models directly
 #   person = Pike13::API::V2::Desk::Person.find(123)
+#   people = Pike13::API::V2::Desk::Person.all
 #
 # @example Using different namespaces
 #   # Account namespace (not scoped to business subdomain)
-#   account = Pike13::API::V2::Account::Base.me
+#   account = Pike13::API::V2::Account::Me.me
 #   businesses = Pike13::API::V2::Account::Business.all
 #
 #   # Desk namespace (staff interface)
@@ -101,15 +92,24 @@ require_relative "pike13/client"
 #
 #   # Front namespace (client interface)
 #   locations = Pike13::API::V2::Front::Location.all
-#   branding = Pike13::API::V2::Front::Branding.find
+#   branding = Pike13::API::V2::Front::Branding.all.first
 module Pike13
   # Backward-compatible alias
   Rest = API::V2
 
   class << self
-    attr_accessor :configuration
+    attr_writer :configuration
+
+    # Returns the global configuration object
+    #
+    # @return [Configuration]
+    def configuration
+      @configuration ||= Configuration.new
+    end
 
     # Configure Pike13 globally
+    #
+    # Automatically applies configuration to all API Base classes.
     #
     # @yield [Configuration] Global configuration object
     #
@@ -118,21 +118,29 @@ module Pike13
     #     config.access_token = "your_access_token"
     #     config.base_url = "mybusiness.pike13.com"
     #   end
+    #
+    #   # Then use models directly
+    #   person = Pike13::API::V2::Desk::Person.find(123)
     def configure
-      self.configuration ||= Configuration.new
       yield(configuration)
+      configuration.validate!
+      apply_configuration!
     end
 
-    # Create a new Pike13 client
+    # Reset configuration (mainly for testing)
     #
-    # @param access_token [String, nil] Access token (overrides global config)
-    # @param base_url [String, nil] Base URL (overrides global config)
-    # @return [Pike13::Client]
-    #
-    # @example
-    #   client = Pike13.new(access_token: "token", base_url: "mybusiness.pike13.com")
-    def new(access_token: nil, base_url: nil)
-      Client.new(access_token: access_token, base_url: base_url)
+    # @return [Configuration] New configuration object
+    def reset!
+      @configuration = Configuration.new
+    end
+
+    private
+
+    # Apply configuration to all API Base classes
+    def apply_configuration!
+      API::V2::Desk::Base.configure(configuration)
+      API::V2::Front::Base.configure(configuration)
+      API::V2::Account::Base.configure(configuration)
     end
   end
 end

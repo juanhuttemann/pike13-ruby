@@ -8,7 +8,7 @@ module Pike13
       module Front
         class PlanTest < Minitest::Test
           def setup
-            @client = default_client
+            setup_pike13
           end
 
           def test_find_plan

@@ -8,7 +8,7 @@ module Pike13
       module Front
         class NoteTest < Minitest::Test
           def setup
-            @client = default_client
+            setup_pike13
           end
 
           def test_all_notes_for_person

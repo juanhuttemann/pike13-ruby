@@ -8,7 +8,7 @@ module Pike13
       module Account
         class PersonTest < Minitest::Test
           def setup
-            @client = default_client
+            setup_pike13
           end
 
           # NOTE: /account/people/me endpoint does not exist in the API

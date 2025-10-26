@@ -7,7 +7,7 @@ module Pike13
     module V2
       class AccountTest < Minitest::Test
         def setup
-          @client = default_client
+          setup_pike13
         end
 
         def test_me

@@ -8,7 +8,7 @@ module Pike13
       module Desk
         class PaymentTest < Minitest::Test
           def setup
-            @client = default_client
+            setup_pike13
           end
 
           def test_void_payment

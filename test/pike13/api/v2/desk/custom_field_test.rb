@@ -8,7 +8,7 @@ module Pike13
       module Desk
         class CustomFieldTest < Minitest::Test
           def setup
-            @client = default_client
+            setup_pike13
           end
 
           def test_all_custom_fields

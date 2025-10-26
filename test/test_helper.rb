@@ -34,11 +34,11 @@ module TestHelpers
       .to_return(status: status, body: response_body.to_json, headers: { "Content-Type" => "application/json" })
   end
 
-  def default_client
-    Pike13::Client.new(
-      access_token: ENV.fetch("PIKE13_ACCESS_TOKEN", "test_token"),
-      base_url: ENV.fetch("PIKE13_BASE_URL", "test.pike13.com")
-    )
+  def setup_pike13
+    Pike13.configure do |config|
+      config.access_token = ENV.fetch("PIKE13_ACCESS_TOKEN", "test_token")
+      config.base_url = ENV.fetch("PIKE13_BASE_URL", "test.pike13.com")
+    end
   end
 end
 
