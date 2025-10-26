@@ -18,9 +18,8 @@ module Pike13
             #     refund_id: 123
             #   )
             def void(refund_id:)
-              response = connection.post("/api/v2/desk/refunds/#{refund_id}/voids")
-              # API returns {"refunds": [...]}, Pike13JSONParser unwraps for POST to single hash
-              (response.body[:data] || {}).deep_stringify_keys
+              result = request(:post, "desk/refunds/#{refund_id}/voids", {})
+              (result.data || {}).deep_stringify_keys
             end
           end
         end

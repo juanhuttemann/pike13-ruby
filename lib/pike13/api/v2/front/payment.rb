@@ -15,11 +15,10 @@ module Pike13
             # @example
             #   config = Pike13::API::V2::Front::Payment.configuration
             def configuration
-              response = connection.get("/api/v2/front/payments/configuration")
-              # API returns {"payment_configuration": {...}}, Pike13JSONParser wraps singleton in array for non-single-resource GET
-              data = response.body[:data]
-              result = data.is_a?(Array) ? data.first || {} : data || {}
-              result.deep_stringify_keys
+              result = request(:get, "front/payments/configuration", {})
+              data = result.data
+              result_data = data.is_a?(Array) ? data.first || {} : data || {}
+              result_data.deep_stringify_keys.to_h
             end
           end
         end
