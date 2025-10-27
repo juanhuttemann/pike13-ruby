@@ -21,8 +21,8 @@ module Pike13
 
             slots = Pike13::API::V2::Desk::Appointment.find_available_slots(service_id: 123)
 
-            assert_equal 2, slots.size
-            assert_equal "2024-01-15T10:00:00Z", slots.first["start_time"]
+            assert_equal 2, slots["available_slots"].size
+            assert_equal "2024-01-15T10:00:00Z", slots["available_slots"].first["start_time"]
           end
 
           def test_available_slots_summary
@@ -46,7 +46,7 @@ module Pike13
             stub_request(:get, full_url)
               .with(headers: { "Authorization" => "Bearer test_token" })
               .to_return(
-                status: 200,
+                status: 422,
                 body: { "errors" => ["Range exceeds allowed limit (90 days)"] }.to_json,
                 headers: { "Content-Type" => "application/json" }
               )

@@ -28,9 +28,9 @@ module Pike13
               invoice_item_ids_to_cancel: [1, 2]
             )
 
-            assert_equal 123, payment["id"]
-            assert_equal "2025-10-25T00:00:00Z", payment["voided_at"]
-            refute payment["is_voidable"]
+            assert_equal 123, payment["payments"].first["id"]
+            assert_equal "2025-10-25T00:00:00Z", payment["payments"].first["voided_at"]
+            refute payment["payments"].first["is_voidable"]
           end
 
           def test_configuration
@@ -50,8 +50,8 @@ module Pike13
             config = Pike13::API::V2::Desk::Payment.configuration
 
             assert_instance_of Hash, config
-            assert_equal %w[creditcard check cash], config["accepted_types"]
-            assert_equal %w[visa mastercard discover], config["creditcard"]["accepted_card_types"]
+            assert_equal %w[creditcard check cash], config["payment_configuration"]["accepted_types"]
+            assert_equal %w[visa mastercard discover], config["payment_configuration"]["creditcard"]["accepted_card_types"]
           end
 
           def test_void_payment_with_empty_invoice_items
@@ -67,8 +67,8 @@ module Pike13
               payment_id: 456
             )
 
-            assert_equal 456, payment["id"]
-            assert_equal "2025-10-25T12:00:00Z", payment["voided_at"]
+            assert_equal 456, payment["payments"].first["id"]
+            assert_equal "2025-10-25T12:00:00Z", payment["payments"].first["voided_at"]
           end
         end
       end

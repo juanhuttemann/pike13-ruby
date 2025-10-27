@@ -34,9 +34,11 @@ module Pike13
             summary = Pike13::API::V2::Desk::Visit.summary(person_id: 123)
 
             assert_equal({
-                           "first_visit_at" => "2020-01-01T00:00:00Z",
-                           "last_visit_at" => "2025-10-21T00:00:00Z",
-                           "total_visits" => 100
+                           "visit_summary" => {
+                             "first_visit_at" => "2020-01-01T00:00:00Z",
+                             "last_visit_at" => "2025-10-21T00:00:00Z",
+                             "total_visits" => 100
+                           }
                          }, summary)
           end
         end

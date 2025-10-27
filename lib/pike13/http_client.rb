@@ -133,7 +133,13 @@ module Pike13
       when 404
         raise Pike13::NotFoundError.new("Resource not found", http_status: response.code)
       when 422
-        raise Pike13::ValidationError.new(response.body, http_status: response.code)
+        parsed = JSON.parse(response.body) rescue {}
+        error_message = if parsed.is_a?(Hash) && parsed["errors"]
+                          parsed["errors"].is_a?(Array) ? parsed["errors"].first : parsed["errors"]
+                        else
+                          response.body
+                        end
+        raise Pike13::ValidationError.new(error_message, http_status: response.code)
       when 429
         raise Pike13::RateLimitError.new("Rate limit exceeded", http_status: response.code)
       when 500..599

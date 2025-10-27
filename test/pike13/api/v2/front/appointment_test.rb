@@ -50,7 +50,7 @@ module Pike13
             stub_request(:get, full_url)
               .with(headers: { "Authorization" => "Bearer test_token" })
               .to_return(
-                status: 200,
+                status: 422,
                 body: { "errors" => ["Range exceeds allowed limit (90 days)"] }.to_json,
                 headers: { "Content-Type" => "application/json" }
               )

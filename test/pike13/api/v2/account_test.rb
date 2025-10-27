@@ -24,9 +24,9 @@ module Pike13
 
           account = Pike13::API::V2::Account::Me.me
 
-          assert_instance_of Pike13::API::V2::Account::Me, account
-          assert_equal 999, account.id
-          assert_equal "user@example.com", account.email
+          assert_instance_of Hash, account
+          assert_equal 999, account["accounts"].first["id"]
+          assert_equal "user@example.com", account["accounts"].first["email"]
         end
       end
     end
