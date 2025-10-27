@@ -18,11 +18,12 @@ module Pike13
             temp_conn = passthrough_connection
             original_conn = connection
             self.connection = temp_conn
-            
+
             result = request(:get, "front/appointments/#{service_id}/available_slots/summary", params)
-            
+
             self.connection = original_conn
             raise Pike13::ValidationError.new(result.errors.join(", "), http_status: 422) if result.errors.any?
+
             result.data
           end
 

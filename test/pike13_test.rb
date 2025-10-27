@@ -3,6 +3,10 @@
 require "test_helper"
 
 class Pike13Test < Minitest::Test
+  def setup
+    Pike13.reset!
+  end
+
   def teardown
     Pike13.reset!
   end

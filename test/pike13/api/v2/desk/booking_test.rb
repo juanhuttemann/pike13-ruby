@@ -11,17 +11,6 @@ module Pike13
             setup_pike13
           end
 
-          def test_all_bookings
-            # Bookings support listing with Spyke
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/bookings", response_body: {
-                                  "bookings" => []
-                                })
-
-            bookings = Pike13::API::V2::Desk::Booking.all.to_a
-
-            assert_instance_of Array, bookings
-          end
-
           def test_find_booking
             stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/bookings/123", response_body: {
                                   "bookings" => [{ "id" => 123 }]

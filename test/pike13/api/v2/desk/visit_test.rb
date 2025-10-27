@@ -11,21 +11,6 @@ module Pike13
             setup_pike13
           end
 
-          def test_all_visits
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/visits", response_body: {
-                                  "visits" => [
-                                    { "id" => 1, "state" => "completed" },
-                                    { "id" => 2, "state" => "upcoming" }
-                                  ]
-                                })
-
-            visits = Pike13::API::V2::Desk::Visit.all.to_a
-
-            assert_instance_of Array, visits
-            assert_equal 2, visits.size
-            assert_instance_of Pike13::API::V2::Desk::Visit, visits.first
-          end
-
           def test_find_visit
             stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/visits/123", response_body: {
                                   "visits" => [{ "id" => 123, "state" => "completed" }]

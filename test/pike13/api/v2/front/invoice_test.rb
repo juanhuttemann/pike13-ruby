@@ -25,7 +25,8 @@ module Pike13
           def test_payment_methods
             invoice = Pike13::API::V2::Front::Invoice.new(id: 123)
 
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/invoices/123/payment_methods", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/invoices/123/payment_methods",
+                                response_body: {
                                   "payment_methods" => [{ "id" => 456 }]
                                 })
 

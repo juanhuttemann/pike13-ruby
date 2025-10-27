@@ -160,7 +160,8 @@ module Pike13
 
           # UPDATE tests - via Spyke save
           def test_update_person_with_save
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123",
+                                response_body: {
                                   "people" => [{
                                     "id" => 123,
                                     "first_name" => "John",
@@ -173,7 +174,8 @@ module Pike13
 
             assert_equal "Doe", person.last_name
 
-            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123",
+                                response_body: {
                                   "people" => [{
                                     "id" => 123,
                                     "first_name" => "John",

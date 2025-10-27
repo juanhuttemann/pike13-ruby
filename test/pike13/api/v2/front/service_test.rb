@@ -35,7 +35,8 @@ module Pike13
           end
 
           def test_enrollment_eligibilities
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/services/123/enrollment_eligibilities", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/services/123/enrollment_eligibilities",
+                                response_body: {
                                   "enrollment_eligibilities" => [
                                     { "person_id" => 1, "eligible" => true, "reasons" => [] },
                                     { "person_id" => 2, "eligible" => false, "reasons" => ["Max enrollments reached"] }

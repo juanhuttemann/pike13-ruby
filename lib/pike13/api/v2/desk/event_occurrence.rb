@@ -15,7 +15,8 @@ module Pike13
                                       uri: "desk/event_occurrences/:event_occurrence_id/waitlist_entries"
 
           def self.summary(**params)
-            with("desk/event_occurrences/summary").where(params).to_a
+            result = request(:get, "desk/event_occurrences/summary", params)
+            result.data || {}
           end
 
           def self.enrollment_eligibilities(id:, **params)

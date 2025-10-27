@@ -12,7 +12,8 @@ module Pike13
           end
 
           def test_configuration
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/payments/configuration", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/payments/configuration",
+                                response_body: {
                                   "payment_configuration" => {
                                     "accepted_types" => %w[creditcard check],
                                     "creditcard" => {
