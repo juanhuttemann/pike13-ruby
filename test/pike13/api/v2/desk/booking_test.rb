@@ -43,6 +43,33 @@ module Pike13
             assert_instance_of Hash, lease
             assert_equal 456, lease["leases"].first["id"]
           end
+
+          def test_create_booking
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/bookings", response_body: {
+                                  "bookings" => [{ "id" => 789, "state" => "reserved" }]
+                                })
+
+            result = Pike13::API::V2::Desk::Booking.create(
+              event_occurrence_id: 100,
+              person_id: 200
+            )
+
+            assert_instance_of Hash, result
+            assert_equal 789, result["bookings"].first["id"]
+            assert_equal "reserved", result["bookings"].first["state"]
+          end
+
+          def test_update_booking
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/bookings/123", response_body: {
+                                  "bookings" => [{ "id" => 123, "state" => "completed" }]
+                                })
+
+            result = Pike13::API::V2::Desk::Booking.update(123, state: "completed")
+
+            assert_instance_of Hash, result
+            assert_equal 123, result["bookings"].first["id"]
+            assert_equal "completed", result["bookings"].first["state"]
+          end
         end
       end
     end

@@ -11,7 +11,7 @@ module Pike13
             setup_pike13
           end
 
-          # Use direct class methods with parameters instead when implemented
+          # Front API Notes are read-only (no POST/PUT/DELETE methods)
         end
       end
     end

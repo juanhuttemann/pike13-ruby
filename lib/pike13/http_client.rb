@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "httparty"
+require "json"
 
 module Pike13
   # HTTParty-based HTTP client for Pike13 API

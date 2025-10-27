@@ -62,10 +62,11 @@ module Pike13
           end
 
           def test_destroy
-            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes/1",
+            stub_pike13_request(:delete,
+                                "https://test.pike13.com/api/v2/desk/event_occurrences/123/notes/456",
                                 response_body: {})
 
-            result = Pike13::API::V2::Desk::EventOccurrenceNote.destroy(event_occurrence_id: 100, id: 1)
+            result = Pike13::API::V2::Desk::EventOccurrenceNote.destroy(event_occurrence_id: 123, id: 456)
 
             assert_instance_of Hash, result
           end
