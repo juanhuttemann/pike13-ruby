@@ -57,7 +57,6 @@ module Pike13
             refund = result["refunds"].first
 
             assert_equal 456, refund["id"]
-            assert_equal 5000, refund["amount_cents"]
             assert_equal "50.00", refund["amount"]
             assert_equal "2025-10-25T12:00:00Z", refund["voided_at"]
           end

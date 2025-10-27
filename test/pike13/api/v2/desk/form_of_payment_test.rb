@@ -12,7 +12,8 @@ module Pike13
           end
 
           def test_all
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments",
+                                response_body: {
                                   "form_of_payments" => [{ "id" => 1, "type" => "creditcard" }]
                                 })
 
@@ -23,7 +24,8 @@ module Pike13
           end
 
           def test_find
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments/456", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments/456",
+                                response_body: {
                                   "form_of_payments" => [{ "id" => 456, "type" => "creditcard" }]
                                 })
 
@@ -34,7 +36,8 @@ module Pike13
           end
 
           def test_create
-            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments",
+                                response_body: {
                                   "form_of_payments" => [{ "id" => 789, "type" => "creditcard" }]
                                 })
 
@@ -45,7 +48,8 @@ module Pike13
           end
 
           def test_update
-            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments/456", response_body: {
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123/form_of_payments/456",
+                                response_body: {
                                   "form_of_payments" => [{ "id" => 456, "autobill" => true }]
                                 })
 
@@ -53,7 +57,7 @@ module Pike13
                                                                  attributes: { autobill: true })
 
             assert_instance_of Hash, result
-            assert_equal true, result["form_of_payments"].first["autobill"]
+            assert result["form_of_payments"].first["autobill"]
           end
 
           def test_destroy

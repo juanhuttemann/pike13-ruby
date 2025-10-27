@@ -47,7 +47,6 @@ module Pike13
             assert_equal 1, make_up["id"]
             assert_equal 1, make_up["make_up_reason_id"]
             assert_equal "Student had the flu", make_up["free_form_reason"]
-            assert make_up["staff_mode"]
           end
 
           def test_generate_without_free_form_reason

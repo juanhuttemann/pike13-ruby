@@ -34,7 +34,8 @@ module Pike13
           end
 
           def test_create_invoice_item
-            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/invoices/123/invoice_items", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/invoices/123/invoice_items",
+                                response_body: {
                                   "invoice_items" => [{ "id" => 456 }]
                                 })
 
@@ -54,7 +55,8 @@ module Pike13
           end
 
           def test_create_payment
-            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/invoices/123/payments", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/invoices/123/payments",
+                                response_body: {
                                   "payments" => [{ "id" => 789, "state" => "completed" }]
                                 })
 
@@ -65,7 +67,8 @@ module Pike13
           end
 
           def test_create_refund
-            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/invoices/123/payments/789/refunds", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/invoices/123/payments/789/refunds",
+                                response_body: {
                                   "refunds" => [{ "id" => 999, "state" => "completed" }]
                                 })
 

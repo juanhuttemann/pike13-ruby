@@ -9,9 +9,9 @@ module Pike13
         class Base
           class << self
             def configure(config)
-              # Account always uses pike13.com, not the business subdomain
+              # Account uses pike13.com by default, but can be overridden
               @client = Pike13::HTTPClient.new(
-                base_url: "https://pike13.com",
+                base_url: config.account_full_url,
                 access_token: config.access_token
               )
             end

@@ -117,37 +117,45 @@ module Pike13
 
     def handle_response
       response = yield
-
-      case response.code
-      when 200..299
-        parse_response_body(response)
-      when 400
-        raise Pike13::BadRequestError.new(response.body, http_status: response.code)
-      when 401
-        raise Pike13::UnauthorizedError.new("Unauthorized", http_status: response.code)
-      when 404
-        raise Pike13::NotFoundError.new("Resource not found", http_status: response.code)
-      when 422
-        parsed = begin
-          JSON.parse(response.body)
-        rescue StandardError
-          {}
-        end
-        error_message = if parsed.is_a?(Hash) && parsed["errors"]
-                          parsed["errors"].is_a?(Array) ? parsed["errors"].first : parsed["errors"]
-                        else
-                          response.body
-                        end
-        raise Pike13::ValidationError.new(error_message, http_status: response.code)
-      when 429
-        raise Pike13::RateLimitError.new("Rate limit exceeded", http_status: response.code)
-      when 500..599
-        raise Pike13::ServerError.new("Server error", http_status: response.code)
-      else
-        raise Pike13::APIError.new("Unexpected error", http_status: response.code)
-      end
+      handle_status_code(response)
     rescue HTTParty::Error => e
       raise Pike13::ConnectionError, "Connection failed: #{e.message}"
+    end
+
+    def handle_status_code(response)
+      return parse_response_body(response) if response.code.between?(200, 299)
+
+      raise_error_for_status(response)
+    end
+
+    def raise_error_for_status(response)
+      case response.code
+      when 400 then raise Pike13::BadRequestError.new(response.body, http_status: response.code)
+      when 401 then raise Pike13::UnauthorizedError.new("Unauthorized", http_status: response.code)
+      when 404 then raise Pike13::NotFoundError.new("Resource not found", http_status: response.code)
+      when 422 then raise_validation_error(response)
+      when 429 then raise Pike13::RateLimitError.new("Rate limit exceeded", http_status: response.code)
+      when 500..599 then raise Pike13::ServerError.new("Server error", http_status: response.code)
+      else raise Pike13::APIError.new("Unexpected error", http_status: response.code)
+      end
+    end
+
+    def raise_validation_error(response)
+      parsed = parse_json_safely(response.body)
+      error_message = extract_error_message(parsed, response.body)
+      raise Pike13::ValidationError.new(error_message, http_status: response.code)
+    end
+
+    def parse_json_safely(body)
+      JSON.parse(body)
+    rescue StandardError
+      {}
+    end
+
+    def extract_error_message(parsed, fallback)
+      return fallback unless parsed.is_a?(Hash) && parsed["errors"]
+
+      parsed["errors"].is_a?(Array) ? parsed["errors"].first : parsed["errors"]
     end
 
     def parse_response_body(response)

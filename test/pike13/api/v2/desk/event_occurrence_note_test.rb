@@ -12,7 +12,8 @@ module Pike13
           end
 
           def test_all
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes",
+                                response_body: {
                                   "notes" => [{ "id" => 1, "note" => "Test note" }]
                                 })
 
@@ -23,7 +24,8 @@ module Pike13
           end
 
           def test_find
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes/1", response_body: {
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes/1",
+                                response_body: {
                                   "notes" => [{ "id" => 1, "note" => "Test note" }]
                                 })
 
@@ -34,7 +36,8 @@ module Pike13
           end
 
           def test_create
-            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes", response_body: {
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes",
+                                response_body: {
                                   "notes" => [{ "id" => 2, "note" => "New note" }]
                                 })
 
@@ -46,7 +49,8 @@ module Pike13
           end
 
           def test_update
-            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes/1", response_body: {
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/event_occurrences/100/notes/1",
+                                response_body: {
                                   "notes" => [{ "id" => 1, "note" => "Updated note" }]
                                 })
 

@@ -46,7 +46,7 @@ module Pike13
     def test_full_url_with_port
       @config.base_url = "mybusiness.pike13.test:3000"
 
-      assert_equal "https://mybusiness.pike13.test:3000", @config.full_url
+      assert_equal "http://mybusiness.pike13.test:3000", @config.full_url
     end
 
     def test_validate_raises_when_token_missing
@@ -58,6 +58,36 @@ module Pike13
       @config.access_token = "test_token"
 
       assert_nil @config.validate!
+    end
+
+    def test_full_url_with_localhost
+      @config.base_url = "localhost:3000"
+
+      assert_equal "http://localhost:3000", @config.full_url
+    end
+
+    def test_full_url_with_test_domain
+      @config.base_url = "mybiz.pike13.test:3000"
+
+      assert_equal "http://mybiz.pike13.test:3000", @config.full_url
+    end
+
+    def test_account_full_url_strips_subdomain
+      @config.base_url = "mybiz.pike13.com"
+
+      assert_equal "https://pike13.com", @config.account_full_url
+    end
+
+    def test_account_full_url_with_test_domain
+      @config.base_url = "mybiz.pike13.test:3000"
+
+      assert_equal "http://pike13.test:3000", @config.account_full_url
+    end
+
+    def test_account_full_url_localhost
+      @config.base_url = "localhost:3000"
+
+      assert_equal "http://localhost:3000", @config.account_full_url
     end
   end
 end

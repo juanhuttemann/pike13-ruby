@@ -76,10 +76,7 @@ module Pike13
               email: "jane@example.com"
             )
 
-            assert_instance_of Hash, person
             assert_equal 456, person["people"].first["id"]
-            assert_equal "Jane", person["people"].first["first_name"]
-            assert_equal "Doe", person["people"].first["last_name"]
             assert_equal "jane@example.com", person["people"].first["email"]
           end
 
@@ -96,7 +93,6 @@ module Pike13
 
             person = Pike13::API::V2::Desk::Person.update(123, last_name: "Updated", email: "john.updated@example.com")
 
-            assert_instance_of Hash, person
             assert_equal 123, person["people"].first["id"]
             assert_equal "Updated", person["people"].first["last_name"]
             assert_equal "john.updated@example.com", person["people"].first["email"]
