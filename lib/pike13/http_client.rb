@@ -13,7 +13,6 @@ module Pike13
     def initialize(base_url:, access_token:)
       @base_url = base_url
       @access_token = access_token
-      setup_client
     end
 
     # GET request
@@ -104,10 +103,6 @@ module Pike13
 
     private
 
-    def setup_client
-      # HTTParty setup - no longer using base_uri since it's class-level
-    end
-
     def full_path(path)
       "#{base_url}/api/v2/#{path}"
     end
@@ -133,7 +128,11 @@ module Pike13
       when 404
         raise Pike13::NotFoundError.new("Resource not found", http_status: response.code)
       when 422
-        parsed = JSON.parse(response.body) rescue {}
+        parsed = begin
+          JSON.parse(response.body)
+        rescue StandardError
+          {}
+        end
         error_message = if parsed.is_a?(Hash) && parsed["errors"]
                           parsed["errors"].is_a?(Array) ? parsed["errors"].first : parsed["errors"]
                         else

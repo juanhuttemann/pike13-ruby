@@ -59,11 +59,8 @@ module Pike13
             assert_equal 999, person["people"].first["id"]
           end
 
-          # NOTE: Nested resources are no longer supported via instance associations
-          # Use Visit.all(person_id: 123) or Plan.all(person_id: 123) instead
-
           # CREATE tests
-          def test_create_person_via_proxy
+          def test_create_person
             stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/people", response_body: {
                                   "people" => [{
                                     "id" => 456,

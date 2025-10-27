@@ -51,7 +51,8 @@ module Pike13
 
             assert_instance_of Hash, config
             assert_equal %w[creditcard check cash], config["payment_configuration"]["accepted_types"]
-            assert_equal %w[visa mastercard discover], config["payment_configuration"]["creditcard"]["accepted_card_types"]
+            assert_equal %w[visa mastercard discover],
+                         config["payment_configuration"]["creditcard"]["accepted_card_types"]
           end
 
           def test_void_payment_with_empty_invoice_items

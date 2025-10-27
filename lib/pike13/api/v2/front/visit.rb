@@ -15,6 +15,16 @@ module Pike13
             def find(id)
               client.get("front/visits/#{id}")
             end
+
+            # POST /front/visits
+            def create(attributes)
+              client.post("front/visits", { visit: attributes })
+            end
+
+            # DELETE /front/visits/:id
+            def destroy(id, **params)
+              client.delete("front/visits/#{id}", params)
+            end
           end
         end
       end

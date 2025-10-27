@@ -15,6 +15,11 @@ module Pike13
             def find(id)
               client.get("desk/plans/#{id}")
             end
+
+            # POST /desk/plans/:plan_id/end_date_updates
+            def create_end_date_update(plan_id, attributes)
+              client.post("desk/plans/#{plan_id}/end_date_updates", attributes)
+            end
           end
         end
       end

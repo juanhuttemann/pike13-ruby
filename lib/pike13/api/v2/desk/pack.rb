@@ -15,6 +15,11 @@ module Pike13
             def find(id)
               client.get("desk/packs/#{id}")
             end
+
+            # DELETE /desk/packs/:id
+            def destroy(id)
+              client.delete("desk/packs/#{id}")
+            end
           end
         end
       end

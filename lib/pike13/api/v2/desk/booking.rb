@@ -25,6 +25,16 @@ module Pike13
             def destroy(id)
               client.delete("desk/bookings/#{id}")
             end
+
+            # POST /desk/bookings/:booking_id/leases
+            def create_lease(booking_id, attributes)
+              client.post("desk/bookings/#{booking_id}/leases", { lease: attributes })
+            end
+
+            # PUT /desk/bookings/:booking_id/leases/:id
+            def update_lease(booking_id, id, attributes)
+              client.put("desk/bookings/#{booking_id}/leases/#{id}", { lease: attributes })
+            end
           end
         end
       end

@@ -41,6 +41,36 @@ module Pike13
                            }
                          }, summary)
           end
+
+          def test_create_visit
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/visits", response_body: {
+                                  "visits" => [{ "id" => 123, "state" => "registered" }]
+                                })
+
+            visit = Pike13::API::V2::Desk::Visit.create({ person_id: 1, event_occurrence_id: 100 })
+
+            assert_instance_of Hash, visit
+            assert_equal 123, visit["visits"].first["id"]
+          end
+
+          def test_update_visit
+            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/visits/123", response_body: {
+                                  "visits" => [{ "id" => 123, "state" => "completed" }]
+                                })
+
+            visit = Pike13::API::V2::Desk::Visit.update(123, { state_event: "complete" })
+
+            assert_instance_of Hash, visit
+            assert_equal "completed", visit["visits"].first["state"]
+          end
+
+          def test_destroy_visit
+            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/visits/123", response_body: {})
+
+            result = Pike13::API::V2::Desk::Visit.destroy(123)
+
+            assert_instance_of Hash, result
+          end
         end
       end
     end

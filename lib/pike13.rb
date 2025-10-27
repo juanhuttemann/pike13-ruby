@@ -24,12 +24,20 @@ require_relative "pike13/api/v2/desk/business"
 require_relative "pike13/api/v2/desk/custom_field"
 require_relative "pike13/api/v2/desk/event"
 require_relative "pike13/api/v2/desk/event_occurrence"
+require_relative "pike13/api/v2/desk/event_occurrence_note"
+require_relative "pike13/api/v2/desk/event_occurrence_visit"
+require_relative "pike13/api/v2/desk/event_occurrence_waitlist_entry"
+require_relative "pike13/api/v2/desk/form_of_payment"
 require_relative "pike13/api/v2/desk/invoice"
 require_relative "pike13/api/v2/desk/location"
 require_relative "pike13/api/v2/desk/note"
 require_relative "pike13/api/v2/desk/pack"
 require_relative "pike13/api/v2/desk/pack_product"
 require_relative "pike13/api/v2/desk/person"
+require_relative "pike13/api/v2/desk/person_plan"
+require_relative "pike13/api/v2/desk/person_visit"
+require_relative "pike13/api/v2/desk/person_waitlist_entry"
+require_relative "pike13/api/v2/desk/person_waiver"
 require_relative "pike13/api/v2/desk/plan"
 require_relative "pike13/api/v2/desk/plan_product"
 require_relative "pike13/api/v2/desk/punch"
@@ -50,12 +58,20 @@ require_relative "pike13/api/v2/front/branding"
 require_relative "pike13/api/v2/front/business"
 require_relative "pike13/api/v2/front/event"
 require_relative "pike13/api/v2/front/event_occurrence"
+require_relative "pike13/api/v2/front/event_occurrence_note"
+require_relative "pike13/api/v2/front/event_occurrence_waitlist_eligibility"
+require_relative "pike13/api/v2/front/form_of_payment"
 require_relative "pike13/api/v2/front/invoice"
 require_relative "pike13/api/v2/front/location"
 require_relative "pike13/api/v2/front/note"
 require_relative "pike13/api/v2/front/person"
+require_relative "pike13/api/v2/front/person_plan"
+require_relative "pike13/api/v2/front/person_visit"
+require_relative "pike13/api/v2/front/person_waitlist_entry"
+require_relative "pike13/api/v2/front/person_waiver"
 require_relative "pike13/api/v2/front/plan"
 require_relative "pike13/api/v2/front/plan_product"
+require_relative "pike13/api/v2/front/plan_terms"
 require_relative "pike13/api/v2/front/service"
 require_relative "pike13/api/v2/front/staff_member"
 require_relative "pike13/api/v2/front/visit"
@@ -89,8 +105,10 @@ require_relative "pike13/api/v2/front/payment"
 #   locations = Pike13::API::V2::Front::Location.all
 #   branding = Pike13::API::V2::Front::Branding.all.first
 module Pike13
-  # Backward-compatible alias
-  Rest = API::V2
+  # Simplified namespace aliases
+  Account = API::V2::Account
+  Desk = API::V2::Desk
+  Front = API::V2::Front
 
   class << self
     attr_writer :configuration

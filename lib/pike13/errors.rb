@@ -38,6 +38,9 @@ module Pike13
   #   end
   class AuthenticationError < APIError; end
 
+  # Alias for backward compatibility
+  UnauthorizedError = AuthenticationError
+
   # Raised when rate limit is exceeded (HTTP 429)
   #
   # @attr_reader [String, nil] rate_limit_reset Timestamp when rate limit resets
@@ -92,4 +95,10 @@ module Pike13
   #     puts "Server error: #{e.http_status}"
   #   end
   class ServerError < APIError; end
+
+  # Raised when request is malformed (HTTP 400)
+  class BadRequestError < APIError; end
+
+  # Raised when connection to API fails
+  class ConnectionError < Error; end
 end

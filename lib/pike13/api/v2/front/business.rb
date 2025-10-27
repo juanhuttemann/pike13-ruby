@@ -10,6 +10,11 @@ module Pike13
             def get
               client.get("front/business")
             end
+
+            # GET /front/business/franchisees
+            def franchisees
+              client.get("front/business/franchisees")
+            end
           end
         end
       end

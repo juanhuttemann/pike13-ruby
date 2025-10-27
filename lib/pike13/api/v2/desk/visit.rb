@@ -20,6 +20,21 @@ module Pike13
             def summary(person_id:, **params)
               client.get("desk/people/#{person_id}/visits/summary", params)
             end
+
+            # POST /desk/visits
+            def create(attributes)
+              client.post("desk/visits", { visit: attributes })
+            end
+
+            # PUT /desk/visits/:id
+            def update(id, attributes)
+              client.put("desk/visits/#{id}", { visit: attributes })
+            end
+
+            # DELETE /desk/visits/:id
+            def destroy(id, **params)
+              client.delete("desk/visits/#{id}", params)
+            end
           end
         end
       end

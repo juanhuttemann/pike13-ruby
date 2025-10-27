@@ -15,6 +15,16 @@ module Pike13
             def find(id)
               client.get("desk/punches/#{id}")
             end
+
+            # POST /desk/punches
+            def create(attributes)
+              client.post("desk/punches", { punch: attributes })
+            end
+
+            # DELETE /desk/punches/:id
+            def destroy(id)
+              client.delete("desk/punches/#{id}")
+            end
           end
         end
       end

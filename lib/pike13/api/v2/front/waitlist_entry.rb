@@ -15,6 +15,16 @@ module Pike13
             def find(id)
               client.get("front/waitlist_entries/#{id}")
             end
+
+            # POST /front/waitlist_entries
+            def create(attributes)
+              client.post("front/waitlist_entries", { waitlist_entry: attributes })
+            end
+
+            # DELETE /front/waitlist_entries/:id
+            def destroy(id)
+              client.delete("front/waitlist_entries/#{id}")
+            end
           end
         end
       end
