@@ -5,8 +5,12 @@ module Pike13
     module V2
       module Account
         class Person < Base
-          uri "account/people(/:id)"
-          include_root_in_json :person
+          class << self
+            # GET /account/people
+            def all
+              client.get("account/people")
+            end
+          end
         end
       end
     end

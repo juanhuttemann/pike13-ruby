@@ -5,20 +5,16 @@ module Pike13
     module V2
       module Front
         class Payment < Base
-          uri "front/payments(/:id)"
-
           class << self
-            # Get payment configuration
-            #
-            # @return [Hash] Configuration data
-            #
-            # @example
-            #   config = Pike13::API::V2::Front::Payment.configuration
+            # GET /front/payments/:id
+            def find(id)
+              client.get("front/payments/#{id}")
+            end
+
+            # GET /front/payments/configuration
             def configuration
-              result = request(:get, "front/payments/configuration", {})
-              data = result.data
-              result_data = data.is_a?(Array) ? data.first || {} : data || {}
-              result_data.deep_stringify_keys.to_h
+              response = client.get("front/payments/configuration")
+              response.is_a?(Array) ? response.first : response
             end
           end
         end

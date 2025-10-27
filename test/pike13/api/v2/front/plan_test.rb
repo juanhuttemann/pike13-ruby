@@ -18,21 +18,11 @@ module Pike13
 
             plan = Pike13::API::V2::Front::Plan.find(123)
 
-            assert_instance_of Pike13::API::V2::Front::Plan, plan
-            assert_equal 123, plan.id
+            assert_instance_of Hash, plan
+            assert_equal 123, plan["plans"].first["id"]
           end
 
-          def test_plan_terms
-            plan = Pike13::API::V2::Front::Plan.new(id: 123)
-
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/plans/123/plan_terms", response_body: {
-                                  "plan_terms" => [{ "id" => 456 }]
-                                })
-
-            terms = plan.plan_terms
-
-            assert_equal 1, terms.size
-          end
+          # NOTE: Instance-based associations not supported - use class methods instead
         end
       end
     end

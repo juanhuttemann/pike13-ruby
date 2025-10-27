@@ -16,11 +16,11 @@ module Pike13
                                   "staff_members" => [{ "id" => 1, "name" => "Staff" }]
                                 })
 
-            staff_members = Pike13::API::V2::Desk::StaffMember.all.to_a
+            staff_members = Pike13::API::V2::Desk::StaffMember.all
 
-            assert_instance_of Array, staff_members
-            assert_equal 1, staff_members.size
-            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_members.first
+            assert_instance_of Hash, staff_members
+            assert_equal 1, staff_members["staff_members"].size
+            assert_instance_of Hash, staff_members["staff_members"].first
           end
 
           def test_find_staff_member
@@ -30,8 +30,8 @@ module Pike13
 
             staff_member = Pike13::API::V2::Desk::StaffMember.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_member
-            assert_equal 123, staff_member.id
+            assert_instance_of Hash, staff_member
+            assert_equal 123, staff_member["staff_members"].first["id"]
           end
 
           def test_me
@@ -41,8 +41,8 @@ module Pike13
 
             staff_member = Pike13::API::V2::Desk::StaffMember.me
 
-            assert_instance_of Pike13::API::V2::Desk::StaffMember, staff_member
-            assert_equal 999, staff_member.id
+            assert_instance_of Hash, staff_member
+            assert_equal 999, staff_member["staff_members"].first["id"]
           end
         end
       end

@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Front
         class Event < Base
-          uri "front/events(/:id)"
-          include_root_in_json :event
+          class << self
+            # GET /front/events
+            def all
+              client.get("front/events")
+            end
+
+            # GET /front/events/:id
+            def find(id)
+              client.get("front/events/#{id}")
+            end
+          end
         end
       end
     end

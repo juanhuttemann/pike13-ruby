@@ -18,8 +18,8 @@ module Pike13
 
             booking = Pike13::API::V2::Front::Booking.find(123)
 
-            assert_instance_of Pike13::API::V2::Front::Booking, booking
-            assert_equal 123, booking.id
+            assert_instance_of Hash, booking
+            assert_equal 123, booking["bookings"].first["id"]
           end
 
           def test_find_lease
@@ -27,7 +27,9 @@ module Pike13
                                   "leases" => [{ "id" => 456, "booking_id" => 123, "status" => "active" }]
                                 })
 
-            lease = Pike13::API::V2::Front::Booking.find_lease(booking_id: 123, id: 456)
+            result = Pike13::API::V2::Front::Booking.find_lease(booking_id: 123, id: 456)
+
+            lease = result["leases"].first
 
             assert_equal 456, lease["id"]
             assert_equal 123, lease["booking_id"]

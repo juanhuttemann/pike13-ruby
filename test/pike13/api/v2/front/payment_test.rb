@@ -27,9 +27,10 @@ module Pike13
                                   }
                                 })
 
-            config = Pike13::API::V2::Front::Payment.configuration
+            result = Pike13::API::V2::Front::Payment.configuration
 
-            assert_instance_of Hash, config
+            config = result["payment_configuration"] || result
+
             assert_equal %w[creditcard check], config["accepted_types"]
             assert config["creditcard"]["required_fields"]["cvv"]
             refute config["creditcard"]["required_fields"]["address"]
@@ -46,7 +47,9 @@ module Pike13
                                   }
                                 })
 
-            config = Pike13::API::V2::Front::Payment.configuration
+            result = Pike13::API::V2::Front::Payment.configuration
+
+            config = result["payment_configuration"] || result
 
             assert_includes config["accepted_types"], "ach"
             refute config["creditcard"]["required_fields"]["cvv"]

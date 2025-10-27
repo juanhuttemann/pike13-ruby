@@ -16,11 +16,11 @@ module Pike13
                                   "revenue_categories" => [{ "id" => 1 }]
                                 })
 
-            revenue_categories = Pike13::API::V2::Desk::RevenueCategory.all.to_a
+            revenue_categories = Pike13::API::V2::Desk::RevenueCategory.all
 
-            assert_instance_of Array, revenue_categories
-            assert_equal 1, revenue_categories.size
-            assert_instance_of Pike13::API::V2::Desk::RevenueCategory, revenue_categories.first
+            assert_instance_of Hash, revenue_categories
+            assert_equal 1, revenue_categories["revenue_categories"].size
+            assert_instance_of Hash, revenue_categories["revenue_categories"].first
           end
 
           def test_find_revenue_category
@@ -30,8 +30,8 @@ module Pike13
 
             revenue_category = Pike13::API::V2::Desk::RevenueCategory.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::RevenueCategory, revenue_category
-            assert_equal 123, revenue_category.id
+            assert_instance_of Hash, revenue_category
+            assert_equal 123, revenue_category["revenue_categories"].first["id"]
           end
         end
       end

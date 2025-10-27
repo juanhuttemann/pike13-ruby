@@ -16,11 +16,11 @@ module Pike13
                                   "custom_fields" => [{ "id" => 1 }]
                                 })
 
-            custom_fields = Pike13::API::V2::Desk::CustomField.all.to_a
+            custom_fields = Pike13::API::V2::Desk::CustomField.all
 
-            assert_instance_of Array, custom_fields
-            assert_equal 1, custom_fields.size
-            assert_instance_of Pike13::API::V2::Desk::CustomField, custom_fields.first
+            assert_instance_of Hash, custom_fields
+            assert_equal 1, custom_fields["custom_fields"].size
+            assert_instance_of Hash, custom_fields["custom_fields"].first
           end
 
           def test_find_custom_field
@@ -30,8 +30,8 @@ module Pike13
 
             custom_field = Pike13::API::V2::Desk::CustomField.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::CustomField, custom_field
-            assert_equal 123, custom_field.id
+            assert_instance_of Hash, custom_field
+            assert_equal 123, custom_field["custom_fields"].first["id"]
           end
         end
       end

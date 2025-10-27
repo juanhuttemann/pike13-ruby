@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Desk
         class Punch < Base
-          uri "desk/punches(/:id)"
-          include_root_in_json :punch
+          class << self
+            # GET /desk/punches
+            def all
+              client.get("desk/punches")
+            end
+
+            # GET /desk/punches/:id
+            def find(id)
+              client.get("desk/punches/#{id}")
+            end
+          end
         end
       end
     end

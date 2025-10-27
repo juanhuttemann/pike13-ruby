@@ -5,12 +5,21 @@ module Pike13
     module V2
       module Front
         class Invoice < Base
-          uri "front/invoices(/:id)"
-          include_root_in_json :invoice
+          class << self
+            # GET /front/invoices
+            def all
+              client.get("front/invoices")
+            end
 
-          def payment_methods
-            result = self.class.request(:get, "front/invoices/#{id}/payment_methods")
-            result.data || []
+            # GET /front/invoices/:id
+            def find(id)
+              client.get("front/invoices/#{id}")
+            end
+
+            # GET /front/invoices/:id/payment_methods
+            def payment_methods(id)
+              client.get("front/invoices/#{id}/payment_methods")
+            end
           end
         end
       end

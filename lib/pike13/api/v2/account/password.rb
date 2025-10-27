@@ -5,8 +5,12 @@ module Pike13
     module V2
       module Account
         class Password < Base
-          uri "account/passwords(/:id)"
-          include_root_in_json :account
+          class << self
+            # POST /account/passwords
+            def create(attributes)
+              client.post("account/passwords", { account: attributes })
+            end
+          end
         end
       end
     end

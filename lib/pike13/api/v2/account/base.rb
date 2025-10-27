@@ -4,14 +4,25 @@ module Pike13
   module API
     module V2
       module Account
-        # Base class for all Account namespace models
+        # Base class for all Account namespace resources
         # Account endpoints use pike13.com (unscoped connection)
-        class Base < Spyke::Base
-          extend Pike13::ConnectionBuilder
+        class Base
+          class << self
+            def configure(config)
+              # Account always uses pike13.com, not the business subdomain
+              @client = Pike13::HTTPClient.new(
+                base_url: "https://pike13.com",
+                access_token: config.access_token
+              )
+            end
 
-          def self.configure(config)
-            # Account always uses pike13.com, not the business subdomain
-            self.connection = build_connection("https://pike13.com", config.access_token)
+            def client
+              # Return this class's client if set, otherwise traverse up to Base
+              return @client if instance_variable_defined?(:@client) && @client
+              return superclass.client if superclass.respond_to?(:client) && superclass != Object
+
+              raise "Client not configured. Call Pike13.configure first."
+            end
           end
         end
       end

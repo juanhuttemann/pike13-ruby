@@ -18,8 +18,8 @@ module Pike13
 
             waitlist_entry = Pike13::API::V2::Desk::WaitlistEntry.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::WaitlistEntry, waitlist_entry
-            assert_equal 123, waitlist_entry.id
+            assert_instance_of Hash, waitlist_entry
+            assert_equal 123, waitlist_entry["waitlist_entries"].first["id"]
           end
         end
       end

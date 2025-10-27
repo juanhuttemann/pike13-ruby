@@ -19,11 +19,11 @@ module Pike13
                                   ]
                                 })
 
-            businesses = Pike13::API::V2::Account::Business.all.to_a
+            businesses = Pike13::API::V2::Account::Business.all
 
-            assert_instance_of Array, businesses
-            assert_equal 2, businesses.size
-            assert_instance_of Pike13::API::V2::Account::Business, businesses.first
+            assert_instance_of Hash, businesses
+            assert_equal 2, businesses["businesses"].size
+            assert_instance_of Hash, businesses["businesses"].first
           end
         end
       end

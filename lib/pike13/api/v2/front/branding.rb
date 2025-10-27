@@ -5,8 +5,12 @@ module Pike13
     module V2
       module Front
         class Branding < Base
-          uri "front/branding"
-          include_root_in_json :branding
+          class << self
+            # GET /front/branding
+            def get
+              client.get("front/branding")
+            end
+          end
         end
       end
     end

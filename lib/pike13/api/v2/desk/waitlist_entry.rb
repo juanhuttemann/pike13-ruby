@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Desk
         class WaitlistEntry < Base
-          uri "desk/waitlist_entries(/:id)"
-          include_root_in_json :waitlist_entry
+          class << self
+            # GET /desk/waitlist_entries
+            def all
+              client.get("desk/waitlist_entries")
+            end
+
+            # GET /desk/waitlist_entries/:id
+            def find(id)
+              client.get("desk/waitlist_entries/#{id}")
+            end
+          end
         end
       end
     end

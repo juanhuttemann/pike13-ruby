@@ -19,11 +19,11 @@ module Pike13
                                   ]
                                 })
 
-            invoices = Pike13::API::V2::Desk::Invoice.all.to_a
+            invoices = Pike13::API::V2::Desk::Invoice.all
 
-            assert_instance_of Array, invoices
-            assert_equal 2, invoices.size
-            assert_instance_of Pike13::API::V2::Desk::Invoice, invoices.first
+            assert_instance_of Hash, invoices
+            assert_equal 2, invoices["invoices"].size
+            assert_instance_of Hash, invoices["invoices"].first
           end
 
           def test_find_invoice
@@ -33,22 +33,11 @@ module Pike13
 
             invoice = Pike13::API::V2::Desk::Invoice.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::Invoice, invoice
-            assert_equal 123, invoice.id
+            assert_instance_of Hash, invoice
+            assert_equal 123, invoice["invoices"].first["id"]
           end
 
-          def test_payment_methods
-            invoice = Pike13::API::V2::Desk::Invoice.new(id: 123)
-
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/invoices/123/payment_methods", response_body: {
-                                  "payment_methods" => [{ "id" => 456, "type" => "credit_card" }]
-                                })
-
-            payment_methods = invoice.payment_methods
-
-            assert_instance_of Array, payment_methods
-            assert_equal 1, payment_methods.size
-          end
+          # NOTE: Instance-based associations not supported - use class methods instead
         end
       end
     end

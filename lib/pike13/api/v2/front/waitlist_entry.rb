@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Front
         class WaitlistEntry < Base
-          uri "front/waitlist_entries(/:id)"
-          include_root_in_json :waitlist_entry
+          class << self
+            # GET /front/waitlist_entries
+            def all
+              client.get("front/waitlist_entries")
+            end
+
+            # GET /front/waitlist_entries/:id
+            def find(id)
+              client.get("front/waitlist_entries/#{id}")
+            end
+          end
         end
       end
     end

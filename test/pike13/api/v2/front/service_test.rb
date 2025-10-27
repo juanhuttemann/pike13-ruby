@@ -16,11 +16,11 @@ module Pike13
                                   "services" => [{ "id" => 1 }]
                                 })
 
-            services = Pike13::API::V2::Front::Service.all.to_a
+            services = Pike13::API::V2::Front::Service.all
 
-            assert_instance_of Array, services
-            assert_equal 1, services.size
-            assert_instance_of Pike13::API::V2::Front::Service, services.first
+            assert_instance_of Hash, services
+            assert_equal 1, services["services"].size
+            assert_instance_of Hash, services["services"].first
           end
 
           def test_find_service
@@ -30,8 +30,8 @@ module Pike13
 
             service = Pike13::API::V2::Front::Service.find(123)
 
-            assert_instance_of Pike13::API::V2::Front::Service, service
-            assert_equal 123, service.id
+            assert_instance_of Hash, service
+            assert_equal 123, service["services"].first["id"]
           end
 
           def test_enrollment_eligibilities
@@ -43,7 +43,9 @@ module Pike13
                                   ]
                                 })
 
-            eligibilities = Pike13::API::V2::Front::Service.enrollment_eligibilities(service_id: 123)
+            result = Pike13::API::V2::Front::Service.enrollment_eligibilities(service_id: 123)
+
+            eligibilities = result["enrollment_eligibilities"]
 
             assert_equal 2, eligibilities.size
             assert eligibilities.first["eligible"]

@@ -18,8 +18,8 @@ module Pike13
 
             punch = Pike13::API::V2::Desk::Punch.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::Punch, punch
-            assert_equal 123, punch.id
+            assert_instance_of Hash, punch
+            assert_equal 123, punch["punches"].first["id"]
           end
         end
       end

@@ -5,8 +5,27 @@ module Pike13
     module V2
       module Desk
         class Booking < Base
-          uri "desk/bookings(/:id)"
-          include_root_in_json :booking
+          class << self
+            # GET /desk/bookings/:id
+            def find(id)
+              client.get("desk/bookings/#{id}")
+            end
+
+            # POST /desk/bookings
+            def create(attributes)
+              client.post("desk/bookings", { booking: attributes })
+            end
+
+            # PUT /desk/bookings/:id
+            def update(id, attributes)
+              client.put("desk/bookings/#{id}", { booking: attributes })
+            end
+
+            # DELETE /desk/bookings/:id
+            def destroy(id)
+              client.delete("desk/bookings/#{id}")
+            end
+          end
         end
       end
     end

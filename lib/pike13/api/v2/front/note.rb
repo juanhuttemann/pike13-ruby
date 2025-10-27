@@ -5,10 +5,18 @@ module Pike13
     module V2
       module Front
         # Notes in Front API are nested under people
-        # Use: person.notes or with custom uri
         class Note < Base
-          uri "front/people/:person_id/notes(/:id)"
-          include_root_in_json :note
+          class << self
+            # GET /front/people/:person_id/notes
+            def all(person_id:)
+              client.get("front/people/#{person_id}/notes")
+            end
+
+            # GET /front/people/:person_id/notes/:id
+            def find(person_id:, id:)
+              client.get("front/people/#{person_id}/notes/#{id}")
+            end
+          end
         end
       end
     end

@@ -20,7 +20,9 @@ module Pike13
                                   ]
                                 })
 
-            slots = Pike13::API::V2::Front::Appointment.find_available_slots(service_id: 123)
+            result = Pike13::API::V2::Front::Appointment.find_available_slots(service_id: 123)
+
+            slots = result["available_slots"]
 
             assert_equal 2, slots.size
             assert_equal "2024-01-15T10:00:00Z", slots.first["start_time"]

@@ -5,11 +5,21 @@ module Pike13
     module V2
       module Front
         class Service < Base
-          uri "front/services(/:id)"
-          include_root_in_json :service
+          class << self
+            # GET /front/services
+            def all
+              client.get("front/services")
+            end
 
-          def self.enrollment_eligibilities(service_id:, **params)
-            with("front/services/#{service_id}/enrollment_eligibilities").where(params).to_a
+            # GET /front/services/:id
+            def find(id)
+              client.get("front/services/#{id}")
+            end
+
+            # GET /front/services/:service_id/enrollment_eligibilities
+            def enrollment_eligibilities(service_id:, **params)
+              client.get("front/services/#{service_id}/enrollment_eligibilities", params)
+            end
           end
         end
       end

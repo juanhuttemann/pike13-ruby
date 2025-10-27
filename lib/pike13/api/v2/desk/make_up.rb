@@ -5,41 +5,29 @@ module Pike13
     module V2
       module Desk
         class MakeUp < Base
-          uri "desk/make_ups(/:id)"
+          class << self
+            # GET /desk/make_ups/:id
+            def find(id)
+              client.get("desk/make_ups/#{id}")
+            end
 
-          # Get make up reasons
-          #
-          # @return [Array<Hash>] Make up reasons
-          #
-          # @example
-          #   reasons = Pike13::API::V2::Desk::MakeUp.reasons
-          def self.reasons
-            with("desk/make_ups/reasons").to_a
-          end
+            # GET /desk/make_ups/reasons
+            def reasons
+              client.get("desk/make_ups/reasons")
+            end
 
-          # Generate make up pass
-          #
-          # @param visit_id [Integer] Visit ID (required)
-          # @param make_up_reason_id [Integer] Make up reason ID (required)
-          # @param free_form_reason [String] Optional free-form reason
-          # @return [Hash] Make up data
-          #
-          # @example
-          #   make_up = Pike13::API::V2::Desk::MakeUp.generate(
-          #     visit_id: 123,
-          #     make_up_reason_id: 1,
-          #     free_form_reason: "Student was ill"
-          #   )
-          def self.generate(visit_id:, make_up_reason_id:, free_form_reason: nil)
-            body = {
-              visit_id: visit_id,
-              make_up: {
-                make_up_reason_id: make_up_reason_id
+            # POST /desk/make_ups/generate
+            def generate(visit_id:, make_up_reason_id:, free_form_reason: nil)
+              body = {
+                visit_id: visit_id,
+                make_up: {
+                  make_up_reason_id: make_up_reason_id
+                }
               }
-            }
-            body[:make_up][:free_form_reason] = free_form_reason if free_form_reason
+              body[:make_up][:free_form_reason] = free_form_reason if free_form_reason
 
-            request(:post, "desk/make_ups/generate", body).data
+              client.post("desk/make_ups/generate", body)
+            end
           end
         end
       end

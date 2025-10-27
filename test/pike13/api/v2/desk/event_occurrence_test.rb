@@ -16,11 +16,11 @@ module Pike13
                                   "event_occurrences" => [{ "id" => 1 }]
                                 })
 
-            event_occurrences = Pike13::API::V2::Desk::EventOccurrence.all.to_a
+            event_occurrences = Pike13::API::V2::Desk::EventOccurrence.all
 
-            assert_instance_of Array, event_occurrences
-            assert_equal 1, event_occurrences.size
-            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, event_occurrences.first
+            assert_instance_of Hash, event_occurrences
+            assert_equal 1, event_occurrences["event_occurrences"].size
+            assert_instance_of Hash, event_occurrences["event_occurrences"].first
           end
 
           def test_find_event_occurrence
@@ -30,8 +30,8 @@ module Pike13
 
             event_occurrence = Pike13::API::V2::Desk::EventOccurrence.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::EventOccurrence, event_occurrence
-            assert_equal 123, event_occurrence.id
+            assert_instance_of Hash, event_occurrence
+            assert_equal 123, event_occurrence["event_occurrences"].first["id"]
           end
 
           def test_summary
@@ -42,7 +42,9 @@ module Pike13
                                   ]
                                 })
 
-            summaries = Pike13::API::V2::Desk::EventOccurrence.summary
+            result = Pike13::API::V2::Desk::EventOccurrence.summary
+
+            summaries = result["event_occurrence_summaries"]
 
             assert_equal 2, summaries.size
             assert_equal 1, summaries.first["event_id"]
@@ -60,7 +62,9 @@ module Pike13
                                   ]
                                 })
 
-            eligibilities = Pike13::API::V2::Desk::EventOccurrence.enrollment_eligibilities(id: 123)
+            result = Pike13::API::V2::Desk::EventOccurrence.enrollment_eligibilities(id: 123)
+
+            eligibilities = result["enrollment_eligibilities"]
 
             assert_equal 2, eligibilities.size
             assert eligibilities.first["eligible"]

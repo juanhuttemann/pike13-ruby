@@ -19,11 +19,11 @@ module Pike13
                                   ]
                                 })
 
-            people = Pike13::API::V2::Desk::Person.all.to_a
+            people = Pike13::API::V2::Desk::Person.all
 
-            assert_instance_of Array, people
-            assert_equal 2, people.size
-            assert_instance_of Pike13::API::V2::Desk::Person, people.first
+            assert_instance_of Hash, people
+            assert_equal 2, people["people"].size
+            assert_instance_of Hash, people["people"].first
           end
 
           def test_find_person
@@ -33,8 +33,8 @@ module Pike13
 
             person = Pike13::API::V2::Desk::Person.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::Person, person
-            assert_equal 123, person.id
+            assert_instance_of Hash, person
+            assert_equal 123, person["people"].first["id"]
           end
 
           def test_search
@@ -42,10 +42,10 @@ module Pike13
                                   "people" => [{ "id" => 123, "first_name" => "John" }]
                                 })
 
-            people = Pike13::API::V2::Desk::Person.search("john").to_a
+            people = Pike13::API::V2::Desk::Person.search("john")
 
-            assert_instance_of Array, people
-            assert_equal 1, people.size
+            assert_instance_of Hash, people
+            assert_equal 1, people["people"].size
           end
 
           def test_me
@@ -55,56 +55,12 @@ module Pike13
 
             person = Pike13::API::V2::Desk::Person.me
 
-            assert_instance_of Pike13::API::V2::Desk::Person, person
-            assert_equal 999, person.id
+            assert_instance_of Hash, person
+            assert_equal 999, person["people"].first["id"]
           end
 
-          def test_nested_visits
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
-                                  "people" => [{ "id" => 123, "first_name" => "John" }]
-                                })
-
-            # Spyke uses :person_id in the association URI
-            stub_request(:get, "https://test.pike13.com/api/v2/desk/people/123/visits")
-              .with(headers: { "Authorization" => "Bearer test_token" })
-              .to_return(status: 200,
-                         body: { "visits" => [{ "id" => 456 }] }.to_json,
-                         headers: { "Content-Type" => "application/json" })
-
-            person = Pike13::API::V2::Desk::Person.find(123)
-            visits = person.visits.to_a
-
-            assert_instance_of Array, visits
-            assert_equal 1, visits.size
-          end
-
-          def test_nested_visits_with_params
-            stub_request(:get, "https://test.pike13.com/api/v2/desk/people/123/visits?from=2025-01-01&to=2025-01-31")
-              .with(headers: { "Authorization" => "Bearer test_token" })
-              .to_return(status: 200,
-                         body: { "visits" => [{ "id" => 456 }, { "id" => 457 }] }.to_json,
-                         headers: { "Content-Type" => "application/json" })
-
-            person = Pike13::API::V2::Desk::Person.new(id: 123)
-            visits = person.visits.where(from: "2025-01-01", to: "2025-01-31").to_a
-
-            assert_instance_of Array, visits
-            assert_equal 2, visits.size
-          end
-
-          def test_nested_plans_with_params
-            stub_request(:get, "https://test.pike13.com/api/v2/desk/people/123/plans?include_holds=true&filter=active")
-              .with(headers: { "Authorization" => "Bearer test_token" })
-              .to_return(status: 200,
-                         body: { "plans" => [{ "id" => 789 }] }.to_json,
-                         headers: { "Content-Type" => "application/json" })
-
-            person = Pike13::API::V2::Desk::Person.new(id: 123)
-            plans = person.plans.where(include_holds: true, filter: "active").to_a
-
-            assert_instance_of Array, plans
-            assert_equal 1, plans.size
-          end
+          # NOTE: Nested resources are no longer supported via instance associations
+          # Use Visit.all(person_id: 123) or Plan.all(person_id: 123) instead
 
           # CREATE tests
           def test_create_person_via_proxy
@@ -123,24 +79,15 @@ module Pike13
               email: "jane@example.com"
             )
 
-            assert_instance_of Pike13::API::V2::Desk::Person, person
-            assert_equal 456, person.id
-            assert_equal "Jane", person.first_name
-            assert_equal "Doe", person.last_name
-            assert_equal "jane@example.com", person.email
+            assert_instance_of Hash, person
+            assert_equal 456, person["people"].first["id"]
+            assert_equal "Jane", person["people"].first["first_name"]
+            assert_equal "Doe", person["people"].first["last_name"]
+            assert_equal "jane@example.com", person["people"].first["email"]
           end
 
-          # UPDATE tests - via instance (find + update)
+          # UPDATE tests - direct class method
           def test_update_person_direct
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
-                                  "people" => [{
-                                    "id" => 123,
-                                    "first_name" => "John",
-                                    "last_name" => "Doe",
-                                    "email" => "john@example.com"
-                                  }]
-                                })
-
             stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{
                                     "id" => 123,
@@ -150,82 +97,22 @@ module Pike13
                                   }]
                                 })
 
-            person = Pike13::API::V2::Desk::Person.find(123)
-            person.update_attributes(last_name: "Updated", email: "john.updated@example.com")
+            person = Pike13::API::V2::Desk::Person.update(123, last_name: "Updated", email: "john.updated@example.com")
 
-            assert_equal 123, person.id
-            assert_equal "Updated", person.last_name
-            assert_equal "john.updated@example.com", person.email
+            assert_instance_of Hash, person
+            assert_equal 123, person["people"].first["id"]
+            assert_equal "Updated", person["people"].first["last_name"]
+            assert_equal "john.updated@example.com", person["people"].first["email"]
           end
 
-          # UPDATE tests - via Spyke save
-          def test_update_person_with_save
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123",
-                                response_body: {
-                                  "people" => [{
-                                    "id" => 123,
-                                    "first_name" => "John",
-                                    "last_name" => "Doe",
-                                    "email" => "john@example.com"
-                                  }]
-                                })
-
-            person = Pike13::API::V2::Desk::Person.find(123)
-
-            assert_equal "Doe", person.last_name
-
-            stub_pike13_request(:put, "https://test.pike13.com/api/v2/desk/people/123",
-                                response_body: {
-                                  "people" => [{
-                                    "id" => 123,
-                                    "first_name" => "John",
-                                    "last_name" => "Updated",
-                                    "email" => "john.updated@example.com"
-                                  }]
-                                })
-
-            person.last_name = "Updated"
-            person.email = "john.updated@example.com"
-            person.save
-
-            assert_equal "Updated", person.last_name
-            assert_equal "john.updated@example.com", person.email
-          end
-
-          # DELETE tests - Spyke's destroy returns attributes
+          # DELETE tests - direct class method
           def test_destroy_person_class_method
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
-                                  "people" => [{ "id" => 123, "first_name" => "John" }]
-                                })
             stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123", response_body: {})
 
-            person = Pike13::API::V2::Desk::Person.find(123)
-            person.destroy
+            result = Pike13::API::V2::Desk::Person.destroy(123)
 
-            # Just verify the delete was called
-            assert true
-          end
-
-          # DELETE tests - via instance (2 requests: find + delete)
-          def test_destroy_person_via_instance
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
-                                  "people" => [{
-                                    "id" => 123,
-                                    "first_name" => "John",
-                                    "last_name" => "Doe"
-                                  }]
-                                })
-
-            person = Pike13::API::V2::Desk::Person.find(123)
-
-            assert_equal 123, person.id
-
-            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/people/123", response_body: {})
-
-            person.destroy
-
-            # Just verify the delete was called, Spyke returns attributes not boolean
-            assert true
+            # Delete returns empty hash
+            assert_empty(result)
           end
         end
       end

@@ -5,11 +5,21 @@ module Pike13
     module V2
       module Desk
         class Service < Base
-          uri "desk/services(/:id)"
-          include_root_in_json :service
+          class << self
+            # GET /desk/services
+            def all
+              client.get("desk/services")
+            end
 
-          def self.enrollment_eligibilities(service_id:, **params)
-            with("desk/services/#{service_id}/enrollment_eligibilities").where(params).to_a
+            # GET /desk/services/:id
+            def find(id)
+              client.get("desk/services/#{id}")
+            end
+
+            # GET /desk/services/:service_id/enrollment_eligibilities
+            def enrollment_eligibilities(service_id:, **params)
+              client.get("desk/services/#{service_id}/enrollment_eligibilities", params)
+            end
           end
         end
       end

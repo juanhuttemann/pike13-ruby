@@ -5,8 +5,12 @@ module Pike13
     module V2
       module Account
         class Confirmation < Base
-          uri "account/confirmations(/:id)"
-          include_root_in_json :account
+          class << self
+            # POST /account/confirmations
+            def create(attributes)
+              client.post("account/confirmations", { account: attributes })
+            end
+          end
         end
       end
     end

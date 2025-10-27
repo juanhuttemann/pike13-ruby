@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Desk
         class CustomField < Base
-          uri "desk/custom_fields(/:id)"
-          include_root_in_json :custom_field
+          class << self
+            # GET /desk/custom_fields
+            def all
+              client.get("desk/custom_fields")
+            end
+
+            # GET /desk/custom_fields/:id
+            def find(id)
+              client.get("desk/custom_fields/#{id}")
+            end
+          end
         end
       end
     end

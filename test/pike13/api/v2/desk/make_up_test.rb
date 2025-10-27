@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
-
+require "pry"
 module Pike13
   module API
     module V2
@@ -19,9 +19,10 @@ module Pike13
                                   ]
                                 })
 
-            reasons = Pike13::API::V2::Desk::MakeUp.reasons
+            result = Pike13::API::V2::Desk::MakeUp.reasons
 
-            assert_instance_of Array, reasons
+            reasons = result["make_up_reasons"]
+
             assert_equal 2, reasons.size
             assert_equal 1, reasons.first["id"]
             assert_equal "Illness", reasons.first["name"]
@@ -41,7 +42,7 @@ module Pike13
               visit_id: 123,
               make_up_reason_id: 1,
               free_form_reason: "Student had the flu"
-            )
+            )["make_up"]
 
             assert_equal 1, make_up["id"]
             assert_equal 1, make_up["make_up_reason_id"]
@@ -62,7 +63,7 @@ module Pike13
             make_up = Pike13::API::V2::Desk::MakeUp.generate(
               visit_id: 456,
               make_up_reason_id: 2
-            )
+            )["make_up"]
 
             assert_equal 2, make_up["id"]
             assert_equal 2, make_up["make_up_reason_id"]

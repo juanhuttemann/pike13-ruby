@@ -18,8 +18,8 @@ module Pike13
 
             visit = Pike13::API::V2::Desk::Visit.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::Visit, visit
-            assert_equal 123, visit.id
+            assert_instance_of Hash, visit
+            assert_equal 123, visit["visits"].first["id"]
           end
 
           def test_summary
@@ -33,7 +33,6 @@ module Pike13
 
             summary = Pike13::API::V2::Desk::Visit.summary(person_id: 123)
 
-            assert_instance_of Hash, summary
             assert_equal({
                            "first_visit_at" => "2020-01-01T00:00:00Z",
                            "last_visit_at" => "2025-10-21T00:00:00Z",

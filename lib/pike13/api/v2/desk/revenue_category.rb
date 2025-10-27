@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Desk
         class RevenueCategory < Base
-          uri "desk/revenue_categories(/:id)"
-          include_root_in_json :revenue_category
+          class << self
+            # GET /desk/revenue_categories
+            def all
+              client.get("desk/revenue_categories")
+            end
+
+            # GET /desk/revenue_categories/:id
+            def find(id)
+              client.get("desk/revenue_categories/#{id}")
+            end
+          end
         end
       end
     end

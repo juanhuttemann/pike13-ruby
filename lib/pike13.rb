@@ -3,11 +3,7 @@
 require_relative "pike13/version"
 require_relative "pike13/configuration"
 require_relative "pike13/errors"
-require_relative "pike13/middleware/json_parser"
-require_relative "pike13/connection_builder"
-
-# Spyke dependency
-require "spyke"
+require_relative "pike13/http_client"
 
 # Namespace base classes
 require_relative "pike13/api/v2/desk/base"

@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Front
         class StaffMember < Base
-          uri "front/staff_members(/:id)"
-          include_root_in_json :staff_member
+          class << self
+            # GET /front/staff_members
+            def all
+              client.get("front/staff_members")
+            end
+
+            # GET /front/staff_members/:id
+            def find(id)
+              client.get("front/staff_members/#{id}")
+            end
+          end
         end
       end
     end

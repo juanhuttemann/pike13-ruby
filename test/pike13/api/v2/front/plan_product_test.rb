@@ -16,11 +16,11 @@ module Pike13
                                   "plan_products" => [{ "id" => 1 }]
                                 })
 
-            plan_products = Pike13::API::V2::Front::PlanProduct.all.to_a
+            plan_products = Pike13::API::V2::Front::PlanProduct.all
 
-            assert_instance_of Array, plan_products
-            assert_equal 1, plan_products.size
-            assert_instance_of Pike13::API::V2::Front::PlanProduct, plan_products.first
+            assert_instance_of Hash, plan_products
+            assert_equal 1, plan_products["plan_products"].size
+            assert_instance_of Hash, plan_products["plan_products"].first
           end
 
           def test_find_plan_product
@@ -30,8 +30,8 @@ module Pike13
 
             plan_product = Pike13::API::V2::Front::PlanProduct.find(123)
 
-            assert_instance_of Pike13::API::V2::Front::PlanProduct, plan_product
-            assert_equal 123, plan_product.id
+            assert_instance_of Hash, plan_product
+            assert_equal 123, plan_product["plan_products"].first["id"]
           end
         end
       end

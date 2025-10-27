@@ -16,9 +16,9 @@ module Pike13
                                   "business" => { "id" => 1 }
                                 })
 
-            item = Pike13::API::V2::Front::Business.all.first
+            result = Pike13::API::V2::Front::Business.get
 
-            assert_equal 1, item.id
+            assert_equal 1, result["business"]["id"]
           end
         end
       end

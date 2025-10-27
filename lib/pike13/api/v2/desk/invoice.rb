@@ -5,11 +5,21 @@ module Pike13
     module V2
       module Desk
         class Invoice < Base
-          uri "desk/invoices(/:id)"
-          include_root_in_json :invoice
+          class << self
+            # GET /desk/invoices
+            def all
+              client.get("desk/invoices")
+            end
 
-          def payment_methods
-            self.class.with("desk/invoices/#{id}/payment_methods").to_a
+            # GET /desk/invoices/:id
+            def find(id)
+              client.get("desk/invoices/#{id}")
+            end
+
+            # GET /desk/invoices/:id/payment_methods
+            def payment_methods(id)
+              client.get("desk/invoices/#{id}/payment_methods")
+            end
           end
         end
       end

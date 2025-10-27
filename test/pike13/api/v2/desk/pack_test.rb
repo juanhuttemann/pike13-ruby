@@ -18,8 +18,8 @@ module Pike13
 
             pack = Pike13::API::V2::Desk::Pack.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::Pack, pack
-            assert_equal 123, pack.id
+            assert_instance_of Hash, pack
+            assert_equal 123, pack["packs"].first["id"]
           end
         end
       end

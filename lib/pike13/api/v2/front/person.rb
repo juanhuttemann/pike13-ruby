@@ -5,14 +5,13 @@ module Pike13
     module V2
       module Front
         class Person < Base
-          uri "front/people(/:id)"
-          include_root_in_json :person
-
-          has_many :visits, class_name: "Pike13::API::V2::Front::Visit", uri: "front/people/:person_id/visits"
-          has_many :waitlist_entries, class_name: "Pike13::API::V2::Front::WaitlistEntry",
-                                      uri: "front/people/:person_id/waitlist_entries"
-
           class << self
+            # GET /front/people/:id
+            def find(id)
+              client.get("front/people/#{id}")
+            end
+
+            # GET /front/people/me
             def me
               find(:me)
             end

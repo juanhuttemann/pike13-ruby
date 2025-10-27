@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Front
         class PlanProduct < Base
-          uri "front/plan_products(/:id)"
-          include_root_in_json :plan_product
+          class << self
+            # GET /front/plan_products
+            def all
+              client.get("front/plan_products")
+            end
+
+            # GET /front/plan_products/:id
+            def find(id)
+              client.get("front/plan_products/#{id}")
+            end
+          end
         end
       end
     end

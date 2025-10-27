@@ -26,9 +26,11 @@ module Pike13
                                   }]
                                 })
 
-            refund = Pike13::API::V2::Desk::Refund.void(
+            result = Pike13::API::V2::Desk::Refund.void(
               refund_id: 123
             )
+
+            refund = result["refunds"].first
 
             assert_equal 123, refund["id"]
             assert_equal "completed", refund["state"]
@@ -49,9 +51,11 @@ module Pike13
                                   }]
                                 })
 
-            refund = Pike13::API::V2::Desk::Refund.void(
+            result = Pike13::API::V2::Desk::Refund.void(
               refund_id: 456
             )
+
+            refund = result["refunds"].first
 
             assert_equal 456, refund["id"]
             assert_equal 5000, refund["amount_cents"]

@@ -5,11 +5,21 @@ module Pike13
     module V2
       module Front
         class Plan < Base
-          uri "front/plans(/:id)"
-          include_root_in_json :plan
+          class << self
+            # GET /front/plans
+            def all
+              client.get("front/plans")
+            end
 
-          def plan_terms
-            self.class.with("front/plans/#{id}/plan_terms").to_a
+            # GET /front/plans/:id
+            def find(id)
+              client.get("front/plans/#{id}")
+            end
+
+            # GET /front/plans/:id/plan_terms
+            def plan_terms(id)
+              client.get("front/plans/#{id}/plan_terms")
+            end
           end
         end
       end

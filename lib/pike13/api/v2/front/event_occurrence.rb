@@ -5,16 +5,26 @@ module Pike13
     module V2
       module Front
         class EventOccurrence < Base
-          uri "front/event_occurrences(/:id)"
-          include_root_in_json :event_occurrence
+          class << self
+            # GET /front/event_occurrences
+            def all
+              client.get("front/event_occurrences")
+            end
 
-          def self.summary(**params)
-            result = request(:get, "front/event_occurrences/summary", params)
-            result.data || {}
-          end
+            # GET /front/event_occurrences/:id
+            def find(id)
+              client.get("front/event_occurrences/#{id}")
+            end
 
-          def self.enrollment_eligibilities(id:, **params)
-            with("front/event_occurrences/#{id}/enrollment_eligibilities").where(params).to_a
+            # GET /front/event_occurrences/summary
+            def summary(**params)
+              client.get("front/event_occurrences/summary", params)
+            end
+
+            # GET /front/event_occurrences/:id/enrollment_eligibilities
+            def enrollment_eligibilities(id:, **params)
+              client.get("front/event_occurrences/#{id}/enrollment_eligibilities", params)
+            end
           end
         end
       end

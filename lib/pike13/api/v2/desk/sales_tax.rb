@@ -5,8 +5,17 @@ module Pike13
     module V2
       module Desk
         class SalesTax < Base
-          uri "desk/sales_taxes(/:id)"
-          include_root_in_json :sales_tax
+          class << self
+            # GET /desk/sales_taxes
+            def all
+              client.get("desk/sales_taxes")
+            end
+
+            # GET /desk/sales_taxes/:id
+            def find(id)
+              client.get("desk/sales_taxes/#{id}")
+            end
+          end
         end
       end
     end

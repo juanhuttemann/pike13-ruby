@@ -5,11 +5,22 @@ module Pike13
     module V2
       module Desk
         class Visit < Base
-          uri "desk/visits(/:id)"
-          include_root_in_json :visit
+          class << self
+            # GET /desk/visits
+            def all
+              client.get("desk/visits")
+            end
 
-          def self.summary(person_id:, **params)
-            with("desk/people/#{person_id}/visits/summary").where(params).first.attributes.to_h
+            # GET /desk/visits/:id
+            def find(id)
+              client.get("desk/visits/#{id}")
+            end
+
+            # GET /desk/people/:person_id/visits/summary
+            def summary(person_id:, **params)
+              response = client.get("desk/people/#{person_id}/visits/summary", params)
+              response.is_a?(Array) ? response.first : response
+            end
           end
         end
       end

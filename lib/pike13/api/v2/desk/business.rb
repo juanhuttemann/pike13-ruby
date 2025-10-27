@@ -5,8 +5,12 @@ module Pike13
     module V2
       module Desk
         class Business < Base
-          uri "desk/business"
-          include_root_in_json :business
+          class << self
+            # GET /desk/business
+            def get
+              client.get("desk/business")
+            end
+          end
         end
       end
     end

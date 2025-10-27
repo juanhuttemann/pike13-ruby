@@ -18,8 +18,8 @@ module Pike13
 
             booking = Pike13::API::V2::Desk::Booking.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::Booking, booking
-            assert_equal 123, booking.id
+            assert_instance_of Hash, booking
+            assert_equal 123, booking["bookings"].first["id"]
           end
         end
       end

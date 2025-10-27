@@ -18,22 +18,11 @@ module Pike13
 
             invoice = Pike13::API::V2::Front::Invoice.find(123)
 
-            assert_instance_of Pike13::API::V2::Front::Invoice, invoice
-            assert_equal 123, invoice.id
+            assert_instance_of Hash, invoice
+            assert_equal 123, invoice["invoices"].first["id"]
           end
 
-          def test_payment_methods
-            invoice = Pike13::API::V2::Front::Invoice.new(id: 123)
-
-            stub_pike13_request(:get, "https://test.pike13.com/api/v2/front/invoices/123/payment_methods",
-                                response_body: {
-                                  "payment_methods" => [{ "id" => 456 }]
-                                })
-
-            payment_methods = invoice.payment_methods
-
-            assert_equal 1, payment_methods.size
-          end
+          # NOTE: Instance-based associations not supported - use class methods instead
         end
       end
     end

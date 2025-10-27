@@ -16,11 +16,11 @@ module Pike13
                                   "events" => [{ "id" => 1 }]
                                 })
 
-            events = Pike13::API::V2::Desk::Event.all.to_a
+            events = Pike13::API::V2::Desk::Event.all
 
-            assert_instance_of Array, events
-            assert_equal 1, events.size
-            assert_instance_of Pike13::API::V2::Desk::Event, events.first
+            assert_instance_of Hash, events
+            assert_equal 1, events["events"].size
+            assert_instance_of Hash, events["events"].first
           end
 
           def test_find_event
@@ -30,8 +30,8 @@ module Pike13
 
             event = Pike13::API::V2::Desk::Event.find(123)
 
-            assert_instance_of Pike13::API::V2::Desk::Event, event
-            assert_equal 123, event.id
+            assert_instance_of Hash, event
+            assert_equal 123, event["events"].first["id"]
           end
         end
       end

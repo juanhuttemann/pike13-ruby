@@ -18,8 +18,8 @@ module Pike13
 
             person = Pike13::API::V2::Front::Person.me
 
-            assert_instance_of Pike13::API::V2::Front::Person, person
-            assert_equal 123, person.id
+            assert_instance_of Hash, person
+            assert_equal 123, person["people"].first["id"]
           end
         end
       end
