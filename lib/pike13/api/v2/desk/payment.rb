@@ -21,8 +21,7 @@ module Pike13
 
             # GET /desk/payments/configuration
             def configuration
-              response = client.get("desk/payments/configuration")
-              response.is_a?(Array) ? response.first : response
+              client.get("desk/payments/configuration")
             end
           end
         end

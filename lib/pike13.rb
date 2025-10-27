@@ -65,7 +65,6 @@ require_relative "pike13/api/v2/front/payment"
 # Pike13 Ruby Client
 #
 # A Ruby gem for interacting with the Pike13 API.
-# Built on Spyke for ActiveRecord-like models.
 #
 # @example Configuration
 #   Pike13.configure do |config|

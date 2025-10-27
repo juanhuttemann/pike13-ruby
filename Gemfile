@@ -15,6 +15,5 @@ group :development, :test do
   gem "rubocop-minitest"
   gem "rubocop-rake"
   gem "simplecov", require: false
-  gem "vcr", "~> 6.1"
   gem "webmock", "~> 3.18"
 end

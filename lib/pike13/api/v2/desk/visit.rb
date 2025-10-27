@@ -18,8 +18,7 @@ module Pike13
 
             # GET /desk/people/:person_id/visits/summary
             def summary(person_id:, **params)
-              response = client.get("desk/people/#{person_id}/visits/summary", params)
-              response.is_a?(Array) ? response.first : response
+              client.get("desk/people/#{person_id}/visits/summary", params)
             end
           end
         end

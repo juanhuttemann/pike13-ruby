@@ -10,8 +10,7 @@ module Pike13
             # GET /account
             # Returns { accounts: [...] }
             def me
-              response = client.get("account")
-              response.is_a?(Array) ? response.first : response
+              client.get("account")
             end
           end
         end

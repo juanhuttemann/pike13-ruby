@@ -14,18 +14,9 @@ require "pike13"
 require "minitest/autorun"
 require "minitest/reporters"
 require "webmock/minitest"
-require "vcr"
 require "dotenv/load"
 
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
-
-# VCR configuration for recording HTTP interactions (optional for integration tests)
-# VCR.configure do |config|
-#   config.cassette_library_dir = "test/vcr_cassettes"
-#   config.hook_into :webmock
-#   config.filter_sensitive_data("<ACCESS_TOKEN>") { ENV["PIKE13_ACCESS_TOKEN"] }
-#   config.filter_sensitive_data("<SUBDOMAIN>") { ENV["PIKE13_SUBDOMAIN"] }
-# end
 
 module TestHelpers
   def stub_pike13_request(method, url, response_body: {}, status: 200)
