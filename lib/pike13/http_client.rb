@@ -162,9 +162,11 @@ module Pike13
       return nil if response.body.nil? || response.body.empty?
 
       parsed = response.parsed_response
+      
+      # If parsed response is not a Hash (e.g., it's an Array), return as-is
       return parsed unless parsed.is_a?(Hash)
 
-      # Handle different response formats
+      # Handle different response formats for Hash responses
       if parsed.key?("data")
         parsed["data"]
       else

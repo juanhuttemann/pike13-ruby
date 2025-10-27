@@ -7,8 +7,8 @@ module Pike13
         class EventOccurrence < Base
           class << self
             # GET /front/event_occurrences
-            def all
-              client.get("front/event_occurrences")
+            def all(**params)
+              client.get("front/event_occurrences", params)
             end
 
             # GET /front/event_occurrences/:id

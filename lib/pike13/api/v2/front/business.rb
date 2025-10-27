@@ -7,9 +7,10 @@ module Pike13
         class Business < Base
           class << self
             # GET /front/business
-            def get
+            def find
               client.get("front/business")
             end
+            alias get find
 
             # GET /front/business/franchisees
             def franchisees

@@ -7,9 +7,10 @@ module Pike13
         class Branding < Base
           class << self
             # GET /front/branding
-            def get
+            def find
               client.get("front/branding")
             end
+            alias get find
           end
         end
       end
