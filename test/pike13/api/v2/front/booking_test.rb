@@ -62,6 +62,15 @@ module Pike13
             assert_equal 123, result["bookings"].first["id"]
             assert_equal "completed", result["bookings"].first["state"]
           end
+
+          def test_destroy_lease
+            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/front/bookings/123/leases/456",
+                                response_body: {})
+
+            result = Pike13::API::V2::Front::Booking.destroy_lease(123, 456)
+
+            assert_instance_of Hash, result
+          end
         end
       end
     end

@@ -21,6 +21,31 @@ module Pike13
             assert_instance_of Hash, punch
             assert_equal 123, punch["punches"].first["id"]
           end
+
+          def test_create_punch
+            stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/punches",
+                                response_body: {
+                                  "punches" => [{ "id" => 456, "pack_id" => 123, "visit_id" => 789 }]
+                                })
+
+            result = Pike13::API::V2::Desk::Punch.create(
+              pack_id: 123,
+              visit_id: 789
+            )
+
+            assert_instance_of Hash, result
+            assert_equal 456, result["punches"].first["id"]
+            assert_equal 123, result["punches"].first["pack_id"]
+          end
+
+          def test_destroy_punch
+            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/punches/456",
+                                response_body: {})
+
+            result = Pike13::API::V2::Desk::Punch.destroy(456)
+
+            assert_instance_of Hash, result
+          end
         end
       end
     end

@@ -42,7 +42,7 @@ Account-level resources for managing your Pike13 account.
 
 ```ruby
 # Get current account
-Pike13::Account::Me.me
+Pike13::Account.me
 
 # List all businesses
 Pike13::Account::Business.all
@@ -127,14 +127,20 @@ Pike13::Desk::EventOccurrenceNote.find(event_occurrence_id: 789, id: 1)
 # Create event occurrence note
 Pike13::Desk::EventOccurrenceNote.create(
   event_occurrence_id: 789,
-  attributes: { body: "This is a note" }
+  attributes: {
+    note: "This is a note",      # Use "note" not "body"
+    subject: "Note Subject"       # Optional
+  }
 )
 
 # Update event occurrence note
 Pike13::Desk::EventOccurrenceNote.update(
   event_occurrence_id: 789,
   id: 1,
-  attributes: { body: "Updated note" }
+  attributes: {
+    note: "Updated note",        # Use "note" not "body"
+    subject: "Updated Subject"   # Optional
+  }
 )
 
 # Delete event occurrence note
@@ -170,14 +176,17 @@ Pike13::Desk::Appointment.available_slots_summary(
 
 #### Bookings
 
+**Note:** Creating bookings requires an `idempotency_token` parameter to prevent duplicate bookings.
+
 ```ruby
 # Find booking
 Pike13::Desk::Booking.find(123)
 
-# Create booking
+# Create booking (requires idempotency token)
 Pike13::Desk::Booking.create(
   event_occurrence_id: 789,
-  person_id: 123
+  person_id: 123,
+  idempotency_token: SecureRandom.uuid  # Required: unique token to prevent duplicates
 )
 
 # Update booking
@@ -281,14 +290,20 @@ Pike13::Desk::Note.find(person_id: 123, id: 1000)
 # Create note
 Pike13::Desk::Note.create(
   person_id: 123,
-  attributes: { body: "This is a note" }
+  attributes: {
+    note: "This is a note",       # Use "note" not "body"
+    subject: "Note Subject"        # Optional but recommended
+  }
 )
 
 # Update note
 Pike13::Desk::Note.update(
   person_id: 123,
   id: 1000,
-  attributes: { body: "Updated note" }
+  attributes: {
+    note: "Updated note",          # Use "note" not "body"
+    subject: "Updated Subject"     # Optional
+  }
 )
 
 # Delete note
@@ -354,9 +369,13 @@ Pike13::Desk::FormOfPayment.all(person_id: 123)
 Pike13::Desk::FormOfPayment.find(person_id: 123, id: 456)
 
 # Create form of payment
+# Note: Requires 'type' parameter ("creditcard" for credit cards, "ach" for bank accounts)
 Pike13::Desk::FormOfPayment.create(
   person_id: 123,
-  attributes: { token: "tok_xxx" }
+  attributes: {
+    type: "creditcard",  # Required! Options: "creditcard" or "ach"
+    token: "tok_xxx"
+  }
 )
 
 # Update form of payment
@@ -445,6 +464,8 @@ Pike13::Front::Appointment.available_slots_summary(
 
 #### Bookings
 
+**Note:** Creating bookings requires an `idempotency_token` parameter to prevent duplicate bookings.
+
 ```ruby
 # Find booking
 Pike13::Front::Booking.find(123)
@@ -452,10 +473,11 @@ Pike13::Front::Booking.find(123)
 # Find lease for booking
 Pike13::Front::Booking.find_lease(booking_id: 123, id: 456)
 
-# Create booking
+# Create booking (requires idempotency token)
 Pike13::Front::Booking.create(
   event_occurrence_id: 789,
-  person_id: 123
+  person_id: 123,
+  idempotency_token: SecureRandom.uuid  # Required: unique token to prevent duplicates
 )
 
 # Update booking
@@ -565,9 +587,13 @@ Pike13::Front::FormOfPayment.find(person_id: 123, id: 456)
 Pike13::Front::FormOfPayment.find_me(id: 456)
 
 # Create form of payment
+# Note: Requires 'type' parameter ("creditcard" for credit cards, "ach" for bank accounts)
 Pike13::Front::FormOfPayment.create(
   person_id: 123,
-  attributes: { token: "tok_xxx" }
+  attributes: {
+    type: "creditcard",  # Required! Options: "creditcard" or "ach"
+    token: "tok_xxx"
+  }
 )
 
 # Update form of payment

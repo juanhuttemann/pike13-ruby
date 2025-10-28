@@ -22,7 +22,7 @@ module Pike13
                                 ]
                               })
 
-          account = Pike13::API::V2::Account::Me.me
+          account = Pike13::Account.me
 
           assert_instance_of Hash, account
           assert_equal 999, account["accounts"].first["id"]

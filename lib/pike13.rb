@@ -4,6 +4,7 @@ require_relative "pike13/version"
 require_relative "pike13/configuration"
 require_relative "pike13/errors"
 require_relative "pike13/http_client"
+require_relative "pike13/validators"
 
 # Namespace base classes
 require_relative "pike13/api/v2/desk/base"
@@ -11,7 +12,7 @@ require_relative "pike13/api/v2/front/base"
 require_relative "pike13/api/v2/account/base"
 
 # Account namespace resources
-require_relative "pike13/api/v2/account/me"
+require_relative "pike13/api/v2/account"
 require_relative "pike13/api/v2/account/business"
 require_relative "pike13/api/v2/account/person"
 require_relative "pike13/api/v2/account/password"
@@ -94,16 +95,16 @@ require_relative "pike13/api/v2/front/payment"
 #
 # @example Using different namespaces
 #   # Account namespace (not scoped to business subdomain)
-#   account = Pike13::API::V2::Account::Me.me
-#   businesses = Pike13::API::V2::Account::Business.all
+#   account = Pike13::Account.me
+#   businesses = Pike13::Account::Business.all
 #
 #   # Desk namespace (staff interface)
-#   people = Pike13::API::V2::Desk::Person.all
-#   events = Pike13::API::V2::Desk::Event.all
+#   people = Pike13::Desk::Person.all
+#   events = Pike13::Desk::Event.all
 #
 #   # Front namespace (client interface)
-#   locations = Pike13::API::V2::Front::Location.all
-#   branding = Pike13::API::V2::Front::Branding.all.first
+#   locations = Pike13::Front::Location.all
+#   branding = Pike13::Front::Branding.all.first
 module Pike13
   # Simplified namespace aliases
   Account = API::V2::Account
