@@ -7,8 +7,8 @@ module Pike13
         class PlanProduct < Base
           class << self
             # GET /desk/plan_products
-            def all
-              client.get("desk/plan_products")
+            def all(**params)
+              client.get("desk/plan_products", params)
             end
 
             # GET /desk/plan_products/:id

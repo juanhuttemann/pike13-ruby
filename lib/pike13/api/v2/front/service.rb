@@ -7,8 +7,8 @@ module Pike13
         class Service < Base
           class << self
             # GET /front/services
-            def all
-              client.get("front/services")
+            def all(**params)
+              client.get("front/services", params)
             end
 
             # GET /front/services/:id
