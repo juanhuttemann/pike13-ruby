@@ -21,9 +21,11 @@ module Pike13
               find(:me)
             end
 
-            # GET /desk/people/search?q=query
-            def search(query)
-              client.get("desk/people/search", q: query)
+            # GET /desk/people/search?q=query&fields=fields
+            def search(query, fields: nil)
+              params = { q: query }
+              params[:fields] = fields if fields
+              client.get("desk/people/search", params)
             end
 
             # POST /desk/people
