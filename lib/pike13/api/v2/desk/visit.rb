@@ -7,8 +7,8 @@ module Pike13
         class Visit < Base
           class << self
             # GET /desk/visits
-            def all
-              client.get("desk/visits")
+            def all(**params)
+              client.get("desk/visits", params)
             end
 
             # GET /desk/visits/:id
