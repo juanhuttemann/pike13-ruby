@@ -834,6 +834,91 @@ Pike13::Reporting::Transactions.query(
 - States: `transaction_state`, `transaction_type`, `transaction_autopay`
 - Location: `business_id`, `business_name`, `sale_location_name`
 
+#### Invoices
+
+Details of invoices, their status, revenue, and payment information.
+
+```ruby
+# Basic query - get all invoices
+Pike13::Reporting::Invoices.query(
+  fields: ['invoice_id', 'invoice_number', 'expected_amount', 'outstanding_amount', 'invoice_state']
+)
+
+# Query unpaid invoices
+Pike13::Reporting::Invoices.query(
+  fields: ['invoice_number', 'invoice_payer_name', 'outstanding_amount', 'invoice_due_date'],
+  filter: ['gt', 'outstanding_amount', 0],
+  sort: ['invoice_due_date']
+)
+
+# Query overdue invoices
+Pike13::Reporting::Invoices.query(
+  fields: ['invoice_number', 'invoice_payer_name', 'outstanding_amount', 'days_since_invoice_due'],
+  filter: [
+    'and',
+    [
+      ['eq', 'invoice_state', 'open'],
+      ['gt', 'days_since_invoice_due', 0]
+    ]
+  ]
+)
+
+# Query by date range
+Pike13::Reporting::Invoices.query(
+  fields: ['invoice_number', 'expected_amount', 'net_paid_amount', 'invoice_payer_name'],
+  filter: ['btw', 'issued_date', '2024-01-01', '2024-12-31']
+)
+
+# Group by invoice state
+Pike13::Reporting::Invoices.query(
+  fields: ['invoice_count', 'total_expected_amount', 'total_outstanding_amount'],
+  group: 'invoice_state'
+)
+
+# Monthly revenue summary
+Pike13::Reporting::Invoices.query(
+  fields: ['total_expected_amount', 'total_net_paid_amount', 'total_outstanding_amount', 'invoice_count'],
+  group: 'issued_month_start_date',
+  sort: ['issued_month_start_date']
+)
+
+# Query with discounts and coupons
+Pike13::Reporting::Invoices.query(
+  fields: [
+    'invoice_number',
+    'gross_amount',
+    'discounts_amount',
+    'coupons_amount',
+    'expected_amount'
+  ],
+  filter: ['gt', 'discounts_amount', 0]
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Invoice: `invoice_id`, `invoice_number`, `invoice_state`, `invoice_due_date`, `invoice_autobill`
+- Amounts: `gross_amount`, `expected_amount`, `net_paid_amount`, `outstanding_amount`
+- Revenue/Tax: `expected_revenue_amount`, `expected_tax_amount`, `net_paid_revenue_amount`, `net_paid_tax_amount`
+- Adjustments: `discounts_amount`, `coupons_amount`, `adjustments_amount`
+- Payments: `payments_amount`, `refunds_amount`, `failed_transactions`, `refunded_transactions`, `voided_transactions`
+- Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_email`, `invoice_payer_phone`
+- Dates: `issued_date`, `issued_at`, `closed_date`, `closed_at`, `days_since_invoice_due`
+- Other: `created_by_name`, `created_by_client`, `commission_recipient_name`, `sale_location_name`
+- See `Pike13::Reporting::Invoices::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `invoice_count`, `created_by_client_count`, `invoice_autobill_count`
+- Totals: `total_expected_amount`, `total_net_paid_amount`, `total_outstanding_amount`
+- Revenue/Tax: `total_expected_revenue_amount`, `total_net_paid_revenue_amount`, `total_outstanding_revenue_amount`
+- Adjustments: `total_discounts_amount`, `total_coupons_amount`, `total_adjustments_amount`
+- See `Pike13::Reporting::Invoices::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- State: `invoice_state`, `purchase_request_state`, `created_by_client`, `invoice_autobill`
+- Dates: `issued_date`, `issued_month_start_date`, `closed_date`, `closed_month_start_date`, `invoice_due_date`
+- Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_home_location`
+- Business: `business_id`, `business_name`, `sale_location_name`, `commission_recipient_name`
+
 ## Error Handling
 
 ```ruby

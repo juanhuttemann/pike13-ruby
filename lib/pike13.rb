@@ -83,6 +83,7 @@ require_relative "pike13/api/v2/front/payment"
 
 # V3 Reporting resources
 require_relative "pike13/api/v3/desk/clients"
+require_relative "pike13/api/v3/desk/invoices"
 require_relative "pike13/api/v3/desk/monthly_business_metrics"
 require_relative "pike13/api/v3/desk/transactions"
 
