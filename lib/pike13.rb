@@ -4,12 +4,14 @@ require_relative "pike13/version"
 require_relative "pike13/configuration"
 require_relative "pike13/errors"
 require_relative "pike13/http_client"
+require_relative "pike13/http_client_v3"
 require_relative "pike13/validators"
 
 # Namespace base classes
 require_relative "pike13/api/v2/desk/base"
 require_relative "pike13/api/v2/front/base"
 require_relative "pike13/api/v2/account/base"
+require_relative "pike13/api/v3/desk/base"
 
 # Account namespace resources
 require_relative "pike13/api/v2/account"
@@ -79,6 +81,9 @@ require_relative "pike13/api/v2/front/visit"
 require_relative "pike13/api/v2/front/waitlist_entry"
 require_relative "pike13/api/v2/front/payment"
 
+# V3 Reporting resources
+require_relative "pike13/api/v3/desk/monthly_business_metrics"
+
 # Pike13 Ruby Client
 #
 # A Ruby gem for interacting with the Pike13 API.
@@ -110,6 +115,7 @@ module Pike13
   Account = API::V2::Account
   Desk = API::V2::Desk
   Front = API::V2::Front
+  Reporting = API::V3::Desk
 
   class << self
     attr_writer :configuration
@@ -155,6 +161,7 @@ module Pike13
       API::V2::Desk::Base.configure(configuration)
       API::V2::Front::Base.configure(configuration)
       API::V2::Account::Base.configure(configuration)
+      API::V3::Desk::Base.configure(configuration)
     end
   end
 end

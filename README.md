@@ -30,11 +30,12 @@ end
 
 ## Usage
 
-The Pike13 API is organized into three namespaces:
+The Pike13 API is organized into four namespaces:
 
 - **Account** - Account-level operations (not scoped to a business)
 - **Desk** - Staff interface operations (full access)
 - **Front** - Client interface operations (limited access)
+- **Reporting** - Advanced reporting queries (v3 API)
 
 ### Account Resources
 
@@ -606,6 +607,84 @@ Pike13::Front::FormOfPayment.update(
 # Delete form of payment
 Pike13::Front::FormOfPayment.destroy(person_id: 123, id: 456)
 ```
+
+### Reporting Resources (v3 API)
+
+Advanced reporting queries for business analytics and insights.
+
+#### Monthly Business Metrics
+
+Summary of monthly transaction amounts, members, and enrollments over the lifetime of your business.
+
+```ruby
+# Basic query - get specific fields for all months
+Pike13::Reporting::MonthlyBusinessMetrics.query(
+  fields: ['month_start_date', 'net_paid_amount', 'new_client_count', 'member_count']
+)
+
+# Query with date range filter
+Pike13::Reporting::MonthlyBusinessMetrics.query(
+  fields: ['month_start_date', 'net_paid_amount', 'completed_enrollment_count'],
+  filter: ['btw', 'month_start_date', '2024-01-01', '2024-12-31']
+)
+
+# Query with sorting (descending by date)
+Pike13::Reporting::MonthlyBusinessMetrics.query(
+  fields: ['month_start_date', 'net_paid_revenue_amount', 'first_visit_count'],
+  sort: ['month_start_date-']
+)
+
+# Query with grouping (summary fields required)
+Pike13::Reporting::MonthlyBusinessMetrics.query(
+  fields: ['total_net_paid_amount', 'total_new_client_count', 'avg_member_count'],
+  group: 'year_start_date'
+)
+
+# Query with pagination
+Pike13::Reporting::MonthlyBusinessMetrics.query(
+  fields: ['month_start_date', 'net_paid_amount'],
+  page: { limit: 50 }
+)
+
+# Complex query with multiple filters
+Pike13::Reporting::MonthlyBusinessMetrics.query(
+  fields: [
+    'month_start_date',
+    'net_paid_revenue_amount',
+    'new_client_count',
+    'member_count',
+    'completed_enrollment_count'
+  ],
+  filter: [
+    'and',
+    [
+      ['btw', 'month_start_date', '2024-01-01', '2024-12-31'],
+      ['gt', 'net_paid_amount', 0]
+    ]
+  ],
+  sort: ['net_paid_amount-'],
+  total_count: true
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Revenue: `net_paid_amount`, `net_paid_revenue_amount`, `payments_amount`, `refunds_amount`
+- Clients: `new_client_count`, `member_count`, `client_w_plan_count`, `first_visit_count`
+- Enrollments: `enrollment_count`, `completed_enrollment_count`, `completed_enrollment_per_client`
+- Events: `event_occurrence_count`, `class_count`, `appointment_count`, `course_count`
+- Plans: `pack_count`, `membership_count`, `prepaid_count`, `plan_start_count`, `plan_end_count`
+- See `Pike13::Reporting::MonthlyBusinessMetrics::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- `total_net_paid_amount`, `total_net_paid_revenue_amount`, `total_payments_amount`
+- `total_new_client_count`, `avg_member_count`, `avg_client_w_plan_count`
+- `total_enrollment_count`, `total_completed_enrollment_count`, `total_first_visit_count`
+- See `Pike13::Reporting::MonthlyBusinessMetrics::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- `business_id`, `business_name`, `business_subdomain`
+- `currency_code`
+- `quarter_start_date`, `year_start_date`
 
 ## Error Handling
 
