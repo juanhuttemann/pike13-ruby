@@ -82,6 +82,7 @@ require_relative "pike13/api/v2/front/waitlist_entry"
 require_relative "pike13/api/v2/front/payment"
 
 # V3 Reporting resources
+require_relative "pike13/api/v3/desk/clients"
 require_relative "pike13/api/v3/desk/monthly_business_metrics"
 
 # Pike13 Ruby Client

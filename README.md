@@ -686,6 +686,76 @@ Pike13::Reporting::MonthlyBusinessMetrics.query(
 - `currency_code`
 - `quarter_start_date`, `year_start_date`
 
+#### Clients
+
+All client data — from tenure and unpaid bills to birthdays and passes held.
+
+```ruby
+# Basic query - get client contact information
+Pike13::Reporting::Clients.query(
+  fields: ['person_id', 'full_name', 'email', 'phone', 'client_since_date']
+)
+
+# Query for clients with memberships
+Pike13::Reporting::Clients.query(
+  fields: ['full_name', 'email', 'has_membership', 'tenure', 'completed_visits'],
+  filter: ['eq', 'has_membership', true]
+)
+
+# Query for active clients with unpaid invoices
+Pike13::Reporting::Clients.query(
+  fields: ['full_name', 'email', 'last_invoice_amount', 'last_invoice_date'],
+  filter: [
+    'and',
+    [
+      ['eq', 'person_state', 'active'],
+      ['eq', 'last_invoice_unpaid', true]
+    ]
+  ]
+)
+
+# Query for clients by tenure group
+Pike13::Reporting::Clients.query(
+  fields: ['full_name', 'email', 'tenure', 'tenure_group', 'completed_visits'],
+  filter: ['eq', 'tenure_group', '5_over_three_years'],
+  sort: ['completed_visits-']
+)
+
+# Group clients by tenure and count
+Pike13::Reporting::Clients.query(
+  fields: ['person_count', 'has_membership_count', 'total_completed_visits'],
+  group: 'tenure_group'
+)
+
+# Search for clients by name
+Pike13::Reporting::Clients.query(
+  fields: ['person_id', 'full_name', 'email', 'phone'],
+  filter: ['contains', 'full_name', 'Smith']
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Identity: `person_id`, `full_name`, `first_name`, `last_name`, `email`, `phone`
+- Address: `street_address`, `street_address2`, `city`, `state_code`, `postal_code`, `country_code`
+- Membership: `has_membership`, `current_plans`, `has_payment_on_file`, `has_plan_on_hold`
+- Activity: `completed_visits`, `future_visits`, `unpaid_visits`, `last_visit_date`, `first_visit_date`
+- Financial: `net_paid_amount`, `revenue_amount`, `account_credit_amount`, `last_invoice_amount`
+- Tenure: `client_since_date`, `tenure`, `tenure_group`, `days_since_last_visit`
+- Status: `person_state`, `is_schedulable`, `also_staff`, `has_signed_waiver`
+- See `Pike13::Reporting::Clients::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- `person_count`, `has_membership_count`, `has_payment_on_file_count`
+- `total_completed_visits`, `total_future_visits`, `total_unpaid_visits`
+- `total_net_paid_amount`, `total_revenue_amount`, `total_account_credit_amount`
+- See `Pike13::Reporting::Clients::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Client attributes: `tenure_group`, `person_state`, `source_name`, `age`
+- Location: `business_id`, `business_name`, `home_location_name`
+- Dates: `client_since_date`, `client_since_month_start_date`, `client_since_quarter_start_date`, `client_since_year_start_date`
+- Boolean flags: `has_membership`, `has_payment_on_file`, `is_schedulable`, `also_staff`
+
 ## Error Handling
 
 ```ruby
