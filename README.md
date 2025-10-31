@@ -756,6 +756,84 @@ Pike13::Reporting::Clients.query(
 - Dates: `client_since_date`, `client_since_month_start_date`, `client_since_quarter_start_date`, `client_since_year_start_date`
 - Boolean flags: `has_membership`, `has_payment_on_file`, `is_schedulable`, `also_staff`
 
+#### Transactions
+
+Data about the money moving through your business.
+
+```ruby
+# Basic query - get recent transactions
+Pike13::Reporting::Transactions.query(
+  fields: ['transaction_id', 'transaction_date', 'net_paid_amount', 'payment_method', 'invoice_payer_name']
+)
+
+# Query transactions by date range
+Pike13::Reporting::Transactions.query(
+  fields: ['transaction_date', 'net_paid_amount', 'invoice_payer_name', 'payment_method'],
+  filter: ['btw', 'transaction_date', '2024-01-01', '2024-12-31'],
+  sort: ['transaction_date-']
+)
+
+# Query by payment method
+Pike13::Reporting::Transactions.query(
+  fields: ['transaction_date', 'net_paid_amount', 'invoice_payer_name'],
+  filter: ['eq', 'payment_method', 'creditcard']
+)
+
+# Query failed transactions
+Pike13::Reporting::Transactions.query(
+  fields: ['transaction_date', 'transaction_amount', 'error_message', 'invoice_payer_name'],
+  filter: ['eq', 'transaction_state', 'failed']
+)
+
+# Group by payment method
+Pike13::Reporting::Transactions.query(
+  fields: ['total_net_paid_amount', 'total_payments_amount', 'transaction_count'],
+  group: 'payment_method'
+)
+
+# Group by month to see revenue trends
+Pike13::Reporting::Transactions.query(
+  fields: ['total_net_paid_amount', 'total_net_paid_revenue_amount', 'transaction_count'],
+  group: 'transaction_month_start_date',
+  sort: ['transaction_month_start_date']
+)
+
+# Detailed breakdown by card type
+Pike13::Reporting::Transactions.query(
+  fields: [
+    'total_net_visa_paid_amount',
+    'total_net_mastercard_paid_amount',
+    'total_net_american_express_paid_amount',
+    'total_net_discover_paid_amount'
+  ],
+  group: 'transaction_month_start_date'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Transaction: `transaction_id`, `transaction_date`, `transaction_at`, `transaction_state`, `transaction_type`
+- Amounts: `net_paid_amount`, `net_paid_revenue_amount`, `net_paid_tax_amount`, `payments_amount`, `refunds_amount`
+- Payment: `payment_method`, `payment_method_detail`, `credit_card_name`, `processing_method`, `processor_transaction_id`
+- Invoice: `invoice_id`, `invoice_number`, `invoice_state`, `invoice_due_date`, `invoice_autobill`
+- Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_email`, `invoice_payer_phone`
+- Other: `created_by_name`, `commission_recipient_name`, `sale_location_name`, `error_message`
+- See `Pike13::Reporting::Transactions::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Totals: `total_net_paid_amount`, `total_net_paid_revenue_amount`, `total_net_paid_tax_amount`
+- Counts: `transaction_count`, `invoice_count`, `failed_count`, `settled_count`
+- By payment method: `total_net_cash_paid_amount`, `total_net_check_paid_amount`, `total_net_credit_paid_amount`
+- By card type: `total_net_visa_paid_amount`, `total_net_mastercard_paid_amount`, `total_net_american_express_paid_amount`, `total_net_discover_paid_amount`
+- By processor: `total_net_amex_processing_paid_amount`, `total_net_global_pay_processing_paid_amount`
+- See `Pike13::Reporting::Transactions::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Payment: `payment_method`, `credit_card_name`, `processing_method`, `external_payment_name`
+- Dates: `transaction_date`, `transaction_month_start_date`, `transaction_quarter_start_date`, `transaction_year_start_date`
+- Invoice: `invoice_id`, `invoice_number`, `invoice_state`, `invoice_payer_id`, `invoice_payer_name`
+- States: `transaction_state`, `transaction_type`, `transaction_autopay`
+- Location: `business_id`, `business_name`, `sale_location_name`
+
 ## Error Handling
 
 ```ruby
