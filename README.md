@@ -919,6 +919,98 @@ Pike13::Reporting::Invoices.query(
 - Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_home_location`
 - Business: `business_id`, `business_name`, `sale_location_name`, `commission_recipient_name`
 
+#### Enrollments
+
+Data about visit and waitlist history, behavior, and trends.
+
+```ruby
+# Basic query - get visit details
+Pike13::Reporting::Enrollments.query(
+  fields: ['visit_id', 'full_name', 'service_name', 'state', 'service_date']
+)
+
+# Query completed visits
+Pike13::Reporting::Enrollments.query(
+  fields: ['full_name', 'service_name', 'service_date', 'estimated_amount', 'instructor_names'],
+  filter: ['eq', 'state', 'completed'],
+  sort: ['service_date-']
+)
+
+# Query by date range
+Pike13::Reporting::Enrollments.query(
+  fields: ['full_name', 'service_name', 'service_date', 'state'],
+  filter: ['btw', 'service_date', '2024-01-01', '2024-12-31']
+)
+
+# Query first-time visitors
+Pike13::Reporting::Enrollments.query(
+  fields: ['full_name', 'email', 'service_name', 'service_date'],
+  filter: ['eq', 'first_visit', true]
+)
+
+# Query unpaid visits
+Pike13::Reporting::Enrollments.query(
+  fields: ['full_name', 'service_name', 'service_date', 'available_plans'],
+  filter: ['eq', 'is_paid', false]
+)
+
+# Group by service to analyze attendance
+Pike13::Reporting::Enrollments.query(
+  fields: ['completed_enrollment_count', 'noshowed_enrollment_count', 'total_visits_amount'],
+  group: 'service_name'
+)
+
+# Group by day of week
+Pike13::Reporting::Enrollments.query(
+  fields: [
+    'enrollment_count',
+    'weekday_0_enrollment_count',
+    'weekday_1_enrollment_count',
+    'weekday_2_enrollment_count',
+    'weekday_3_enrollment_count',
+    'weekday_4_enrollment_count',
+    'weekday_5_enrollment_count',
+    'weekday_6_enrollment_count'
+  ],
+  group: 'service_month_start_date'
+)
+
+# Analyze client booking patterns
+Pike13::Reporting::Enrollments.query(
+  fields: ['enrollment_count', 'client_booked_count'],
+  group: 'service_type'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Visit: `visit_id`, `state`, `service_date`, `service_time`, `start_at`, `end_at`
+- Person: `person_id`, `full_name`, `email`, `phone`, `birthdate`, `home_location_name`
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_location_name`
+- Event: `event_id`, `event_name`, `event_occurrence_id`, `instructor_names`
+- Payment: `is_paid`, `estimated_amount`, `paid_with`, `paid_with_type`, `plan_id`, `punch_id`
+- Status: `first_visit`, `client_booked`, `bulk_enrolled`, `is_waitlist`, `make_up_issued`
+- Timing: `registered_at`, `completed_at`, `cancelled_at`, `noshow_at`, `waitlisted_at`, `cancelled_to_start`
+- Duration: `duration_in_hours`, `duration_in_minutes`
+- See `Pike13::Reporting::Enrollments::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `enrollment_count`, `visit_count`, `person_count`, `event_count`, `service_count`
+- By state: `completed_enrollment_count`, `registered_enrollment_count`, `noshowed_enrollment_count`, `late_canceled_enrollment_count`
+- Waitlist: `is_waitlist_count`, `waiting_enrollment_count`, `expired_enrollment_count`, `removed_enrollment_count`
+- Payment: `is_paid_count`, `unpaid_visit_count`, `unpaid_visit_percent`, `total_visits_amount`, `avg_per_visit_amount`
+- By day: `weekday_0_enrollment_count` through `weekday_6_enrollment_count` (Sunday through Saturday)
+- Other: `first_visit_count`, `client_booked_count`, `consider_member_count`, `is_rollover_count`
+- See `Pike13::Reporting::Enrollments::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_location_name`
+- Dates: `service_date`, `service_month_start_date`, `service_quarter_start_date`, `service_year_start_date`, `service_day`, `service_time`
+- Event: `event_id`, `event_name`, `event_occurrence_id`, `instructor_names`
+- Person: `person_id`, `full_name`, `home_location_name`, `primary_staff_name`
+- Payment: `paid_with`, `paid_with_type`, `plan_id`, `punch_id`, `is_paid`
+- Status: `state`, `first_visit`, `client_booked`, `is_waitlist`, `consider_member`
+- Business: `business_id`, `business_name`, `business_subdomain`
+
 ## Error Handling
 
 ```ruby
