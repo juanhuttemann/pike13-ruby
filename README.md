@@ -93,6 +93,7 @@ Three namespaces for managing your business data:
   - [Staff Members](#staff-members)
 - [Error Handling](#error-handling)
 - [Development](#development)
+- [License](#license)
 
 ### Account Resources
 
@@ -1519,6 +1520,7 @@ bundle install
 
 # Run tests
 bundle exec rake test
+```
 
 ## Contributing
 
@@ -1530,10 +1532,10 @@ bundle exec rake test
 
 ## License
 
-MIT License
+[MIT License](LICENSE.txt)
 
 ## Links
 
-- [Pike13 Core API (v2) Documentation](https://developer.pike13.com/docs/api/v2)
-- [Pike13 Reporting API (v3) Documentation](https://developer.pike13.com/docs/reporting/v3)
-- [Pike13 Website](https://www.pike13.com/)
+- **[Pike13 Core API Documentation](https://developer.pike13.com/docs/api/v2)** - Core API (v2) endpoints
+- **[Pike13 Reporting API Documentation](https://developer.pike13.com/docs/reporting/v3)** - Reporting API (v3) endpoints
+- **[Pike13 Website](https://www.pike13.com/)** - Official website
