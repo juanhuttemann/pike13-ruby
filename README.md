@@ -1,6 +1,8 @@
 # Pike13 Ruby Client
 
-A Ruby gem for interacting with the [Pike13 Core API](https://developer.pike13.com/docs/api/v2).
+A Ruby gem for interacting with the Pike13 API, supporting both:
+- **[Core API (v2)](https://developer.pike13.com/docs/api/v2)** - CRUD operations for managing people, events, invoices, and more
+- **[Reporting API (v3)](https://developer.pike13.com/docs/reporting/v3)** - Advanced analytics and reporting queries
 
 ## Installation
 
@@ -30,14 +32,21 @@ end
 
 ## Usage
 
-The Pike13 API is organized into four namespaces:
+The gem supports two API versions with different capabilities:
 
-- **Account** - Account-level operations (not scoped to a business)
-- **Desk** - Staff interface operations (full access)
-- **Front** - Client interface operations (limited access)
-- **Reporting** - Advanced reporting queries (v3 API)
+### Core API (v2) - CRUD Operations
 
-### Account Resources
+Three namespaces for managing your business data:
+
+- **Account** (`Pike13::Account`) - Account-level operations (not scoped to a business)
+- **Desk** (`Pike13::Desk`) - Staff interface operations (full read/write access)
+- **Front** (`Pike13::Front`) - Client interface operations (limited access for customer-facing apps)
+
+### Reporting API (v3) - Analytics & Insights
+
+- **Reporting** (`Pike13::Reporting`) - Advanced query-based analytics with 12 comprehensive reporting endpoints
+
+### Account Resources (v2)
 
 Account-level resources for managing your Pike13 account.
 
@@ -58,7 +67,7 @@ Pike13::Account::Password.create(email: "user@example.com")
 Pike13::Account::Confirmation.create(confirmation_token: "token")
 ```
 
-### Desk Resources (Staff Interface)
+### Desk Resources (v2 - Staff Interface)
 
 Full staff interface with read/write access to all resources.
 
@@ -390,7 +399,7 @@ Pike13::Desk::FormOfPayment.update(
 Pike13::Desk::FormOfPayment.destroy(person_id: 123, id: 456)
 ```
 
-### Front Resources (Client Interface)
+### Front Resources (v2 - Client Interface)
 
 Client-facing interface with limited read-only access.
 
@@ -610,7 +619,27 @@ Pike13::Front::FormOfPayment.destroy(person_id: 123, id: 456)
 
 ### Reporting Resources (v3 API)
 
-Advanced reporting queries for business analytics and insights.
+Advanced query-based analytics for business insights. The Reporting API uses a different architecture than the Core API - it's designed for complex analytical queries with filtering, grouping, sorting, and aggregation capabilities.
+
+**Available Reporting Endpoints:**
+- **Monthly Business Metrics** - Monthly transaction amounts, members, and enrollments
+- **Clients** - Client demographics, tenure, visits, and engagement
+- **Transactions** - Payment transactions, methods, and processing details
+- **Invoices** - Invoice amounts, states, and payment tracking
+- **Enrollments** - Visit/enrollment details and attendance patterns
+- **Person Plans** - Active plans, memberships, and usage tracking
+- **Event Occurrences** - Scheduled events, capacity, and attendance
+- **Event Occurrence Staff Members** - Staff assignments and event workload
+- **Invoice Items** - Line-item details and revenue breakdown
+- **Invoice Item Transactions** - Transaction-level payment and refund tracking
+- **Pays** - Staff compensation, pay rates, and service hours
+- **Staff Members** - Staff roster, tenure, roles, and event assignments
+
+All reporting endpoints support:
+- **Filtering** - Query specific subsets of data
+- **Grouping** - Aggregate data by dimensions
+- **Sorting** - Order results by any field
+- **Pagination** - Handle large result sets efficiently
 
 #### Monthly Business Metrics
 
@@ -1011,6 +1040,655 @@ Pike13::Reporting::Enrollments.query(
 - Status: `state`, `first_visit`, `client_booked`, `is_waitlist`, `consider_member`
 - Business: `business_id`, `business_name`, `business_subdomain`
 
+#### Event Occurrences
+
+Data about scheduled instances of services (e.g., "Group Workout from 9am-10am on 2024/09/01").
+
+```ruby
+# Basic query - get event occurrence details
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_occurrence_id', 'event_name', 'service_date', 'enrollment_count', 'capacity']
+)
+
+# Query high-attendance classes
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_name', 'service_date', 'service_time', 'completed_enrollment_count', 'capacity'],
+  filter: ['gt', 'completed_enrollment_count', 15],
+  sort: ['completed_enrollment_count-']
+)
+
+# Query classes with available spots
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_name', 'service_date', 'enrollment_count', 'capacity', 'instructor_names'],
+  filter: ['lt', 'enrollment_count', 'capacity']
+)
+
+# Query by date range and service type
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_name', 'service_date', 'service_time', 'enrollment_count', 'service_type'],
+  filter: [
+    'and',
+    [
+      ['btw', 'service_date', '2024-01-01', '2024-12-31'],
+      ['eq', 'service_type', 'group_class']
+    ]
+  ]
+)
+
+# Track attendance completion
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_name', 'service_date', 'attendance_completed', 'completed_enrollment_count', 'noshowed_enrollment_count'],
+  filter: ['eq', 'attendance_completed', true]
+)
+
+# Analyze no-shows and cancellations
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_name', 'service_date', 'noshowed_enrollment_count', 'late_canceled_enrollment_count', 'enrollment_count']
+)
+
+# Group by service name to analyze performance
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['total_enrollment_count', 'total_completed_enrollment_count', 'total_noshowed_enrollment_count', 'total_capacity'],
+  group: 'service_name'
+)
+
+# Group by instructor to track performance
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_occurrence_count', 'total_enrollment_count', 'total_completed_enrollment_count'],
+  group: 'instructor_names'
+)
+
+# Monthly class summary
+Pike13::Reporting::EventOccurrences.query(
+  fields: ['event_occurrence_count', 'total_enrollment_count', 'total_duration_in_hours'],
+  group: 'service_month_start_date'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Event Occurrence: `event_occurrence_id`, `event_id`, `event_name`, `service_date`, `service_time`, `start_at`, `end_at`
+- Capacity: `capacity`, `enrollment_count`, `visit_count`, `is_waitlist_count`, `waitlist_to_visit_count`
+- Attendance: `attendance_completed`, `completed_enrollment_count`, `registered_enrollment_count`, `noshowed_enrollment_count`
+- Enrollment states: `late_canceled_enrollment_count`, `expired_enrollment_count`, `removed_enrollment_count`, `reserved_enrollment_count`, `waiting_enrollment_count`
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_location_name`, `service_state`
+- Instructor: `instructor_names`
+- Payment: `paid_count`, `completed_unpaid_count`
+- Duration: `duration_in_hours`, `duration_in_minutes`
+- See `Pike13::Reporting::EventOccurrences::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `event_occurrence_count`, `event_count`, `service_count`, `total_count`
+- Capacity: `total_capacity`, `total_enrollment_count`, `total_visit_count`, `total_is_waitlist_count`
+- Attendance: `attendance_completed_count`, `total_completed_enrollment_count`, `total_registered_enrollment_count`, `total_noshowed_enrollment_count`
+- Enrollment states: `total_late_canceled_enrollment_count`, `total_expired_enrollment_count`, `total_removed_enrollment_count`, `total_reserved_enrollment_count`, `total_waiting_enrollment_count`
+- Payment: `total_paid_count`, `total_completed_unpaid_count`
+- Duration: `total_duration_in_hours`, `total_duration_in_minutes`
+- Other: `total_waitlist_to_visit_count`
+- See `Pike13::Reporting::EventOccurrences::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Event: `event_id`, `event_name`, `event_occurrence_id`, `instructor_names`
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_location_name`, `service_state`
+- Dates: `service_date`, `service_day`, `service_time`, `service_month_start_date`, `service_quarter_start_date`, `service_year_start_date`
+- Week groupings: `service_week_mon_start_date`, `service_week_sun_start_date`
+- Status: `attendance_completed`
+- Business: `business_id`, `business_name`, `business_subdomain`
+
+#### Event Occurrence Staff Members
+
+Details of event occurrences by staff member (instructor, trainer, or organizer). If multiple staff members exist for an event occurrence, a record displays for each.
+
+```ruby
+# Basic query - get event occurrences by staff member
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['event_occurrence_id', 'full_name', 'event_name', 'service_date', 'enrollment_count']
+)
+
+# Query by specific staff member
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['full_name', 'event_name', 'service_date', 'service_time', 'completed_enrollment_count', 'role'],
+  filter: ['eq', 'person_id', 12345],
+  sort: ['service_date-']
+)
+
+# Query with staff contact information
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['full_name', 'email', 'phone', 'event_name', 'service_date', 'enrollment_count']
+)
+
+# Query by role and date range
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['full_name', 'role', 'event_name', 'service_date', 'completed_enrollment_count'],
+  filter: [
+    'and',
+    [
+      ['eq', 'role', 'owner'],
+      ['btw', 'service_date', '2024-01-01', '2024-12-31']
+    ]
+  ]
+)
+
+# Track attendance completion by staff
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['full_name', 'event_name', 'service_date', 'attendance_completed', 'completed_enrollment_count', 'noshowed_enrollment_count']
+)
+
+# Analyze staff workload
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['full_name', 'event_name', 'service_date', 'duration_in_hours', 'enrollment_count', 'capacity']
+)
+
+# Group by staff member to analyze performance
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['event_occurrence_count', 'total_enrollment_count', 'total_completed_enrollment_count', 'total_duration_in_hours'],
+  group: 'full_name'
+)
+
+# Group by service and staff
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['person_count', 'event_occurrence_count', 'total_enrollment_count'],
+  group: 'service_name'
+)
+
+# Monthly summary by staff role
+Pike13::Reporting::EventOccurrenceStaffMembers.query(
+  fields: ['person_count', 'event_occurrence_count', 'total_duration_in_hours'],
+  group: 'role'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Staff Member: `person_id`, `full_name`, `email`, `phone`, `role`, `home_location_name`
+- Address: `address`, `street_address`, `street_address2`, `city`, `state_code`, `postal_code`, `country_code`
+- Event Occurrence: `event_occurrence_id`, `event_id`, `event_name`, `service_date`, `service_time`, `start_at`, `end_at`
+- Capacity: `capacity`, `enrollment_count`, `visit_count`, `is_waitlist_count`, `waitlist_to_visit_count`
+- Attendance: `attendance_completed`, `completed_enrollment_count`, `registered_enrollment_count`, `noshowed_enrollment_count`
+- Enrollment states: `late_canceled_enrollment_count`, `expired_enrollment_count`, `removed_enrollment_count`, `reserved_enrollment_count`, `waiting_enrollment_count`
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_location_name`, `service_state`
+- Payment: `paid_count`, `completed_unpaid_count`
+- Duration: `duration_in_hours`, `duration_in_minutes`
+- See `Pike13::Reporting::EventOccurrenceStaffMembers::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `event_occurrence_count`, `event_count`, `service_count`, `person_count`, `total_count`
+- Capacity: `total_capacity`, `total_enrollment_count`, `total_visit_count`, `total_is_waitlist_count`
+- Attendance: `attendance_completed_count`, `total_completed_enrollment_count`, `total_registered_enrollment_count`, `total_noshowed_enrollment_count`
+- Enrollment states: `total_late_canceled_enrollment_count`, `total_expired_enrollment_count`, `total_removed_enrollment_count`, `total_reserved_enrollment_count`, `total_waiting_enrollment_count`
+- Payment: `total_paid_count`, `total_completed_unpaid_count`
+- Duration: `total_duration_in_hours`, `total_duration_in_minutes`
+- Other: `total_waitlist_to_visit_count`
+- See `Pike13::Reporting::EventOccurrenceStaffMembers::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Staff: `person_id`, `full_name`, `role`
+- Event: `event_id`, `event_name`, `event_occurrence_id`
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_location_name`, `service_state`
+- Dates: `service_date`, `service_day`, `service_time`, `service_month_start_date`, `service_quarter_start_date`, `service_year_start_date`
+- Week groupings: `service_week_mon_start_date`, `service_week_sun_start_date`
+- Status: `attendance_completed`
+- Business: `business_id`, `business_name`, `business_subdomain`
+
+#### Invoice Items
+
+Item-level details of invoices.
+
+```ruby
+# Basic query - get invoice item details
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['invoice_item_id', 'invoice_number', 'product_name', 'expected_amount', 'invoice_state']
+)
+
+# Query by product type
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['product_name', 'product_type', 'expected_amount', 'net_paid_amount', 'outstanding_amount'],
+  filter: ['eq', 'product_type', 'recurring']
+)
+
+# Query outstanding invoices
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['invoice_number', 'invoice_payer_name', 'product_name', 'expected_amount', 'outstanding_amount'],
+  filter: ['gt', 'outstanding_amount', 0],
+  sort: ['outstanding_amount-']
+)
+
+# Query items with discounts
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['product_name', 'gross_amount', 'discounts_amount', 'coupons_amount', 'expected_amount'],
+  filter: ['gt', 'discounts_amount', 0]
+)
+
+# Track revenue by product
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['product_name', 'gross_amount', 'expected_revenue_amount', 'expected_tax_amount', 'net_paid_revenue_amount']
+)
+
+# Query by revenue category
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['revenue_category', 'product_name', 'expected_amount', 'net_paid_amount'],
+  filter: ['not_null', 'revenue_category']
+)
+
+# Group by product to analyze sales
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['invoice_item_count', 'total_expected_amount', 'total_net_paid_amount', 'total_outstanding_amount'],
+  group: 'product_name'
+)
+
+# Group by product type
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['invoice_item_count', 'total_gross_amount', 'total_discounts_amount', 'total_expected_amount'],
+  group: 'product_type'
+)
+
+# Monthly revenue analysis
+Pike13::Reporting::InvoiceItems.query(
+  fields: ['invoice_item_count', 'total_expected_revenue_amount', 'total_net_paid_revenue_amount'],
+  group: 'issued_month_start_date'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Invoice Item: `invoice_item_id`, `invoice_id`, `invoice_number`, `invoice_state`, `invoice_autobill`
+- Product: `product_id`, `product_name`, `product_name_at_sale`, `product_type`, `grants_membership`
+- Amounts: `gross_amount`, `expected_amount`, `expected_revenue_amount`, `expected_tax_amount`
+- Discounts: `discounts_amount`, `coupons_amount`, `coupon_code`, `adjustments_amount`, `discount_type`
+- Payments: `net_paid_amount`, `net_paid_revenue_amount`, `net_paid_tax_amount`, `payments_amount`, `refunds_amount`
+- Outstanding: `outstanding_amount`, `outstanding_revenue_amount`, `outstanding_tax_amount`
+- Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_email`, `invoice_payer_phone`, `invoice_payer_home_location`
+- Dates: `issued_at`, `issued_date`, `closed_at`, `closed_date`, `invoice_due_date`, `days_since_invoice_due`
+- Tax: `tax_types`, `tax_types_extended`
+- Commission: `commission_recipient_name`
+- Recipients: `recipient_names`
+- Transactions: `failed_transactions`, `refunded_transactions`, `voided_transactions`
+- Purchase Requests: `purchase_order_number`, `purchase_request_state`, `purchase_request_message`, `purchase_request_cancel_reason`
+- Retail: `retail_options`, `retail_add_ons`
+- Other: `revenue_category`, `sale_location_name`, `plan_id`, `created_by_client`, `created_by_name`
+- See `Pike13::Reporting::InvoiceItems::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `invoice_item_count`, `invoice_count`, `grants_membership_count`, `total_count`
+- Amounts: `total_gross_amount`, `total_expected_amount`, `total_expected_revenue_amount`, `total_expected_tax_amount`
+- Discounts: `total_discounts_amount`, `total_coupons_amount`, `total_adjustments_amount`
+- Payments: `total_net_paid_amount`, `total_net_paid_revenue_amount`, `total_net_paid_tax_amount`, `total_payments_amount`, `total_refunds_amount`
+- Outstanding: `total_outstanding_amount`, `total_outstanding_revenue_amount`, `total_outstanding_tax_amount`
+- See `Pike13::Reporting::InvoiceItems::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Product: `product_id`, `product_name`, `product_name_at_sale`, `product_type`, `grants_membership`, `plan_id`
+- Invoice: `invoice_id`, `invoice_number`, `invoice_state`, `invoice_autobill`, `invoice_due_date`
+- Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_home_location`, `invoice_payer_primary_staff_name_at_sale`
+- Dates - Issued: `issued_date`, `issued_month_start_date`, `issued_quarter_start_date`, `issued_year_start_date`
+- Dates - Due: `due_month_start_date`, `due_quarter_start_date`, `due_year_start_date`
+- Dates - Closed: `closed_date`, `closed_month_start_date`, `closed_quarter_start_date`, `closed_year_start_date`
+- Week groupings: `issued_week_mon_start_date`, `issued_week_sun_start_date`, `due_week_mon_start_date`, `due_week_sun_start_date`, `closed_week_mon_start_date`, `closed_week_sun_start_date`
+- Discounts: `discount_type`, `coupon_code`
+- Other: `revenue_category`, `sale_location_name`, `commission_recipient_name`, `created_by_client`, `created_by_name`, `purchase_request_state`
+- Business: `business_id`, `business_name`, `business_subdomain`
+
+#### Invoice Item Transactions
+
+Item-level details of transactions (payments and refunds). Payments and refunds are performed against the invoice, not the invoice item.
+
+```ruby
+# Basic query - get transaction details
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['transaction_id', 'invoice_number', 'transaction_type', 'transaction_amount', 'transaction_state']
+)
+
+# Query by payment method
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['transaction_date', 'payment_method', 'transaction_amount', 'invoice_payer_name', 'product_name'],
+  filter: ['eq', 'payment_method', 'creditcard']
+)
+
+# Query successful payments
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['transaction_date', 'invoice_number', 'payment_method', 'net_paid_amount', 'payment_method_detail'],
+  filter: [
+    'and',
+    [
+      ['eq', 'transaction_type', 'payment'],
+      ['eq', 'transaction_state', 'settled']
+    ]
+  ]
+)
+
+# Query failed transactions
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['failed_date', 'invoice_payer_name', 'payment_method', 'transaction_amount', 'error_message'],
+  filter: ['eq', 'transaction_state', 'failed'],
+  sort: ['failed_date-']
+)
+
+# Track refunds
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['transaction_date', 'invoice_number', 'refunds_amount', 'invoice_payer_name', 'payment_transaction_id'],
+  filter: ['eq', 'transaction_type', 'refund']
+)
+
+# Analyze revenue by product
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['product_name', 'transaction_amount', 'net_paid_revenue_amount', 'net_paid_tax_amount', 'payment_method']
+)
+
+# Group by payment method to analyze payment trends
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['transaction_count', 'total_net_paid_amount', 'settled_count', 'failed_count'],
+  group: 'payment_method'
+)
+
+# Group by credit card type
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['transaction_count', 'total_net_visa_paid_amount', 'total_net_mastercard_paid_amount', 'total_net_american_express_paid_amount', 'total_net_discover_paid_amount'],
+  group: 'credit_card_name'
+)
+
+# Monthly transaction summary
+Pike13::Reporting::InvoiceItemTransactions.query(
+  fields: ['transaction_count', 'total_payments_amount', 'total_refunds_amount', 'total_net_paid_revenue_amount'],
+  group: 'transaction_month_start_date'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Transaction: `transaction_id`, `transaction_type`, `transaction_state`, `transaction_amount`, `transaction_at`, `transaction_date`, `transaction_autopay`
+- Payment Info: `payment_method`, `payment_method_detail`, `processing_method`, `processor_transaction_id`, `credit_card_name`, `external_payment_name`
+- Amounts: `net_paid_amount`, `net_paid_revenue_amount`, `net_paid_tax_amount`, `payments_amount`, `refunds_amount`
+- Invoice: `invoice_id`, `invoice_number`, `invoice_state`, `invoice_autobill`, `invoice_due_date`, `invoice_item_id`
+- Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_email`, `invoice_payer_phone`, `invoice_payer_home_location`
+- Product: `product_id`, `product_name`, `product_name_at_sale`, `product_type`, `grants_membership`, `plan_id`
+- Failed: `failed_at`, `failed_date`, `error_message`
+- Voided: `voided_at`
+- Refund: `payment_transaction_id` (original payment for refund)
+- Other: `revenue_category`, `sale_location_name`, `commission_recipient_name`, `created_by_name`
+- See `Pike13::Reporting::InvoiceItemTransactions::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `transaction_count`, `settled_count`, `failed_count`, `transaction_autopay_count`, `invoice_count`, `invoice_item_count`, `grants_membership_count`, `total_count`
+- Amounts: `total_net_paid_amount`, `total_net_paid_revenue_amount`, `total_net_paid_tax_amount`, `total_payments_amount`, `total_refunds_amount`
+- By Payment Method: `total_net_cash_paid_amount`, `total_net_check_paid_amount`, `total_net_credit_paid_amount`, `total_net_ach_paid_amount`, `total_net_external_paid_amount`
+- By Card Type: `total_net_visa_paid_amount`, `total_net_mastercard_paid_amount`, `total_net_american_express_paid_amount`, `total_net_discover_paid_amount`, `total_net_other_credit_card_paid_amount`
+- By Processing Method: `total_net_amex_processing_paid_amount`, `total_net_global_pay_processing_paid_amount`, `total_net_other_processing_paid_amount`
+- See `Pike13::Reporting::InvoiceItemTransactions::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Transaction: `transaction_id`, `transaction_type`, `transaction_state`, `transaction_autopay`, `transaction_date`
+- Dates - Transaction: `transaction_month_start_date`, `transaction_quarter_start_date`, `transaction_year_start_date`
+- Dates - Failed: `failed_date`, `failed_month_start_date`, `failed_quarter_start_date`, `failed_year_start_date`
+- Week groupings: `transaction_week_mon_start_date`, `transaction_week_sun_start_date`, `failed_week_mon_start_date`, `failed_week_sun_start_date`
+- Payment: `payment_method`, `processing_method`, `credit_card_name`, `external_payment_name`
+- Invoice: `invoice_id`, `invoice_number`, `invoice_state`, `invoice_autobill`, `invoice_due_date`, `invoice_item_id`
+- Payer: `invoice_payer_id`, `invoice_payer_name`, `invoice_payer_home_location`, `invoice_payer_primary_staff_name_at_sale`
+- Product: `product_id`, `product_name`, `product_name_at_sale`, `product_type`, `grants_membership`, `plan_id`
+- Other: `revenue_category`, `sale_location_name`, `commission_recipient_name`, `created_by_name`
+- Business: `business_id`, `business_name`, `business_subdomain`
+
+#### Pays
+
+Details of staff member pay, pay rates, services, and hours.
+
+```ruby
+# Basic query - get pay details
+Pike13::Reporting::Pays.query(
+  fields: ['pay_id', 'staff_name', 'pay_type', 'final_pay_amount', 'pay_state']
+)
+
+# Query by staff member
+Pike13::Reporting::Pays.query(
+  fields: ['staff_name', 'service_name', 'service_date', 'final_pay_amount', 'service_hours'],
+  filter: ['eq', 'staff_id', 12345],
+  sort: ['service_date-']
+)
+
+# Query pending pay approvals
+Pike13::Reporting::Pays.query(
+  fields: ['staff_name', 'pay_description', 'final_pay_amount', 'pay_recorded_at'],
+  filter: ['eq', 'pay_state', 'pending']
+)
+
+# Track pay by service type
+Pike13::Reporting::Pays.query(
+  fields: ['service_name', 'service_type', 'staff_name', 'base_pay_amount', 'per_head_pay_amount', 'tiered_pay_amount', 'final_pay_amount']
+)
+
+# Query by pay period
+Pike13::Reporting::Pays.query(
+  fields: ['staff_name', 'service_date', 'final_pay_amount', 'pay_period_start_date', 'pay_period_end_date'],
+  filter: ['eq', 'pay_period', '2024-10-01..2024-10-31']
+)
+
+# Analyze pay by type
+Pike13::Reporting::Pays.query(
+  fields: ['pay_type', 'pay_description', 'final_pay_amount', 'staff_name'],
+  filter: ['in', 'pay_type', ['service', 'commission', 'tip']]
+)
+
+# Group by staff member to analyze total pay
+Pike13::Reporting::Pays.query(
+  fields: ['pay_count', 'total_final_pay_amount', 'total_service_hours', 'total_base_pay_amount'],
+  group: 'staff_name'
+)
+
+# Group by service to analyze pay distribution
+Pike13::Reporting::Pays.query(
+  fields: ['service_count', 'pay_count', 'total_final_pay_amount'],
+  group: 'service_name'
+)
+
+# Group by pay type
+Pike13::Reporting::Pays.query(
+  fields: ['pay_count', 'total_final_pay_amount', 'total_base_pay_amount', 'total_per_head_pay_amount', 'total_tiered_pay_amount'],
+  group: 'pay_type'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Pay: `pay_id`, `pay_type`, `pay_state`, `pay_description`, `pay_period`, `pay_period_start_date`, `pay_period_end_date`
+- Amounts: `final_pay_amount`, `base_pay_amount`, `per_head_pay_amount`, `tiered_pay_amount`
+- Staff: `staff_id`, `staff_name`, `staff_home_location_name`
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_date`, `service_location_name`, `service_hours`
+- Recorded: `pay_recorded_at`
+- Reviewed: `pay_reviewed_at`, `pay_reviewed_date`, `pay_reviewed_by_id`, `pay_reviewed_by_name`
+- Other: `revenue_category`
+- See `Pike13::Reporting::Pays::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `pay_count`, `service_count`, `total_count`
+- Amounts: `total_final_pay_amount`, `total_base_pay_amount`, `total_per_head_pay_amount`, `total_tiered_pay_amount`
+- Hours: `total_service_hours`
+- See `Pike13::Reporting::Pays::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Pay: `pay_type`, `pay_state`, `pay_period`, `pay_reviewed_date`, `pay_reviewed_by_id`, `pay_reviewed_by_name`
+- Staff: `staff_id`, `staff_name`, `staff_home_location_name`
+- Service: `service_id`, `service_name`, `service_type`, `service_category`, `service_date`, `service_location_name`
+- Other: `revenue_category`
+- Business: `business_id`, `business_name`, `business_subdomain`
+
+#### Person Plans
+
+Comprehensive data about passes and plans that are available for use or on hold.
+
+```ruby
+# Basic query - get all person plans
+Pike13::Reporting::PersonPlans.query(
+  fields: ['person_plan_id', 'full_name', 'plan_name', 'is_available', 'start_date', 'end_date']
+)
+
+# Query available memberships
+Pike13::Reporting::PersonPlans.query(
+  fields: ['full_name', 'plan_name', 'start_date', 'end_date', 'remaining_visit_count'],
+  filter: [
+    'and',
+    [
+      ['eq', 'is_available', true],
+      ['eq', 'grants_membership', true]
+    ]
+  ]
+)
+
+# Query plans on hold
+Pike13::Reporting::PersonPlans.query(
+  fields: ['full_name', 'plan_name', 'last_hold_start_date', 'last_hold_end_date', 'last_hold_by'],
+  filter: ['eq', 'is_on_hold', true]
+)
+
+# Query plans with past due invoices
+Pike13::Reporting::PersonPlans.query(
+  fields: ['full_name', 'plan_name', 'latest_invoice_due_date', 'latest_invoice_item_amount'],
+  filter: ['eq', 'latest_invoice_past_due', true]
+)
+
+# Track plan usage and visits
+Pike13::Reporting::PersonPlans.query(
+  fields: ['full_name', 'plan_name', 'used_visit_count', 'remaining_visit_count', 'lifetime_used_visit_count'],
+  filter: ['gt', 'used_visit_count', 0]
+)
+
+# Group by plan type
+Pike13::Reporting::PersonPlans.query(
+  fields: ['person_plan_count', 'is_available_count', 'is_on_hold_count', 'is_canceled_count'],
+  group: 'plan_type'
+)
+
+# Analyze plan retention
+Pike13::Reporting::PersonPlans.query(
+  fields: [
+    'person_plan_count',
+    'visited_count',
+    'visited_percent',
+    'next_plan_count',
+    'next_plan_percent'
+  ],
+  group: 'plan_name'
+)
+
+# Track first-time members
+Pike13::Reporting::PersonPlans.query(
+  fields: ['full_name', 'plan_name', 'start_date', 'first_visit_date', 'start_date_to_first_visit'],
+  filter: ['eq', 'is_first_plan', true]
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Plan: `person_plan_id`, `plan_id`, `plan_name`, `plan_type`, `plan_product_id`, `product_name`
+- Person: `person_id`, `full_name`, `first_name`, `last_name`, `email`, `home_location_name`
+- Dates: `start_date`, `end_date`, `last_usable_date`, `first_visit_date`, `last_visit_date`
+- Status: `is_available`, `is_on_hold`, `is_canceled`, `is_exhausted`, `is_ended`, `is_deactivated`
+- Visits: `allowed_visit_count`, `used_visit_count`, `remaining_visit_count`, `lifetime_used_visit_count`
+- Membership: `grants_membership`, `is_first_membership`, `is_first_plan`
+- Billing: `base_price`, `invoice_interval_count`, `invoice_interval_unit`, `commitment_length`
+- Invoice: `latest_invoice_due_date`, `latest_invoice_item_amount`, `latest_invoice_past_due`, `latest_invoice_autobill`
+- Hold: `last_hold_start_date`, `last_hold_end_date`, `last_hold_by`, `is_last_hold_indefinite`
+- Next Plan: `next_plan_id`, `next_plan_name`, `next_plan_type`, `next_plan_start_date`
+- Timing: `start_date_to_first_visit`, `first_visit_to_next_plan`, `last_visit_to_next_plan`
+- See `Pike13::Reporting::PersonPlans::DETAIL_FIELDS` for the full list (100+ fields)
+
+**Available Summary Fields** (when grouping):
+- Counts: `person_plan_count`, `person_count`, `plan_count`, `visited_count`, `visited_percent`
+- Availability: `is_available_count`, `is_on_hold_count`, `is_canceled_count`
+- Membership: `grants_membership_count`, `is_first_membership_count`, `is_first_plan_count`
+- Next Plan: `next_plan_count`, `next_plan_percent`, `next_plan_within_week_percent`
+- Usage: `total_used_visit_count`, `total_lifetime_used_visit_count`
+- Averages: `avg_start_date_to_first_visit`, `avg_first_visit_to_next_plan`, `avg_last_visit_to_next_plan`
+- See `Pike13::Reporting::PersonPlans::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Plan: `plan_id`, `plan_name`, `plan_type`, `product_id`, `product_name`, `plan_location_name`
+- Person: `person_id`, `full_name`, `home_location_name`, `primary_staff_name`
+- Status: `is_available`, `is_on_hold`, `is_canceled`, `grants_membership`, `is_first_plan`
+- Dates: `start_date`, `start_month_start_date`, `first_visit_date`, `first_visit_month_start_date`, `last_visit_date`
+- Invoice: `latest_invoice_past_due`, `latest_invoice_autobill`, `latest_invoice_due_date`
+- Business: `business_id`, `business_name`, `business_subdomain`, `revenue_category`
+
+#### Staff Members
+
+All staff member data — from tenure and events to birthdays and custom fields. Includes all staff members past and present.
+
+```ruby
+# Basic query - get all staff members
+Pike13::Reporting::StaffMembers.query(
+  fields: ['person_id', 'full_name', 'email', 'role', 'person_state']
+)
+
+# Query active staff members with event counts
+Pike13::Reporting::StaffMembers.query(
+  fields: ['full_name', 'email', 'role', 'tenure', 'future_events', 'past_events'],
+  filter: ['eq', 'person_state', 'active'],
+  sort: ['tenure-']
+)
+
+# Find staff members shown to clients
+Pike13::Reporting::StaffMembers.query(
+  fields: ['full_name', 'email', 'role', 'home_location_name'],
+  filter: ['eq', 'show_to_clients', true]
+)
+
+# Query staff members by role
+Pike13::Reporting::StaffMembers.query(
+  fields: ['full_name', 'email', 'tenure', 'future_events'],
+  filter: ['in', 'role', ['manager', 'owner', 'primary_owner']]
+)
+
+# Find staff with upcoming birthdays
+Pike13::Reporting::StaffMembers.query(
+  fields: ['full_name', 'email', 'birthdate', 'days_until_birthday'],
+  filter: ['lte', 'days_until_birthday', 30],
+  sort: ['days_until_birthday+']
+)
+
+# Track staff tenure
+Pike13::Reporting::StaffMembers.query(
+  fields: ['full_name', 'staff_since_date', 'tenure', 'tenure_group', 'past_events'],
+  filter: ['eq', 'person_state', 'active'],
+  sort: ['tenure-']
+)
+
+# Find staff who are also clients
+Pike13::Reporting::StaffMembers.query(
+  fields: ['full_name', 'email', 'role', 'home_location_name'],
+  filter: ['eq', 'also_client', true]
+)
+
+# Group by role to analyze staff composition
+Pike13::Reporting::StaffMembers.query(
+  fields: ['person_count', 'total_future_events', 'total_past_events'],
+  group: 'role'
+)
+
+# Group by tenure group to analyze staff retention
+Pike13::Reporting::StaffMembers.query(
+  fields: ['person_count', 'total_future_events', 'also_client_count'],
+  group: 'tenure_group'
+)
+
+# Group by location to see staff distribution
+Pike13::Reporting::StaffMembers.query(
+  fields: ['person_count', 'total_future_events', 'total_past_events'],
+  group: 'home_location_name'
+)
+```
+
+**Available Detail Fields** (when not grouping):
+- Person: `person_id`, `full_name`, `first_name`, `last_name`, `middle_name`, `email`, `phone`, `birthdate`, `age`, `days_until_birthday`
+- Address: `address`, `street_address`, `street_address2`, `city`, `state_code`, `postal_code`, `country_code`
+- Staff: `role`, `person_state`, `show_to_clients`, `also_client`, `home_location_id`, `home_location_name`
+- Tenure: `staff_since_date`, `tenure`, `tenure_group`
+- Events: `future_events`, `past_events`, `attendance_not_completed_events`
+- Custom: `custom_fields`
+- See `Pike13::Reporting::StaffMembers::DETAIL_FIELDS` for the full list
+
+**Available Summary Fields** (when grouping):
+- Counts: `person_count`, `also_client_count`, `demoted_staff_count`, `total_count`
+- Events: `total_future_events`, `total_past_events`, `total_attendance_not_completed_events`
+- See `Pike13::Reporting::StaffMembers::SUMMARY_FIELDS` for the full list
+
+**Available Groupings**:
+- Staff: `role`, `person_state`, `show_to_clients`, `also_client`, `home_location_name`
+- Tenure: `staff_since_date`, `staff_since_month_start_date`, `staff_since_quarter_start_date`, `staff_since_week_mon_start_date`, `staff_since_week_sun_start_date`, `staff_since_year_start_date`, `tenure_group`
+- Demographics: `age`
+- Business: `business_id`, `business_name`, `business_subdomain`
+
 ## Error Handling
 
 ```ruby
@@ -1060,5 +1738,6 @@ MIT License
 
 ## Links
 
-- [Pike13 API Documentation](https://developer.pike13.com/docs/api/v2)
+- [Pike13 Core API (v2) Documentation](https://developer.pike13.com/docs/api/v2)
+- [Pike13 Reporting API (v3) Documentation](https://developer.pike13.com/docs/reporting/v3)
 - [Pike13 Website](https://www.pike13.com/)

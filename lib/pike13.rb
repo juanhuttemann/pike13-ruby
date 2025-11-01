@@ -84,8 +84,15 @@ require_relative "pike13/api/v2/front/payment"
 # V3 Reporting resources
 require_relative "pike13/api/v3/desk/clients"
 require_relative "pike13/api/v3/desk/enrollments"
+require_relative "pike13/api/v3/desk/event_occurrences"
+require_relative "pike13/api/v3/desk/event_occurrence_staff_members"
+require_relative "pike13/api/v3/desk/invoice_items"
+require_relative "pike13/api/v3/desk/invoice_item_transactions"
 require_relative "pike13/api/v3/desk/invoices"
 require_relative "pike13/api/v3/desk/monthly_business_metrics"
+require_relative "pike13/api/v3/desk/pays"
+require_relative "pike13/api/v3/desk/person_plans"
+require_relative "pike13/api/v3/desk/staff_members"
 require_relative "pike13/api/v3/desk/transactions"
 
 # Pike13 Ruby Client
