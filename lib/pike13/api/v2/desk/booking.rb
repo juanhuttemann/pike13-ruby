@@ -26,6 +26,11 @@ module Pike13
               client.delete("desk/bookings/#{id}")
             end
 
+            # GET /desk/bookings/:booking_id/leases/:id
+            def find_lease(booking_id:, id:, **params)
+              client.get("desk/bookings/#{booking_id}/leases/#{id}", params)
+            end
+
             # POST /desk/bookings/:booking_id/leases
             def create_lease(booking_id, attributes)
               client.post("desk/bookings/#{booking_id}/leases", { lease: attributes })
@@ -34,6 +39,11 @@ module Pike13
             # PUT /desk/bookings/:booking_id/leases/:id
             def update_lease(booking_id, id, attributes)
               client.put("desk/bookings/#{booking_id}/leases/#{id}", { lease: attributes })
+            end
+
+            # DELETE /desk/bookings/:booking_id/leases/:lease_id
+            def destroy_lease(booking_id, lease_id)
+              client.delete("desk/bookings/#{booking_id}/leases/#{lease_id}")
             end
           end
         end

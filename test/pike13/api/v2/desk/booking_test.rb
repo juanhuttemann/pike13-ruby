@@ -22,6 +22,18 @@ module Pike13
             assert_equal 123, booking["bookings"].first["id"]
           end
 
+          def test_find_lease
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/bookings/123/leases/456", response_body: {
+                                  "leases" => [{ "id" => 456, "visit_id" => 789 }]
+                                })
+
+            lease = Pike13::API::V2::Desk::Booking.find_lease(booking_id: 123, id: 456)
+
+            assert_instance_of Hash, lease
+            assert_equal 456, lease["leases"].first["id"]
+            assert_equal 789, lease["leases"].first["visit_id"]
+          end
+
           def test_create_lease
             stub_pike13_request(:post, "https://test.pike13.com/api/v2/desk/bookings/123/leases", response_body: {
                                   "leases" => [{ "id" => 456 }]
@@ -69,6 +81,14 @@ module Pike13
             assert_instance_of Hash, result
             assert_equal 123, result["bookings"].first["id"]
             assert_equal "completed", result["bookings"].first["state"]
+          end
+
+          def test_destroy_lease
+            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/bookings/123/leases/456", response_body: {})
+
+            result = Pike13::API::V2::Desk::Booking.destroy_lease(123, 456)
+
+            assert_instance_of Hash, result
           end
         end
       end
