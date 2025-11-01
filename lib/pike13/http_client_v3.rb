@@ -5,7 +5,7 @@ require "json"
 
 module Pike13
   # HTTParty-based HTTP client for Pike13 v3 Reporting API
-  # V3 API uses a different URL structure than v2
+  # V3 API uses JSON API 1.0 (application/vnd.api+json) and a different URL structure than v2
   class HTTPClientV3
     include HTTParty
 
@@ -44,8 +44,8 @@ module Pike13
     def headers
       {
         "Authorization" => "Bearer #{access_token}",
-        "Content-Type" => "application/json",
-        "Accept" => "application/json"
+        "Content-Type" => "application/vnd.api+json",
+        "Accept" => "application/vnd.api+json"
       }
     end
 

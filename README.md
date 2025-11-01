@@ -621,6 +621,8 @@ Pike13::Front::FormOfPayment.destroy(person_id: 123, id: 456)
 
 Advanced query-based analytics for business insights. The Reporting API uses a different architecture than the Core API - it's designed for complex analytical queries with filtering, grouping, sorting, and aggregation capabilities.
 
+**Note:** The v3 Reporting API conforms to [JSON API 1.0](https://jsonapi.org/format/1.0/) specification and uses `application/vnd.api+json` content type.
+
 **Available Reporting Endpoints:**
 - **Monthly Business Metrics** - Monthly transaction amounts, members, and enrollments
 - **Clients** - Client demographics, tenure, visits, and engagement
