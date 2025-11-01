@@ -1,8 +1,8 @@
 # Pike13 Ruby Client
 
 A Ruby gem for interacting with the Pike13 API, supporting both:
-- **[Core API (v2)](https://developer.pike13.com/docs/api/v2)** - CRUD operations for managing people, events, invoices, and more
-- **[Reporting API (v3)](https://developer.pike13.com/docs/reporting/v3)** - Advanced analytics and reporting queries
+- **[Core API](https://developer.pike13.com/docs/api/v2)** - CRUD operations for managing people, events, invoices, and more
+- **[Reporting API](https://developer.pike13.com/docs/reporting/v3)** - Advanced analytics and reporting queries
 
 ## Installation
 
@@ -34,7 +34,7 @@ end
 
 The gem supports two API versions with different capabilities:
 
-### Core API (v2) - CRUD Operations
+### Core API - CRUD Operations
 
 Three namespaces for managing your business data:
 
@@ -42,61 +42,83 @@ Three namespaces for managing your business data:
 - **Desk** (`Pike13::Desk`) - Staff interface operations (full read/write access)
 - **Front** (`Pike13::Front`) - Client interface operations (limited access for customer-facing apps)
 
-### Reporting API (v3) - Analytics & Insights
+### Reporting API - Analytics & Insights
 
 - **Reporting** (`Pike13::Reporting`) - Advanced query-based analytics with 12 comprehensive reporting endpoints
 
-### Account Resources (v2)
+## Table of Contents
 
-Account-level resources for managing your Pike13 account.
+- [Account Resources](#account-resources)
+- [Desk Resources](#desk-resources)
+  - [People](#people)
+  - [Business](#business)
+  - [Events & Event Occurrences](#events--event-occurrences)
+  - [Appointments](#appointments)
+  - [Bookings](#bookings)
+  - [Visits](#visits)
+  - [Locations, Services, Staff](#locations-services-staff)
+  - [Plans & Products](#plans--products)
+  - [Invoices & Payments](#invoices--payments)
+  - [Financial Settings](#financial-settings)
+  - [Notes](#notes)
+  - [Make-Ups](#make-ups)
+  - [Waitlist](#waitlist)
+  - [Custom Fields](#custom-fields)
+  - [Person-Related Resources](#person-related-resources)
+- [Front Resources](#front-resources)
+  - [Business & Branding](#business--branding)
+  - [People](#people-1)
+  - [Events & Event Occurrences](#events--event-occurrences-1)
+  - [Appointments](#appointments-1)
+  - [Bookings](#bookings-1)
+  - [Visits](#visits-1)
+  - [Locations, Services, Staff](#locations-services-staff-1)
+  - [Plans & Products](#plans--products-1)
+  - [Invoices & Payments](#invoices--payments-1)
+  - [Notes](#notes-1)
+  - [Waitlist](#waitlist-1)
+  - [Person-Related Resources](#person-related-resources-1)
+- [Reporting Resources](#reporting-resources)
+  - [Monthly Business Metrics](#monthly-business-metrics)
+  - [Clients](#clients)
+  - [Transactions](#transactions)
+  - [Invoices](#invoices-1)
+  - [Enrollments](#enrollments)
+  - [Event Occurrences](#event-occurrences)
+  - [Event Occurrence Staff Members](#event-occurrence-staff-members)
+  - [Invoice Items](#invoice-items)
+  - [Invoice Item Transactions](#invoice-item-transactions)
+  - [Pays](#pays)
+  - [Person Plans](#person-plans)
+  - [Staff Members](#staff-members)
+- [Error Handling](#error-handling)
+- [Development](#development)
+
+### Account Resources
+
+Account-level operations for managing your Pike13 account.
 
 ```ruby
-# Get current account
-Pike13::Account.me
-
-# List all businesses
-Pike13::Account::Business.all
-
-# Get all people
-Pike13::Account::Person.all
-
-# Password reset
-Pike13::Account::Password.create(email: "user@example.com")
-
-# Email confirmation
-Pike13::Account::Confirmation.create(confirmation_token: "token")
+Pike13::Account.me                    # Get current account
+Pike13::Account::Business.all         # List all businesses
+Pike13::Account::Person.all           # Get all people
+Pike13::Account::Password.create(email: "user@example.com")  # Password reset
+Pike13::Account::Confirmation.create(confirmation_token: "token")  # Email confirmation
 ```
 
-### Desk Resources (v2 - Staff Interface)
+### Desk Resources
 
 Full staff interface with read/write access to all resources.
 
 #### People
 
 ```ruby
-# List all people
-Pike13::Desk::Person.all
-
-# Find a person
-Pike13::Desk::Person.find(123)
-
-# Get authenticated user
-Pike13::Desk::Person.me
-
-# Search people
-Pike13::Desk::Person.search("john")
-
-# Create a person
-Pike13::Desk::Person.create(
-  first_name: "John",
-  last_name: "Doe",
-  email: "john@example.com"
-)
-
-# Update a person
+Pike13::Desk::Person.all                    # List all people
+Pike13::Desk::Person.find(123)              # Find a person
+Pike13::Desk::Person.me                     # Get authenticated user
+Pike13::Desk::Person.search("john")         # Search people
+Pike13::Desk::Person.create(first_name: "John", last_name: "Doe", email: "john@example.com")
 Pike13::Desk::Person.update(123, first_name: "Jane")
-
-# Delete a person
 Pike13::Desk::Person.destroy(123)
 ```
 
@@ -110,56 +132,21 @@ Pike13::Desk::Business.find
 #### Events & Event Occurrences
 
 ```ruby
-# List events
-Pike13::Desk::Event.all
-
-# Find event
-Pike13::Desk::Event.find(100)
-
-# List event occurrences
+Pike13::Desk::Event.all                                    # List events
+Pike13::Desk::Event.find(100)                             # Find event
 Pike13::Desk::EventOccurrence.all(from: "2025-01-01", to: "2025-01-31")
-
-# Find occurrence
-Pike13::Desk::EventOccurrence.find(789)
-
-# Get occurrence summary
-Pike13::Desk::EventOccurrence.summary
-
-# Check enrollment eligibility
+Pike13::Desk::EventOccurrence.find(789)                   # Find occurrence
+Pike13::Desk::EventOccurrence.summary                     # Get occurrence summary
 Pike13::Desk::EventOccurrence.enrollment_eligibilities(id: 789)
 
-# List event occurrence notes
+# Event occurrence notes
 Pike13::Desk::EventOccurrenceNote.all(event_occurrence_id: 789)
-
-# Find event occurrence note
-Pike13::Desk::EventOccurrenceNote.find(event_occurrence_id: 789, id: 1)
-
-# Create event occurrence note
-Pike13::Desk::EventOccurrenceNote.create(
-  event_occurrence_id: 789,
-  attributes: {
-    note: "This is a note",      # Use "note" not "body"
-    subject: "Note Subject"       # Optional
-  }
-)
-
-# Update event occurrence note
-Pike13::Desk::EventOccurrenceNote.update(
-  event_occurrence_id: 789,
-  id: 1,
-  attributes: {
-    note: "Updated note",        # Use "note" not "body"
-    subject: "Updated Subject"   # Optional
-  }
-)
-
-# Delete event occurrence note
+Pike13::Desk::EventOccurrenceNote.create(event_occurrence_id: 789, attributes: { note: "This is a note", subject: "Note Subject" })
+Pike13::Desk::EventOccurrenceNote.update(event_occurrence_id: 789, id: 1, attributes: { note: "Updated note" })
 Pike13::Desk::EventOccurrenceNote.destroy(event_occurrence_id: 789, id: 1)
 
-# List visits for an event occurrence
+# Visits and waitlist
 Pike13::Desk::EventOccurrenceVisit.all(event_occurrence_id: 789)
-
-# List waitlist entries for an event occurrence
 Pike13::Desk::EventOccurrenceWaitlistEntry.all(event_occurrence_id: 789)
 ```
 
@@ -189,34 +176,18 @@ Pike13::Desk::Appointment.available_slots_summary(
 **Note:** Creating bookings requires an `idempotency_token` parameter to prevent duplicate bookings.
 
 ```ruby
-# Find booking
 Pike13::Desk::Booking.find(123)
-
-# Create booking (requires idempotency token)
-Pike13::Desk::Booking.create(
-  event_occurrence_id: 789,
-  person_id: 123,
-  idempotency_token: SecureRandom.uuid  # Required: unique token to prevent duplicates
-)
-
-# Update booking
+Pike13::Desk::Booking.create(event_occurrence_id: 789, person_id: 123, idempotency_token: SecureRandom.uuid)
 Pike13::Desk::Booking.update(456, state: "completed")
-
-# Delete booking
 Pike13::Desk::Booking.destroy(456)
 ```
 
 #### Visits
 
 ```ruby
-# List all visits
-Pike13::Desk::Visit.all
-
-# Find visit
-Pike13::Desk::Visit.find(456)
-
-# Get visit summary for a person
-Pike13::Desk::Visit.summary(person_id: 123)
+Pike13::Desk::Visit.all                     # List all visits
+Pike13::Desk::Visit.find(456)              # Find visit
+Pike13::Desk::Visit.summary(person_id: 123) # Get visit summary for a person
 ```
 
 #### Locations, Services, Staff
@@ -240,236 +211,119 @@ Pike13::Desk::StaffMember.me
 #### Plans & Products
 
 ```ruby
-# Plans
-Pike13::Desk::Plan.all
+Pike13::Desk::Plan.all                      # Plans
 Pike13::Desk::Plan.find(200)
-
-# Plan Products
-Pike13::Desk::PlanProduct.all
+Pike13::Desk::PlanProduct.all               # Plan Products
 Pike13::Desk::PlanProduct.find(300)
-
-# Pack Products
-Pike13::Desk::PackProduct.all
+Pike13::Desk::PackProduct.all               # Pack Products
 Pike13::Desk::PackProduct.find(400)
-
-# Packs (find only)
-Pike13::Desk::Pack.find(500)
-
-# Punches (find only)
-Pike13::Desk::Punch.find(600)
+Pike13::Desk::Pack.find(500)                # Packs (find only)
+Pike13::Desk::Punch.find(600)               # Punches (find only)
 ```
 
 #### Invoices & Payments
 
 ```ruby
-# Invoices
-Pike13::Desk::Invoice.all
+Pike13::Desk::Invoice.all                   # Invoices
 Pike13::Desk::Invoice.find(700)
-
-# Payments
-Pike13::Desk::Payment.find(800)
+Pike13::Desk::Payment.find(800)             # Payments
 Pike13::Desk::Payment.configuration
 Pike13::Desk::Payment.void(payment_id: 800, invoice_item_ids_to_cancel: [1, 2])
-
-# Refunds
-Pike13::Desk::Refund.find(900)
+Pike13::Desk::Refund.find(900)              # Refunds
 Pike13::Desk::Refund.void(refund_id: 900)
 ```
 
 #### Financial Settings
 
 ```ruby
-# Revenue Categories
-Pike13::Desk::RevenueCategory.all
+Pike13::Desk::RevenueCategory.all           # Revenue Categories
 Pike13::Desk::RevenueCategory.find(10)
-
-# Sales Taxes
-Pike13::Desk::SalesTax.all
+Pike13::Desk::SalesTax.all                  # Sales Taxes
 Pike13::Desk::SalesTax.find(20)
 ```
 
 #### Notes
 
 ```ruby
-# List notes for a person
-Pike13::Desk::Note.all(person_id: 123)
-
-# Find note
-Pike13::Desk::Note.find(person_id: 123, id: 1000)
-
-# Create note
-Pike13::Desk::Note.create(
-  person_id: 123,
-  attributes: {
-    note: "This is a note",       # Use "note" not "body"
-    subject: "Note Subject"        # Optional but recommended
-  }
-)
-
-# Update note
-Pike13::Desk::Note.update(
-  person_id: 123,
-  id: 1000,
-  attributes: {
-    note: "Updated note",          # Use "note" not "body"
-    subject: "Updated Subject"     # Optional
-  }
-)
-
-# Delete note
+Pike13::Desk::Note.all(person_id: 123)                    # List notes for a person
+Pike13::Desk::Note.find(person_id: 123, id: 1000)        # Find note
+Pike13::Desk::Note.create(person_id: 123, attributes: { note: "This is a note", subject: "Note Subject" })
+Pike13::Desk::Note.update(person_id: 123, id: 1000, attributes: { note: "Updated note" })
 Pike13::Desk::Note.destroy(person_id: 123, id: 1000)
 ```
 
 #### Make-Ups
 
 ```ruby
-# Find make-up
-Pike13::Desk::MakeUp.find(1100)
-
-# List make-up reasons
-Pike13::Desk::MakeUp.reasons
-
-# Generate make-up credit
-Pike13::Desk::MakeUp.generate(
-  visit_id: 456,
-  make_up_reason_id: 5,
-  free_form_reason: "Client was sick"
-)
+Pike13::Desk::MakeUp.find(1100)                             # Find make-up
+Pike13::Desk::MakeUp.reasons                                # List make-up reasons
+Pike13::Desk::MakeUp.generate(visit_id: 456, make_up_reason_id: 5, free_form_reason: "Client was sick")
 ```
 
 #### Waitlist
 
 ```ruby
-# List waitlist entries
-Pike13::Desk::WaitlistEntry.all
-
-# Find waitlist entry
-Pike13::Desk::WaitlistEntry.find(1200)
+Pike13::Desk::WaitlistEntry.all             # List waitlist entries
+Pike13::Desk::WaitlistEntry.find(1200)      # Find waitlist entry
 ```
 
 #### Custom Fields
 
 ```ruby
-# List custom fields
-Pike13::Desk::CustomField.all
-
-# Find custom field
-Pike13::Desk::CustomField.find(30)
+Pike13::Desk::CustomField.all               # List custom fields
+Pike13::Desk::CustomField.find(30)          # Find custom field
 ```
 
 #### Person-Related Resources
 
 ```ruby
-# List person's visits
-Pike13::Desk::PersonVisit.all(person_id: 123)
-
-# List person's plans
-Pike13::Desk::PersonPlan.all(person_id: 123)
-
-# List person's waitlist entries
-Pike13::Desk::PersonWaitlistEntry.all(person_id: 123)
-
-# List person's waivers
-Pike13::Desk::PersonWaiver.all(person_id: 123)
-
-# List person's forms of payment
-Pike13::Desk::FormOfPayment.all(person_id: 123)
-
-# Find form of payment
-Pike13::Desk::FormOfPayment.find(person_id: 123, id: 456)
-
-# Create form of payment
-# Note: Requires 'type' parameter ("creditcard" for credit cards, "ach" for bank accounts)
-Pike13::Desk::FormOfPayment.create(
-  person_id: 123,
-  attributes: {
-    type: "creditcard",  # Required! Options: "creditcard" or "ach"
-    token: "tok_xxx"
-  }
-)
-
-# Update form of payment
-Pike13::Desk::FormOfPayment.update(
-  person_id: 123,
-  id: 456,
-  attributes: { is_default: true }
-)
-
-# Delete form of payment
+Pike13::Desk::PersonVisit.all(person_id: 123)               # List person's visits
+Pike13::Desk::PersonPlan.all(person_id: 123)                # List person's plans
+Pike13::Desk::PersonWaitlistEntry.all(person_id: 123)       # List person's waitlist entries
+Pike13::Desk::PersonWaiver.all(person_id: 123)              # List person's waivers
+Pike13::Desk::FormOfPayment.all(person_id: 123)             # List person's forms of payment
+Pike13::Desk::FormOfPayment.find(person_id: 123, id: 456)   # Find form of payment
+Pike13::Desk::FormOfPayment.create(person_id: 123, attributes: { type: "creditcard", token: "tok_xxx" })
+Pike13::Desk::FormOfPayment.update(person_id: 123, id: 456, attributes: { is_default: true })
 Pike13::Desk::FormOfPayment.destroy(person_id: 123, id: 456)
 ```
 
-### Front Resources (v2 - Client Interface)
+### Front Resources
 
 Client-facing interface with limited read-only access.
 
 #### Business & Branding
 
 ```ruby
-# Get business info
-Pike13::Front::Business.find
-
-# Get branding
-Pike13::Front::Branding.find
+Pike13::Front::Business.find                  # Get business info
+Pike13::Front::Branding.find                  # Get branding
 ```
 
 #### People
 
 ```ruby
-# Get authenticated client user (only)
-Pike13::Front::Person.me
+Pike13::Front::Person.me                      # Get authenticated client user (only)
 ```
 
 #### Events & Event Occurrences
 
 ```ruby
-# List events
-Pike13::Front::Event.all
-
-# Find event
-Pike13::Front::Event.find(100)
-
-# List event occurrences
+Pike13::Front::Event.all                                    # List events
+Pike13::Front::Event.find(100)                             # Find event
 Pike13::Front::EventOccurrence.all(from: "2025-01-01", to: "2025-01-31")
-
-# Find occurrence
-Pike13::Front::EventOccurrence.find(789)
-
-# Get occurrence summary
-Pike13::Front::EventOccurrence.summary
-
-# Check enrollment eligibility
+Pike13::Front::EventOccurrence.find(789)                   # Find occurrence
+Pike13::Front::EventOccurrence.summary                     # Get occurrence summary
 Pike13::Front::EventOccurrence.enrollment_eligibilities(id: 789)
-
-# List event occurrence notes
 Pike13::Front::EventOccurrenceNote.all(event_occurrence_id: 789)
-
-# Find event occurrence note
 Pike13::Front::EventOccurrenceNote.find(event_occurrence_id: 789, id: 1)
-
-# List waitlist eligibilities for an event occurrence
 Pike13::Front::EventOccurrenceWaitlistEligibility.all(event_occurrence_id: 789)
 ```
 
 #### Appointments
 
 ```ruby
-# Find available slots
-Pike13::Front::Appointment.find_available_slots(
-  service_id: 100,
-  date: "2025-01-15",
-  location_ids: [1, 2],
-  staff_member_ids: [3, 4]
-)
-
-# Get availability summary
-Pike13::Front::Appointment.available_slots_summary(
-  service_id: 100,
-  from: "2025-01-01",
-  to: "2025-01-31",
-  location_ids: [1, 2],
-  staff_member_ids: [3, 4]
-)
+Pike13::Front::Appointment.find_available_slots(service_id: 100, date: "2025-01-15", location_ids: [1, 2], staff_member_ids: [3, 4])
+Pike13::Front::Appointment.available_slots_summary(service_id: 100, from: "2025-01-01", to: "2025-01-31", location_ids: [1, 2], staff_member_ids: [3, 4])
 ```
 
 #### Bookings
@@ -477,34 +331,18 @@ Pike13::Front::Appointment.available_slots_summary(
 **Note:** Creating bookings requires an `idempotency_token` parameter to prevent duplicate bookings.
 
 ```ruby
-# Find booking
 Pike13::Front::Booking.find(123)
-
-# Find lease for booking
 Pike13::Front::Booking.find_lease(booking_id: 123, id: 456)
-
-# Create booking (requires idempotency token)
-Pike13::Front::Booking.create(
-  event_occurrence_id: 789,
-  person_id: 123,
-  idempotency_token: SecureRandom.uuid  # Required: unique token to prevent duplicates
-)
-
-# Update booking
+Pike13::Front::Booking.create(event_occurrence_id: 789, person_id: 123, idempotency_token: SecureRandom.uuid)
 Pike13::Front::Booking.update(456, state: "completed")
-
-# Delete booking
 Pike13::Front::Booking.destroy(456)
 ```
 
 #### Visits
 
 ```ruby
-# List visits
-Pike13::Front::Visit.all
-
-# Find visit
-Pike13::Front::Visit.find(456)
+Pike13::Front::Visit.all                      # List visits
+Pike13::Front::Visit.find(456)               # Find visit
 ```
 
 #### Locations, Services, Staff
@@ -527,16 +365,11 @@ Pike13::Front::StaffMember.find(5)
 #### Plans & Products
 
 ```ruby
-# Plans
-Pike13::Front::Plan.all
+Pike13::Front::Plan.all                       # Plans
 Pike13::Front::Plan.find(200)
-
-# Plan Products
-Pike13::Front::PlanProduct.all
+Pike13::Front::PlanProduct.all                # Plan Products
 Pike13::Front::PlanProduct.find(300)
-
-# Plan Terms
-Pike13::Front::PlanTerms.all(plan_id: 200)
+Pike13::Front::PlanTerms.all(plan_id: 200)    # Plan Terms
 Pike13::Front::PlanTerms.find(plan_id: 200, plan_terms_id: 1)
 Pike13::Front::PlanTerms.complete(plan_id: 200, plan_terms_id: 1)
 ```
@@ -544,80 +377,41 @@ Pike13::Front::PlanTerms.complete(plan_id: 200, plan_terms_id: 1)
 #### Invoices & Payments
 
 ```ruby
-# Invoices (find only)
-Pike13::Front::Invoice.find(700)
-
-# Payments
-Pike13::Front::Payment.find(800)
+Pike13::Front::Invoice.find(700)              # Invoices (find only)
+Pike13::Front::Payment.find(800)              # Payments
 Pike13::Front::Payment.configuration
 ```
 
 #### Notes
 
 ```ruby
-# List notes for a person
-Pike13::Front::Note.all(person_id: 123)
-
-# Find note
-Pike13::Front::Note.find(person_id: 123, id: 1000)
+Pike13::Front::Note.all(person_id: 123)       # List notes for a person
+Pike13::Front::Note.find(person_id: 123, id: 1000)  # Find note
 ```
 
 #### Waitlist
 
 ```ruby
-# List waitlist entries
-Pike13::Front::WaitlistEntry.all
-
-# Find waitlist entry
-Pike13::Front::WaitlistEntry.find(1200)
+Pike13::Front::WaitlistEntry.all              # List waitlist entries
+Pike13::Front::WaitlistEntry.find(1200)       # Find waitlist entry
 ```
 
 #### Person-Related Resources
 
 ```ruby
-# List person's visits
-Pike13::Front::PersonVisit.all(person_id: 123)
-
-# List person's plans
-Pike13::Front::PersonPlan.all(person_id: 123)
-
-# List person's waitlist entries
-Pike13::Front::PersonWaitlistEntry.all(person_id: 123)
-
-# List person's waivers
-Pike13::Front::PersonWaiver.all(person_id: 123)
-
-# List person's forms of payment
-Pike13::Front::FormOfPayment.all(person_id: 123)
-
-# Find form of payment
-Pike13::Front::FormOfPayment.find(person_id: 123, id: 456)
-
-# Find form of payment for authenticated user
-Pike13::Front::FormOfPayment.find_me(id: 456)
-
-# Create form of payment
-# Note: Requires 'type' parameter ("creditcard" for credit cards, "ach" for bank accounts)
-Pike13::Front::FormOfPayment.create(
-  person_id: 123,
-  attributes: {
-    type: "creditcard",  # Required! Options: "creditcard" or "ach"
-    token: "tok_xxx"
-  }
-)
-
-# Update form of payment
-Pike13::Front::FormOfPayment.update(
-  person_id: 123,
-  id: 456,
-  attributes: { is_default: true }
-)
-
-# Delete form of payment
+Pike13::Front::PersonVisit.all(person_id: 123)                # List person's visits
+Pike13::Front::PersonPlan.all(person_id: 123)                 # List person's plans
+Pike13::Front::PersonWaitlistEntry.all(person_id: 123)        # List person's waitlist entries
+Pike13::Front::PersonWaiver.all(person_id: 123)               # List person's waivers
+Pike13::Front::FormOfPayment.all(person_id: 123)              # List person's forms of payment
+Pike13::Front::FormOfPayment.find(person_id: 123, id: 456)    # Find form of payment
+Pike13::Front::FormOfPayment.find_me(id: 456)                 # Find form of payment for authenticated user
+Pike13::Front::FormOfPayment.create(person_id: 123, attributes: { type: "creditcard", token: "tok_xxx" })
+Pike13::Front::FormOfPayment.update(person_id: 123, id: 456, attributes: { is_default: true })
 Pike13::Front::FormOfPayment.destroy(person_id: 123, id: 456)
 ```
 
-### Reporting Resources (v3 API)
+### Reporting Resources
 
 Advanced query-based analytics for business insights. The Reporting API uses a different architecture than the Core API - it's designed for complex analytical queries with filtering, grouping, sorting, and aggregation capabilities.
 
