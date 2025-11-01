@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Juan Huttemann"]
   spec.email = ["juanfhuttemann@gmail.com"]
 
-  spec.summary = "Ruby client for the Pike13 Core API"
-  spec.description = "A Ruby gem for interacting with the Pike13 Core API"
+  spec.summary = "Ruby client for the Pike13 API"
+  spec.description = "A Ruby gem for interacting with the Pike13 API"
   spec.homepage = "https://github.com/juanhuttemann/pike13-ruby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
