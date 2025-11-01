@@ -7,128 +7,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2025-01-27
+## [0.1.0] - 2025-10-31
+
+Initial release with complete Pike13 API support.
 
 ### Added
 
 #### Core Infrastructure
-- HTTP client with Faraday and automatic retry (max 2 retries, exponential backoff)
-- Bearer token authentication
-- Automatic JSON response parsing
-- Global configuration management via `Pike13.configure`
-- URL validation supporting HTTP/HTTPS schemes and custom ports
-- Support for production (`mybiz.pike13.com`) and development (`http://mybiz.pike13.test:3000`) environments
+- HTTP client with HTTParty and automatic error handling
+- Bearer token authentication with configurable base URLs
+- Global configuration management with URL normalization
+- Comprehensive error handling with specific HTTP status mappings
+- Support for both production and development environments
 
-#### Error Handling
-- `Pike13::Error` - Base error class
-- `Pike13::ConfigurationError` - Configuration validation errors
-- `Pike13::APIError` - Base for HTTP errors
-- `Pike13::AuthenticationError` (401)
-- `Pike13::NotFoundError` (404)
-- `Pike13::ValidationError` (422)
-- `Pike13::RateLimitError` (429) with rate limit reset header tracking
-- `Pike13::ServerError` (5xx)
+#### API v2 - Core API
+**Account Resources:**
+- Account management and business listing
+- Person management across businesses
+- Password reset functionality
+- Email confirmation system
 
-#### Account Scope Resources
-Base URL: `https://pike13.com/api/v2`
+**Desk Resources (Staff Interface):**
+- Person CRUD operations with search functionality
+- Business and location management
+- Event and event occurrence scheduling
+- Appointment availability and slot management
+- Booking system with lease support
+- Visit tracking and summaries
+- Service management with enrollment eligibility
+- Staff member management
+- Plan, pack, and product management
+- Invoice and payment processing
+- Revenue category and sales tax management
+- Note system for person records
+- Make-up credit management
+- Waitlist entry management
+- Custom field support
 
-- **Account::Me** - Get current account details
-- **Account::Business** - List and find businesses
-- **Account::Person** - List and find people
-- **Account::Password** - Password reset/creation
-- **Account::Confirmation** - Email confirmation
+**Front Resources (Client Interface):**
+- Business and branding information
+- Authenticated user access
+- Event browsing and enrollment eligibility
+- Appointment booking with lease support
+- Payment method management
+- Read-only access to appropriate resources
 
-#### Desk Scope Resources (Staff Interface)
-Base URL: `https://[base_url]/api/v2`
+#### API v3 - Reporting API
+Complete reporting analytics with 12 endpoints:
+- Monthly business metrics
+- Client demographics and engagement analysis
+- Transaction records with payment breakdowns
+- Invoice tracking and revenue analysis
+- Enrollment and attendance patterns
+- Event occurrence analytics
+- Staff workload and assignment tracking
+- Invoice item details
+- Transaction-level payment/refund tracking
+- Staff compensation data
+- Client plan ownership metrics
+- Complete staff roster management
 
-**People Management:**
-- **Desk::Person** - Full CRUD operations
-  - List all people, find by ID, search, get authenticated user
-  - Create, update, and delete people
-
-**Business & Locations:**
-- **Desk::Business** - Get business information
-- **Desk::Location** - List and find locations
-
-**Events & Scheduling:**
-- **Desk::Event** - List and find events
-- **Desk::EventOccurrence** - List and find occurrences, summaries, enrollment eligibility
-- **Desk::Appointment** - Find available slots and availability summaries
-
-**Bookings & Visits:**
-- **Desk::Booking** - Full CRUD operations for bookings
-- **Desk::Visit** - List and find visits, get visit summaries
-
-**Services & Staff:**
-- **Desk::Service** - List and find services, enrollment eligibility
-- **Desk::StaffMember** - List and find staff members, get authenticated staff
-
-**Plans & Products:**
-- **Desk::Plan** - List and find plans
-- **Desk::PlanProduct** - List and find plan products
-- **Desk::PackProduct** - List and find pack products
-- **Desk::Pack** - Find packs by ID
-- **Desk::Punch** - Find punches by ID
-
-**Financial:**
-- **Desk::Invoice** - List and find invoices
-- **Desk::Payment** - Find payments, void payments, get payment configuration
-- **Desk::Refund** - Find refunds, void refunds
-- **Desk::RevenueCategory** - List and find revenue categories
-- **Desk::SalesTax** - List and find sales taxes
-
-**Notes & Communication:**
-- **Desk::Note** - Full CRUD operations for person notes
-  - List notes for a person
-  - Create, update, and delete notes
-
-**Other Resources:**
-- **Desk::MakeUp** - Find make-ups, list reasons, generate make-up credits
-- **Desk::WaitlistEntry** - List and find waitlist entries
-- **Desk::CustomField** - List and find custom fields
-
-#### Front Scope Resources (Client Interface)
-Base URL: `https://[base_url]/api/v2`
-
-**Business & Branding:**
-- **Front::Business** - Get business information
-- **Front::Branding** - Get branding information
-
-**People:**
-- **Front::Person** - Get authenticated client user only
-
-**Events & Scheduling:**
-- **Front::Event** - List and find events
-- **Front::EventOccurrence** - List and find occurrences, summaries, enrollment eligibility
-- **Front::Appointment** - Find available slots and availability summaries
-
-**Bookings & Visits:**
-- **Front::Booking** - Full CRUD operations, find leases
-- **Front::Visit** - List and find visits
-
-**Services & Staff:**
-- **Front::Service** - List and find services, enrollment eligibility
-- **Front::StaffMember** - List and find staff members
-- **Front::Location** - List and find locations
-
-**Plans & Products:**
-- **Front::Plan** - List and find plans
-- **Front::PlanProduct** - List and find plan products
-
-**Financial:**
-- **Front::Invoice** - Find invoices by ID
-- **Front::Payment** - Find payments, get payment configuration
-
-**Other Resources:**
-- **Front::Note** - List and find person notes (read-only)
-- **Front::WaitlistEntry** - List and find waitlist entries
+#### Technical Features
+- Ruby >= 3.0.0 compatibility
+- Faraday HTTP client with retry middleware
+- Comprehensive test coverage (93% line coverage)
+- RuboCop code quality enforcement
+- SimpleCov coverage reporting
 
 ### Dependencies
-- `faraday` (~> 2.0) - HTTP client
-- `faraday-retry` (~> 2.0) - Automatic retry middleware
+- `httparty` (~> 0.21) - HTTP client library
 - Ruby >= 3.0.0 required
 
 ### Development
-- RuboCop configuration for code quality
-- Minitest test suite with 99 tests, 93% line coverage
-- SimpleCov for test coverage reporting
+- Minitest test suite with 300+ test methods
+- SimpleCov for coverage reporting
+- RuboCop for code quality
+- GitHub Actions CI/CD ready
