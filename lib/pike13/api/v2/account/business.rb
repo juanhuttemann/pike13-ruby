@@ -11,10 +11,6 @@ module Pike13
               client.get("account/businesses")
             end
 
-            # GET /account/businesses/:id
-            def find(id)
-              client.get("account/businesses/#{id}")
-            end
           end
         end
       end

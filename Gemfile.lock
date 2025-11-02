@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pike13 (0.1.0.beta)
+    pike13 (0.1.1)
       httparty (~> 0.21)
 
 GEM
