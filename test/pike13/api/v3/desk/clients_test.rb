@@ -38,7 +38,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: ["person_id", "full_name", "email", "phone", "client_since_date"]
+              fields: %w[person_id full_name email phone client_since_date]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
@@ -72,7 +72,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: ["full_name", "email", "has_membership", "tenure", "completed_visits"],
+              fields: %w[full_name email has_membership tenure completed_visits],
               filter: ["eq", "has_membership", true]
             )
 
@@ -88,7 +88,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Bob Williams", "bob@example.com", 15000, "2024-10-15"]
+                      ["Bob Williams", "bob@example.com", 15_000, "2024-10-15"]
                     ],
                     "fields" => [
                       { "name" => "full_name", "type" => "string" },
@@ -105,18 +105,18 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: ["full_name", "email", "last_invoice_amount", "last_invoice_date"],
+              fields: %w[full_name email last_invoice_amount last_invoice_date],
               filter: [
                 "and",
                 [
-                  ["eq", "person_state", "active"],
+                  %w[eq person_state active],
                   ["eq", "last_invoice_unpaid", true]
                 ]
               ]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal 15000, result["data"]["attributes"]["rows"].first[2]
+            assert_equal 15_000, result["data"]["attributes"]["rows"].first[2]
           end
 
           def test_query_with_tenure_group_filter
@@ -145,8 +145,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: ["full_name", "email", "tenure", "tenure_group", "completed_visits"],
-              filter: ["eq", "tenure_group", "5_over_three_years"],
+              fields: %w[full_name email tenure tenure_group completed_visits],
+              filter: %w[eq tenure_group 5_over_three_years],
               sort: ["completed_visits-"]
             )
 
@@ -162,8 +162,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["5_over_three_years", 450, 320, 18750],
-                      ["4_three_years", 280, 200, 11500]
+                      ["5_over_three_years", 450, 320, 18_750],
+                      ["4_three_years", 280, 200, 11_500]
                     ],
                     "fields" => [
                       { "name" => "tenure_group", "type" => "enum" },
@@ -180,7 +180,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: ["person_count", "has_membership_count", "total_completed_visits"],
+              fields: %w[person_count has_membership_count total_completed_visits],
               group: "tenure_group"
             )
 
@@ -214,12 +214,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: ["person_id", "full_name", "email", "phone"],
-              filter: ["contains", "full_name", "Smith"]
+              fields: %w[person_id full_name email phone],
+              filter: %w[contains full_name Smith]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[1].include?("Smith")
+            assert_includes result["data"]["attributes"]["rows"].first[1], "Smith"
           end
 
           def test_query_with_pagination
@@ -246,7 +246,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: ["person_id", "full_name", "email"],
+              fields: %w[person_id full_name email],
               page: { limit: 1 }
             )
 
@@ -262,7 +262,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [222, "Active Member", "member@example.com", true, 850, 75000, "2020-06-01"]
+                      [222, "Active Member", "member@example.com", true, 850, 75_000, "2020-06-01"]
                     ],
                     "fields" => [
                       { "name" => "person_id", "type" => "integer" },
@@ -282,19 +282,19 @@ module Pike13
             )
 
             result = Pike13::Reporting::Clients.query(
-              fields: [
-                "person_id",
-                "full_name",
-                "email",
-                "has_membership",
-                "tenure",
-                "net_paid_amount",
-                "client_since_date"
+              fields: %w[
+                person_id
+                full_name
+                email
+                has_membership
+                tenure
+                net_paid_amount
+                client_since_date
               ],
               filter: [
                 "and",
                 [
-                  ["eq", "person_state", "active"],
+                  %w[eq person_state active],
                   ["eq", "has_membership", true],
                   ["gt", "completed_visits", 50]
                 ]

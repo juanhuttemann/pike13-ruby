@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [12345, "Sarah Johnson", "service", 7500, "approved"],
-                      [12346, "Mike Thompson", "commission", 5000, "pending"]
+                      [12_345, "Sarah Johnson", "service", 7500, "approved"],
+                      [12_346, "Mike Thompson", "commission", 5000, "pending"]
                     ],
                     "fields" => [
                       { "name" => "pay_id", "type" => "integer" },
@@ -38,11 +38,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["pay_id", "staff_name", "pay_type", "final_pay_amount", "pay_state"]
+              fields: %w[pay_id staff_name pay_type final_pay_amount pay_state]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 12345, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 12_345, result["data"]["attributes"]["rows"].first[0]
             assert_equal "Sarah Johnson", result["data"]["attributes"]["rows"].first[1]
           end
 
@@ -72,13 +72,13 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["staff_name", "service_name", "service_date", "final_pay_amount", "service_hours"],
-              filter: ["eq", "staff_id", 12345],
+              fields: %w[staff_name service_name service_date final_pay_amount service_hours],
+              filter: ["eq", "staff_id", 12_345],
               sort: ["service_date-"]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal 1.5, result["data"]["attributes"]["rows"].first[4]
+            assert_in_delta(1.5, result["data"]["attributes"]["rows"].first[4])
           end
 
           def test_query_pending_approvals
@@ -106,12 +106,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["staff_name", "pay_description", "final_pay_amount", "pay_recorded_at"],
-              filter: ["eq", "pay_state", "pending"]
+              fields: %w[staff_name pay_description final_pay_amount pay_recorded_at],
+              filter: %w[eq pay_state pending]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[1].include?("Spin Class")
+            assert_includes result["data"]["attributes"]["rows"].first[1], "Spin Class"
           end
 
           def test_query_pay_by_service_type
@@ -142,7 +142,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["service_name", "service_type", "staff_name", "base_pay_amount", "per_head_pay_amount", "tiered_pay_amount", "final_pay_amount"]
+              fields: %w[service_name service_type staff_name base_pay_amount per_head_pay_amount
+                         tiered_pay_amount final_pay_amount]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -175,7 +176,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["staff_name", "service_date", "final_pay_amount", "pay_period_start_date", "pay_period_end_date"],
+              fields: %w[staff_name service_date final_pay_amount pay_period_start_date
+                         pay_period_end_date],
               filter: ["eq", "pay_period", "2024-10-01..2024-10-31"]
             )
 
@@ -209,8 +211,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["pay_type", "pay_description", "final_pay_amount", "staff_name"],
-              filter: ["in", "pay_type", ["service", "commission", "tip"]]
+              fields: %w[pay_type pay_description final_pay_amount staff_name],
+              filter: ["in", "pay_type", %w[service commission tip]]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
@@ -225,8 +227,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Sarah Johnson", 45, 337500, 67.5, 300000],
-                      ["Mike Thompson", 38, 285000, 57.0, 250000]
+                      ["Sarah Johnson", 45, 337_500, 67.5, 300_000],
+                      ["Mike Thompson", 38, 285_000, 57.0, 250_000]
                     ],
                     "fields" => [
                       { "name" => "staff_name", "type" => "string" },
@@ -244,7 +246,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["pay_count", "total_final_pay_amount", "total_service_hours", "total_base_pay_amount"],
+              fields: %w[pay_count total_final_pay_amount total_service_hours total_base_pay_amount],
               group: "staff_name"
             )
 
@@ -260,8 +262,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Yoga Flow", 30, 85, 637500],
-                      ["Spin Class", 25, 72, 540000]
+                      ["Yoga Flow", 30, 85, 637_500],
+                      ["Spin Class", 25, 72, 540_000]
                     ],
                     "fields" => [
                       { "name" => "service_name", "type" => "string" },
@@ -278,7 +280,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["service_count", "pay_count", "total_final_pay_amount"],
+              fields: %w[service_count pay_count total_final_pay_amount],
               group: "service_name"
             )
 
@@ -294,8 +296,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["service", 320, 2400000, 2000000, 250000, 150000],
-                      ["commission", 85, 425000, 0, 0, 0]
+                      ["service", 320, 2_400_000, 2_000_000, 250_000, 150_000],
+                      ["commission", 85, 425_000, 0, 0, 0]
                     ],
                     "fields" => [
                       { "name" => "pay_type", "type" => "enum" },
@@ -314,7 +316,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["pay_count", "total_final_pay_amount", "total_base_pay_amount", "total_per_head_pay_amount", "total_tiered_pay_amount"],
+              fields: %w[pay_count total_final_pay_amount total_base_pay_amount total_per_head_pay_amount
+                         total_tiered_pay_amount],
               group: "pay_type"
             )
 
@@ -330,7 +333,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [60001, "Frank Miller", "service"]
+                      [60_001, "Frank Miller", "service"]
                     ],
                     "fields" => [
                       { "name" => "pay_id", "type" => "integer" },
@@ -346,7 +349,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: ["pay_id", "staff_name", "pay_type"],
+              fields: %w[pay_id staff_name pay_type],
               page: { limit: 1 }
             )
 
@@ -362,7 +365,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [70001, "Grace Taylor", "service", "Advanced CrossFit", "2024-10-28", 10000, 8000, 1500, 500]
+                      [70_001, "Grace Taylor", "service", "Advanced CrossFit", "2024-10-28", 10_000, 8000, 1500, 500]
                     ],
                     "fields" => [
                       { "name" => "pay_id", "type" => "integer" },
@@ -384,22 +387,22 @@ module Pike13
             )
 
             result = Pike13::Reporting::Pays.query(
-              fields: [
-                "pay_id",
-                "staff_name",
-                "pay_type",
-                "service_name",
-                "service_date",
-                "final_pay_amount",
-                "base_pay_amount",
-                "per_head_pay_amount",
-                "tiered_pay_amount"
+              fields: %w[
+                pay_id
+                staff_name
+                pay_type
+                service_name
+                service_date
+                final_pay_amount
+                base_pay_amount
+                per_head_pay_amount
+                tiered_pay_amount
               ],
               filter: [
                 "and",
                 [
-                  ["eq", "pay_type", "service"],
-                  ["eq", "pay_state", "approved"],
+                  %w[eq pay_type service],
+                  %w[eq pay_state approved],
                   ["gt", "final_pay_amount", 5000]
                 ]
               ],
@@ -408,7 +411,7 @@ module Pike13
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
             assert_equal 9, result["data"]["attributes"]["fields"].size
-            assert_equal 10000, result["data"]["attributes"]["rows"].first[5]
+            assert_equal 10_000, result["data"]["attributes"]["rows"].first[5]
           end
         end
       end

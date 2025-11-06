@@ -6,6 +6,7 @@ source "https://rubygems.org"
 gemspec
 
 group :development, :test do
+  gem "codecov", require: false
   gem "dotenv"
   gem "minitest", "~> 5.0"
   gem "minitest-reporters", "~> 1.6"

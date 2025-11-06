@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10001, "INV-2024-001", 15000, 0, "closed"],
-                      [10002, "INV-2024-002", 25000, 5000, "open"]
+                      [10_001, "INV-2024-001", 15_000, 0, "closed"],
+                      [10_002, "INV-2024-002", 25_000, 5000, "open"]
                     ],
                     "fields" => [
                       { "name" => "invoice_id", "type" => "integer" },
@@ -38,11 +38,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: ["invoice_id", "invoice_number", "expected_amount", "outstanding_amount", "invoice_state"]
+              fields: %w[invoice_id invoice_number expected_amount outstanding_amount invoice_state]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 10001, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 10_001, result["data"]["attributes"]["rows"].first[0]
             assert_equal "INV-2024-001", result["data"]["attributes"]["rows"].first[1]
           end
 
@@ -54,7 +54,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["INV-2024-005", "John Smith", 12000, "2024-10-15"]
+                      ["INV-2024-005", "John Smith", 12_000, "2024-10-15"]
                     ],
                     "fields" => [
                       { "name" => "invoice_number", "type" => "string" },
@@ -71,13 +71,13 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: ["invoice_number", "invoice_payer_name", "outstanding_amount", "invoice_due_date"],
+              fields: %w[invoice_number invoice_payer_name outstanding_amount invoice_due_date],
               filter: ["gt", "outstanding_amount", 0],
               sort: ["invoice_due_date"]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal 12000, result["data"]["attributes"]["rows"].first[2]
+            assert_equal 12_000, result["data"]["attributes"]["rows"].first[2]
           end
 
           def test_query_overdue_invoices
@@ -105,11 +105,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: ["invoice_number", "invoice_payer_name", "outstanding_amount", "days_since_invoice_due"],
+              fields: %w[invoice_number invoice_payer_name outstanding_amount days_since_invoice_due],
               filter: [
                 "and",
                 [
-                  ["eq", "invoice_state", "open"],
+                  %w[eq invoice_state open],
                   ["gt", "days_since_invoice_due", 0]
                 ]
               ]
@@ -127,7 +127,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["INV-2024-020", 35000, 35000, "Alice Johnson"]
+                      ["INV-2024-020", 35_000, 35_000, "Alice Johnson"]
                     ],
                     "fields" => [
                       { "name" => "invoice_number", "type" => "string" },
@@ -144,12 +144,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: ["invoice_number", "expected_amount", "net_paid_amount", "invoice_payer_name"],
-              filter: ["btw", "issued_date", "2024-01-01", "2024-12-31"]
+              fields: %w[invoice_number expected_amount net_paid_amount invoice_payer_name],
+              filter: %w[btw issued_date 2024-01-01 2024-12-31]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal 35000, result["data"]["attributes"]["rows"].first[1]
+            assert_equal 35_000, result["data"]["attributes"]["rows"].first[1]
           end
 
           def test_query_group_by_state
@@ -160,8 +160,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["open", 45, 675000, 125000],
-                      ["closed", 180, 2850000, 0]
+                      ["open", 45, 675_000, 125_000],
+                      ["closed", 180, 2_850_000, 0]
                     ],
                     "fields" => [
                       { "name" => "invoice_state", "type" => "enum" },
@@ -178,7 +178,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: ["invoice_count", "total_expected_amount", "total_outstanding_amount"],
+              fields: %w[invoice_count total_expected_amount total_outstanding_amount],
               group: "invoice_state"
             )
 
@@ -194,8 +194,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-01-01", 450000, 425000, 25000, 85],
-                      ["2024-02-01", 520000, 500000, 20000, 92]
+                      ["2024-01-01", 450_000, 425_000, 25_000, 85],
+                      ["2024-02-01", 520_000, 500_000, 20_000, 92]
                     ],
                     "fields" => [
                       { "name" => "issued_month_start_date", "type" => "date" },
@@ -213,7 +213,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: ["total_expected_amount", "total_net_paid_amount", "total_outstanding_amount", "invoice_count"],
+              fields: %w[total_expected_amount total_net_paid_amount total_outstanding_amount invoice_count],
               group: "issued_month_start_date",
               sort: ["issued_month_start_date"]
             )
@@ -230,7 +230,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["INV-2024-030", 50000, 5000, 2000, 43000]
+                      ["INV-2024-030", 50_000, 5000, 2000, 43_000]
                     ],
                     "fields" => [
                       { "name" => "invoice_number", "type" => "string" },
@@ -248,12 +248,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: [
-                "invoice_number",
-                "gross_amount",
-                "discounts_amount",
-                "coupons_amount",
-                "expected_amount"
+              fields: %w[
+                invoice_number
+                gross_amount
+                discounts_amount
+                coupons_amount
+                expected_amount
               ],
               filter: ["gt", "discounts_amount", 0]
             )
@@ -270,7 +270,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10050, "INV-2024-050", 18000]
+                      [10_050, "INV-2024-050", 18_000]
                     ],
                     "fields" => [
                       { "name" => "invoice_id", "type" => "integer" },
@@ -286,7 +286,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: ["invoice_id", "invoice_number", "expected_amount"],
+              fields: %w[invoice_id invoice_number expected_amount],
               page: { limit: 1 }
             )
 
@@ -302,7 +302,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10075, "INV-2024-075", "open", 45000, 42000, 3000, "Bob Williams", "2024-11-01"]
+                      [10_075, "INV-2024-075", "open", 45_000, 42_000, 3000, "Bob Williams", "2024-11-01"]
                     ],
                     "fields" => [
                       { "name" => "invoice_id", "type" => "integer" },
@@ -323,22 +323,22 @@ module Pike13
             )
 
             result = Pike13::Reporting::Invoices.query(
-              fields: [
-                "invoice_id",
-                "invoice_number",
-                "invoice_state",
-                "expected_amount",
-                "net_paid_amount",
-                "outstanding_amount",
-                "invoice_payer_name",
-                "invoice_due_date"
+              fields: %w[
+                invoice_id
+                invoice_number
+                invoice_state
+                expected_amount
+                net_paid_amount
+                outstanding_amount
+                invoice_payer_name
+                invoice_due_date
               ],
               filter: [
                 "and",
                 [
-                  ["btw", "issued_date", "2024-01-01", "2024-12-31"],
-                  ["eq", "invoice_state", "open"],
-                  ["gt", "expected_amount", 20000]
+                  %w[btw issued_date 2024-01-01 2024-12-31],
+                  %w[eq invoice_state open],
+                  ["gt", "expected_amount", 20_000]
                 ]
               ],
               sort: ["expected_amount-"]

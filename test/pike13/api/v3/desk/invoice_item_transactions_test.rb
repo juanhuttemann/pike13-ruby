@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [54321, "INV-001", "payment", 7500, "settled"],
-                      [54322, "INV-002", "refund", -2500, "settled"]
+                      [54_321, "INV-001", "payment", 7500, "settled"],
+                      [54_322, "INV-002", "refund", -2500, "settled"]
                     ],
                     "fields" => [
                       { "name" => "transaction_id", "type" => "integer" },
@@ -38,11 +38,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_id", "invoice_number", "transaction_type", "transaction_amount", "transaction_state"]
+              fields: %w[transaction_id invoice_number transaction_type transaction_amount
+                         transaction_state]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 54321, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 54_321, result["data"]["attributes"]["rows"].first[0]
             assert_equal "payment", result["data"]["attributes"]["rows"].first[2]
           end
 
@@ -54,7 +55,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-10-20", "creditcard", 15000, "Jane Smith", "Monthly Membership"]
+                      ["2024-10-20", "creditcard", 15_000, "Jane Smith", "Monthly Membership"]
                     ],
                     "fields" => [
                       { "name" => "transaction_date", "type" => "date" },
@@ -72,8 +73,9 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_date", "payment_method", "transaction_amount", "invoice_payer_name", "product_name"],
-              filter: ["eq", "payment_method", "creditcard"]
+              fields: %w[transaction_date payment_method transaction_amount invoice_payer_name
+                         product_name],
+              filter: %w[eq payment_method creditcard]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -88,7 +90,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-10-18", "INV-101", "creditcard", 10000, "Visa **** 1234 exp 12/25"]
+                      ["2024-10-18", "INV-101", "creditcard", 10_000, "Visa **** 1234 exp 12/25"]
                     ],
                     "fields" => [
                       { "name" => "transaction_date", "type" => "date" },
@@ -106,18 +108,19 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_date", "invoice_number", "payment_method", "net_paid_amount", "payment_method_detail"],
+              fields: %w[transaction_date invoice_number payment_method net_paid_amount
+                         payment_method_detail],
               filter: [
                 "and",
                 [
-                  ["eq", "transaction_type", "payment"],
-                  ["eq", "transaction_state", "settled"]
+                  %w[eq transaction_type payment],
+                  %w[eq transaction_state settled]
                 ]
               ]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[4].include?("Visa")
+            assert_includes result["data"]["attributes"]["rows"].first[4], "Visa"
           end
 
           def test_query_failed_transactions
@@ -146,13 +149,13 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["failed_date", "invoice_payer_name", "payment_method", "transaction_amount", "error_message"],
-              filter: ["eq", "transaction_state", "failed"],
+              fields: %w[failed_date invoice_payer_name payment_method transaction_amount error_message],
+              filter: %w[eq transaction_state failed],
               sort: ["failed_date-"]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[4].include?("declined")
+            assert_includes result["data"]["attributes"]["rows"].first[4], "declined"
           end
 
           def test_query_refunds
@@ -163,7 +166,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-10-22", "INV-200", -3000, "Alice Johnson", 54123]
+                      ["2024-10-22", "INV-200", -3000, "Alice Johnson", 54_123]
                     ],
                     "fields" => [
                       { "name" => "transaction_date", "type" => "date" },
@@ -181,8 +184,9 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_date", "invoice_number", "refunds_amount", "invoice_payer_name", "payment_transaction_id"],
-              filter: ["eq", "transaction_type", "refund"]
+              fields: %w[transaction_date invoice_number refunds_amount invoice_payer_name
+                         payment_transaction_id],
+              filter: %w[eq transaction_type refund]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -197,7 +201,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Premium Package", 20000, 18182, 1818, "creditcard"]
+                      ["Premium Package", 20_000, 18_182, 1818, "creditcard"]
                     ],
                     "fields" => [
                       { "name" => "product_name", "type" => "string" },
@@ -215,11 +219,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["product_name", "transaction_amount", "net_paid_revenue_amount", "net_paid_tax_amount", "payment_method"]
+              fields: %w[product_name transaction_amount net_paid_revenue_amount net_paid_tax_amount
+                         payment_method]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal 18182, result["data"]["attributes"]["rows"].first[2]
+            assert_equal 18_182, result["data"]["attributes"]["rows"].first[2]
           end
 
           def test_query_group_by_payment_method
@@ -230,8 +235,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["creditcard", 450, 3375000, 442, 8],
-                      ["cash", 125, 562500, 125, 0]
+                      ["creditcard", 450, 3_375_000, 442, 8],
+                      ["cash", 125, 562_500, 125, 0]
                     ],
                     "fields" => [
                       { "name" => "payment_method", "type" => "enum" },
@@ -249,7 +254,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_count", "total_net_paid_amount", "settled_count", "failed_count"],
+              fields: %w[transaction_count total_net_paid_amount settled_count failed_count],
               group: "payment_method"
             )
 
@@ -265,8 +270,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["visa", 280, 2100000, 1575000, 315000, 210000],
-                      ["mastercard", 120, 900000, 675000, 135000, 90000]
+                      ["visa", 280, 2_100_000, 1_575_000, 315_000, 210_000],
+                      ["mastercard", 120, 900_000, 675_000, 135_000, 90_000]
                     ],
                     "fields" => [
                       { "name" => "credit_card_name", "type" => "enum" },
@@ -285,7 +290,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_count", "total_net_visa_paid_amount", "total_net_mastercard_paid_amount", "total_net_american_express_paid_amount", "total_net_discover_paid_amount"],
+              fields: %w[transaction_count total_net_visa_paid_amount total_net_mastercard_paid_amount
+                         total_net_american_express_paid_amount total_net_discover_paid_amount],
               group: "credit_card_name"
             )
 
@@ -301,7 +307,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-10-01", 575, 5250000, 125000, 4725000]
+                      ["2024-10-01", 575, 5_250_000, 125_000, 4_725_000]
                     ],
                     "fields" => [
                       { "name" => "transaction_month_start_date", "type" => "date" },
@@ -319,7 +325,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_count", "total_payments_amount", "total_refunds_amount", "total_net_paid_revenue_amount"],
+              fields: %w[transaction_count total_payments_amount total_refunds_amount
+                         total_net_paid_revenue_amount],
               group: "transaction_month_start_date"
             )
 
@@ -335,7 +342,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [60001, "INV-500", "payment"]
+                      [60_001, "INV-500", "payment"]
                     ],
                     "fields" => [
                       { "name" => "transaction_id", "type" => "integer" },
@@ -351,7 +358,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: ["transaction_id", "invoice_number", "transaction_type"],
+              fields: %w[transaction_id invoice_number transaction_type],
               page: { limit: 1 }
             )
 
@@ -367,7 +374,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [70001, "INV-600", "Sarah Brown", "payment", "creditcard", "settled", 25000, 22727, 2273]
+                      [70_001, "INV-600", "Sarah Brown", "payment", "creditcard", "settled", 25_000, 22_727, 2273]
                     ],
                     "fields" => [
                       { "name" => "transaction_id", "type" => "integer" },
@@ -389,23 +396,23 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItemTransactions.query(
-              fields: [
-                "transaction_id",
-                "invoice_number",
-                "invoice_payer_name",
-                "transaction_type",
-                "payment_method",
-                "transaction_state",
-                "transaction_amount",
-                "net_paid_revenue_amount",
-                "net_paid_tax_amount"
+              fields: %w[
+                transaction_id
+                invoice_number
+                invoice_payer_name
+                transaction_type
+                payment_method
+                transaction_state
+                transaction_amount
+                net_paid_revenue_amount
+                net_paid_tax_amount
               ],
               filter: [
                 "and",
                 [
-                  ["eq", "transaction_type", "payment"],
-                  ["eq", "transaction_state", "settled"],
-                  ["gt", "transaction_amount", 10000]
+                  %w[eq transaction_type payment],
+                  %w[eq transaction_state settled],
+                  ["gt", "transaction_amount", 10_000]
                 ]
               ],
               sort: ["transaction_amount-"]
@@ -413,7 +420,7 @@ module Pike13
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
             assert_equal 9, result["data"]["attributes"]["fields"].size
-            assert_equal 25000, result["data"]["attributes"]["rows"].first[6]
+            assert_equal 25_000, result["data"]["attributes"]["rows"].first[6]
           end
         end
       end

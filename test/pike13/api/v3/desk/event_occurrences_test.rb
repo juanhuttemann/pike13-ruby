@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10001, "Yoga Flow", "2024-10-15", 15, 20],
-                      [10002, "CrossFit WOD", "2024-10-16", 12, 15]
+                      [10_001, "Yoga Flow", "2024-10-15", 15, 20],
+                      [10_002, "CrossFit WOD", "2024-10-16", 12, 15]
                     ],
                     "fields" => [
                       { "name" => "event_occurrence_id", "type" => "integer" },
@@ -38,11 +38,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_occurrence_id", "event_name", "service_date", "enrollment_count", "capacity"]
+              fields: %w[event_occurrence_id event_name service_date enrollment_count capacity]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 10001, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 10_001, result["data"]["attributes"]["rows"].first[0]
             assert_equal "Yoga Flow", result["data"]["attributes"]["rows"].first[1]
           end
 
@@ -72,7 +72,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_name", "service_date", "service_time", "completed_enrollment_count", "capacity"],
+              fields: %w[event_name service_date service_time completed_enrollment_count capacity],
               filter: ["gt", "completed_enrollment_count", 15],
               sort: ["completed_enrollment_count-"]
             )
@@ -107,13 +107,14 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_name", "service_date", "enrollment_count", "capacity", "instructor_names"],
-              filter: ["lt", "enrollment_count", "capacity"]
+              fields: %w[event_name service_date enrollment_count capacity instructor_names],
+              filter: %w[lt enrollment_count capacity]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
             assert_equal 8, result["data"]["attributes"]["rows"].first[2]
-            assert result["data"]["attributes"]["rows"].first[2] < result["data"]["attributes"]["rows"].first[3]
+            assert_operator result["data"]["attributes"]["rows"].first[2], :<,
+                            result["data"]["attributes"]["rows"].first[3]
           end
 
           def test_query_by_date_and_service_type
@@ -142,12 +143,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_name", "service_date", "service_time", "enrollment_count", "service_type"],
+              fields: %w[event_name service_date service_time enrollment_count service_type],
               filter: [
                 "and",
                 [
-                  ["btw", "service_date", "2024-01-01", "2024-12-31"],
-                  ["eq", "service_type", "group_class"]
+                  %w[btw service_date 2024-01-01 2024-12-31],
+                  %w[eq service_type group_class]
                 ]
               ]
             )
@@ -182,12 +183,13 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_name", "service_date", "attendance_completed", "completed_enrollment_count", "noshowed_enrollment_count"],
+              fields: %w[event_name service_date attendance_completed completed_enrollment_count
+                         noshowed_enrollment_count],
               filter: ["eq", "attendance_completed", true]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal true, result["data"]["attributes"]["rows"].first[2]
+            assert result["data"]["attributes"]["rows"].first[2]
           end
 
           def test_query_noshows_and_cancellations
@@ -216,7 +218,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_name", "service_date", "noshowed_enrollment_count", "late_canceled_enrollment_count", "enrollment_count"]
+              fields: %w[event_name service_date noshowed_enrollment_count late_canceled_enrollment_count
+                         enrollment_count]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -250,7 +253,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["total_enrollment_count", "total_completed_enrollment_count", "total_noshowed_enrollment_count", "total_capacity"],
+              fields: %w[total_enrollment_count total_completed_enrollment_count total_noshowed_enrollment_count
+                         total_capacity],
               group: "service_name"
             )
 
@@ -284,7 +288,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_occurrence_count", "total_enrollment_count", "total_completed_enrollment_count"],
+              fields: %w[event_occurrence_count total_enrollment_count total_completed_enrollment_count],
               group: "instructor_names"
             )
 
@@ -317,7 +321,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_occurrence_count", "total_enrollment_count", "total_duration_in_hours"],
+              fields: %w[event_occurrence_count total_enrollment_count total_duration_in_hours],
               group: "service_month_start_date"
             )
 
@@ -333,7 +337,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [50001, "Martial Arts", "2024-10-25"]
+                      [50_001, "Martial Arts", "2024-10-25"]
                     ],
                     "fields" => [
                       { "name" => "event_occurrence_id", "type" => "integer" },
@@ -349,7 +353,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: ["event_occurrence_id", "event_name", "service_date"],
+              fields: %w[event_occurrence_id event_name service_date],
               page: { limit: 1 }
             )
 
@@ -365,7 +369,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [60001, "Advanced CrossFit", "2024-10-28", "10:00:00", 12, 15, true, 11, 1]
+                      [60_001, "Advanced CrossFit", "2024-10-28", "10:00:00", 12, 15, true, 11, 1]
                     ],
                     "fields" => [
                       { "name" => "event_occurrence_id", "type" => "integer" },
@@ -387,21 +391,21 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrences.query(
-              fields: [
-                "event_occurrence_id",
-                "event_name",
-                "service_date",
-                "service_time",
-                "enrollment_count",
-                "capacity",
-                "attendance_completed",
-                "completed_enrollment_count",
-                "noshowed_enrollment_count"
+              fields: %w[
+                event_occurrence_id
+                event_name
+                service_date
+                service_time
+                enrollment_count
+                capacity
+                attendance_completed
+                completed_enrollment_count
+                noshowed_enrollment_count
               ],
               filter: [
                 "and",
                 [
-                  ["btw", "service_date", "2024-01-01", "2024-12-31"],
+                  %w[btw service_date 2024-01-01 2024-12-31],
                   ["eq", "attendance_completed", true],
                   ["gt", "enrollment_count", 10]
                 ]
@@ -411,7 +415,7 @@ module Pike13
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
             assert_equal 9, result["data"]["attributes"]["fields"].size
-            assert_equal true, result["data"]["attributes"]["rows"].first[6]
+            assert result["data"]["attributes"]["rows"].first[6]
           end
         end
       end

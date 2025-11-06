@@ -11,13 +11,9 @@ module Pike13
     # @raise [ValidationError] if token is invalid
     # @return [Boolean] true if valid
     def self.validate_idempotency_token!(token)
-      if token.nil? || token.to_s.strip.empty?
-        raise ValidationError, "Idempotency token cannot be blank"
-      end
+      raise ValidationError, "Idempotency token cannot be blank" if token.nil? || token.to_s.strip.empty?
 
-      unless token.is_a?(String)
-        raise ValidationError, "Idempotency token must be a string, got #{token.class}"
-      end
+      raise ValidationError, "Idempotency token must be a string, got #{token.class}" unless token.is_a?(String)
 
       if token.length > 255
         raise ValidationError, "Idempotency token must be 255 characters or less, got #{token.length}"
@@ -32,9 +28,7 @@ module Pike13
     # @raise [ValidationError] if attributes are invalid
     # @return [Boolean] true if valid
     def self.validate_note_attributes!(attributes)
-      unless attributes.is_a?(Hash)
-        raise ValidationError, "Note attributes must be a hash, got #{attributes.class}"
-      end
+      raise ValidationError, "Note attributes must be a hash, got #{attributes.class}" unless attributes.is_a?(Hash)
 
       if attributes.key?(:body) || attributes.key?("body")
         raise ValidationError,
@@ -47,9 +41,7 @@ module Pike13
       end
 
       note_value = attributes[:note] || attributes["note"]
-      if note_value.to_s.strip.empty?
-        raise ValidationError, "Note text cannot be blank"
-      end
+      raise ValidationError, "Note text cannot be blank" if note_value.to_s.strip.empty?
 
       true
     end
@@ -62,13 +54,11 @@ module Pike13
     def self.validate_form_of_payment_type!(type)
       valid_types = %w[creditcard ach]
 
-      unless type.is_a?(String)
-        raise ValidationError, "Form of payment type must be a string, got #{type.class}"
-      end
+      raise ValidationError, "Form of payment type must be a string, got #{type.class}" unless type.is_a?(String)
 
       unless valid_types.include?(type.downcase)
         raise ValidationError,
-              "Form of payment type must be one of: #{valid_types.join(', ')}. Got: '#{type}'"
+              "Form of payment type must be one of: #{valid_types.join(", ")}. Got: '#{type}'"
       end
 
       true
@@ -80,15 +70,11 @@ module Pike13
     # @raise [ValidationError] if parameters are invalid
     # @return [Boolean] true if valid
     def self.validate_booking_params!(params)
-      unless params.is_a?(Hash)
-        raise ValidationError, "Booking parameters must be a hash, got #{params.class}"
-      end
+      raise ValidationError, "Booking parameters must be a hash, got #{params.class}" unless params.is_a?(Hash)
 
       # Check for idempotency token
       token = params[:idempotency_token] || params["idempotency_token"]
-      if token
-        validate_idempotency_token!(token)
-      end
+      validate_idempotency_token!(token) if token
 
       # Require either event_occurrence_id or leases array
       has_event = params[:event_occurrence_id] || params["event_occurrence_id"]
@@ -108,27 +94,19 @@ module Pike13
     # @raise [ValidationError] if attributes are invalid
     # @return [Boolean] true if valid
     def self.validate_person_attributes!(attributes)
-      unless attributes.is_a?(Hash)
-        raise ValidationError, "Person attributes must be a hash, got #{attributes.class}"
-      end
+      raise ValidationError, "Person attributes must be a hash, got #{attributes.class}" unless attributes.is_a?(Hash)
 
       # Check required fields
       first_name = attributes[:first_name] || attributes["first_name"]
       last_name = attributes[:last_name] || attributes["last_name"]
 
-      if first_name.to_s.strip.empty?
-        raise ValidationError, "Person must have a first_name"
-      end
+      raise ValidationError, "Person must have a first_name" if first_name.to_s.strip.empty?
 
-      if last_name.to_s.strip.empty?
-        raise ValidationError, "Person must have a last_name"
-      end
+      raise ValidationError, "Person must have a last_name" if last_name.to_s.strip.empty?
 
       # Validate email format if provided
       email = attributes[:email] || attributes["email"]
-      if email && !email.to_s.match?(/\A[^@\s]+@[^@\s]+\z/)
-        raise ValidationError, "Invalid email format: #{email}"
-      end
+      raise ValidationError, "Invalid email format: #{email}" if email && !email.to_s.match?(/\A[^@\s]+@[^@\s]+\z/)
 
       true
     end

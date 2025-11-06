@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [12345, "INV-001", "Monthly Membership", 7500, "closed"],
-                      [12346, "INV-002", "10 Class Pack", 15000, "open"]
+                      [12_345, "INV-001", "Monthly Membership", 7500, "closed"],
+                      [12_346, "INV-002", "10 Class Pack", 15_000, "open"]
                     ],
                     "fields" => [
                       { "name" => "invoice_item_id", "type" => "integer" },
@@ -38,11 +38,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["invoice_item_id", "invoice_number", "product_name", "expected_amount", "invoice_state"]
+              fields: %w[invoice_item_id invoice_number product_name expected_amount invoice_state]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 12345, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 12_345, result["data"]["attributes"]["rows"].first[0]
             assert_equal "Monthly Membership", result["data"]["attributes"]["rows"].first[2]
           end
 
@@ -54,7 +54,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Annual Membership", "recurring", 90000, 90000, 0]
+                      ["Annual Membership", "recurring", 90_000, 90_000, 0]
                     ],
                     "fields" => [
                       { "name" => "product_name", "type" => "string" },
@@ -72,8 +72,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["product_name", "product_type", "expected_amount", "net_paid_amount", "outstanding_amount"],
-              filter: ["eq", "product_type", "recurring"]
+              fields: %w[product_name product_type expected_amount net_paid_amount outstanding_amount],
+              filter: %w[eq product_type recurring]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -88,7 +88,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["INV-101", "John Doe", "Premium Plan", 12000, 5000]
+                      ["INV-101", "John Doe", "Premium Plan", 12_000, 5000]
                     ],
                     "fields" => [
                       { "name" => "invoice_number", "type" => "string" },
@@ -106,7 +106,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["invoice_number", "invoice_payer_name", "product_name", "expected_amount", "outstanding_amount"],
+              fields: %w[invoice_number invoice_payer_name product_name expected_amount outstanding_amount],
               filter: ["gt", "outstanding_amount", 0],
               sort: ["outstanding_amount-"]
             )
@@ -123,7 +123,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Yoga Package", 20000, 2000, 500, 17500]
+                      ["Yoga Package", 20_000, 2000, 500, 17_500]
                     ],
                     "fields" => [
                       { "name" => "product_name", "type" => "string" },
@@ -141,7 +141,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["product_name", "gross_amount", "discounts_amount", "coupons_amount", "expected_amount"],
+              fields: %w[product_name gross_amount discounts_amount coupons_amount expected_amount],
               filter: ["gt", "discounts_amount", 0]
             )
 
@@ -157,7 +157,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Personal Training", 10000, 9091, 909, 8182]
+                      ["Personal Training", 10_000, 9091, 909, 8182]
                     ],
                     "fields" => [
                       { "name" => "product_name", "type" => "string" },
@@ -175,7 +175,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["product_name", "gross_amount", "expected_revenue_amount", "expected_tax_amount", "net_paid_revenue_amount"]
+              fields: %w[product_name gross_amount expected_revenue_amount expected_tax_amount
+                         net_paid_revenue_amount]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -207,8 +208,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["revenue_category", "product_name", "expected_amount", "net_paid_amount"],
-              filter: ["not_null", "revenue_category"]
+              fields: %w[revenue_category product_name expected_amount net_paid_amount],
+              filter: %w[not_null revenue_category]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -223,8 +224,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Monthly Membership", 125, 937500, 875000, 62500],
-                      ["10 Class Pack", 85, 1275000, 1200000, 75000]
+                      ["Monthly Membership", 125, 937_500, 875_000, 62_500],
+                      ["10 Class Pack", 85, 1_275_000, 1_200_000, 75_000]
                     ],
                     "fields" => [
                       { "name" => "product_name", "type" => "string" },
@@ -242,7 +243,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["invoice_item_count", "total_expected_amount", "total_net_paid_amount", "total_outstanding_amount"],
+              fields: %w[invoice_item_count total_expected_amount total_net_paid_amount
+                         total_outstanding_amount],
               group: "product_name"
             )
 
@@ -258,8 +260,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["recurring", 320, 2400000, 150000, 2250000],
-                      ["pass", 180, 2700000, 200000, 2500000]
+                      ["recurring", 320, 2_400_000, 150_000, 2_250_000],
+                      ["pass", 180, 2_700_000, 200_000, 2_500_000]
                     ],
                     "fields" => [
                       { "name" => "product_type", "type" => "enum" },
@@ -277,7 +279,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["invoice_item_count", "total_gross_amount", "total_discounts_amount", "total_expected_amount"],
+              fields: %w[invoice_item_count total_gross_amount total_discounts_amount total_expected_amount],
               group: "product_type"
             )
 
@@ -293,7 +295,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-10-01", 450, 4500000, 4200000]
+                      ["2024-10-01", 450, 4_500_000, 4_200_000]
                     ],
                     "fields" => [
                       { "name" => "issued_month_start_date", "type" => "date" },
@@ -310,7 +312,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["invoice_item_count", "total_expected_revenue_amount", "total_net_paid_revenue_amount"],
+              fields: %w[invoice_item_count total_expected_revenue_amount total_net_paid_revenue_amount],
               group: "issued_month_start_date"
             )
 
@@ -326,7 +328,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [50001, "INV-500", "Starter Pack"]
+                      [50_001, "INV-500", "Starter Pack"]
                     ],
                     "fields" => [
                       { "name" => "invoice_item_id", "type" => "integer" },
@@ -342,7 +344,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: ["invoice_item_id", "invoice_number", "product_name"],
+              fields: %w[invoice_item_id invoice_number product_name],
               page: { limit: 1 }
             )
 
@@ -358,7 +360,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [60001, "INV-600", "Jane Smith", "Premium Package", 25000, 2500, 500, 22000, 20000, 2000]
+                      [60_001, "INV-600", "Jane Smith", "Premium Package", 25_000, 2500, 500, 22_000, 20_000, 2000]
                     ],
                     "fields" => [
                       { "name" => "invoice_item_id", "type" => "integer" },
@@ -381,23 +383,23 @@ module Pike13
             )
 
             result = Pike13::Reporting::InvoiceItems.query(
-              fields: [
-                "invoice_item_id",
-                "invoice_number",
-                "invoice_payer_name",
-                "product_name",
-                "gross_amount",
-                "discounts_amount",
-                "coupons_amount",
-                "expected_amount",
-                "net_paid_amount",
-                "outstanding_amount"
+              fields: %w[
+                invoice_item_id
+                invoice_number
+                invoice_payer_name
+                product_name
+                gross_amount
+                discounts_amount
+                coupons_amount
+                expected_amount
+                net_paid_amount
+                outstanding_amount
               ],
               filter: [
                 "and",
                 [
-                  ["eq", "invoice_state", "open"],
-                  ["gt", "expected_amount", 10000]
+                  %w[eq invoice_state open],
+                  ["gt", "expected_amount", 10_000]
                 ]
               ],
               sort: ["expected_amount-"]
@@ -405,7 +407,7 @@ module Pike13
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
             assert_equal 10, result["data"]["attributes"]["fields"].size
-            assert_equal 25000, result["data"]["attributes"]["rows"].first[4]
+            assert_equal 25_000, result["data"]["attributes"]["rows"].first[4]
           end
         end
       end

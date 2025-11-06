@@ -4,6 +4,23 @@ require "bundler/gem_tasks"
 require "rake/testtask"
 require "rubocop/rake_task"
 
+# Add coverage configuration for CI
+if ENV["COVERAGE"] == "true"
+  require "simplecov"
+  require "codecov"
+
+  SimpleCov.start do
+    add_filter "/test/"
+    add_filter "/vendor/"
+    enable_coverage :branch
+    minimum_coverage line: 90, branch: 60
+  end
+
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+    [SimpleCov::Formatter::SimpleFormatter, SimpleCov::Formatter::Codecov]
+  )
+end
+
 Rake::TestTask.new(:test) do |t|
   t.libs << "test"
   t.libs << "lib"

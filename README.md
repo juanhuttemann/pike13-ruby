@@ -1,5 +1,7 @@
 # Pike13 Ruby Client
 
+[![CI](https://github.com/juanhuttemann/pike13-ruby/actions/workflows/ci.yml/badge.svg)](https://github.com/juanhuttemann/pike13-ruby/actions/workflows/ci.yml)
+
 A Ruby gem for interacting with the Pike13 API, supporting both:
 - **[Core API](https://developer.pike13.com/docs/api/v2)** - CRUD operations for managing people, events, invoices, and more
 - **[Reporting API](https://developer.pike13.com/docs/reporting/v3)** - Advanced analytics and reporting queries
@@ -256,7 +258,6 @@ Pike13::Desk::Note.destroy(person_id: 123, id: 1000)
 #### Make-Ups
 
 ```ruby
-Pike13::Desk::MakeUp.find(1100)                             # Find make-up
 Pike13::Desk::MakeUp.reasons                                # List make-up reasons
 Pike13::Desk::MakeUp.generate(visit_id: 456, make_up_reason_id: 5, free_form_reason: "Client was sick")
 ```

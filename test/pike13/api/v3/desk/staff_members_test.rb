@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [12345, "Sarah Johnson", "sarah@example.com", "manager", "active"],
-                      [12346, "Mike Thompson", "mike@example.com", "standard", "active"]
+                      [12_345, "Sarah Johnson", "sarah@example.com", "manager", "active"],
+                      [12_346, "Mike Thompson", "mike@example.com", "standard", "active"]
                     ],
                     "fields" => [
                       { "name" => "person_id", "type" => "integer" },
@@ -38,11 +38,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["person_id", "full_name", "email", "role", "person_state"]
+              fields: %w[person_id full_name email role person_state]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 12345, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 12_345, result["data"]["attributes"]["rows"].first[0]
             assert_equal "Sarah Johnson", result["data"]["attributes"]["rows"].first[1]
           end
 
@@ -73,8 +73,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["full_name", "email", "role", "tenure", "future_events", "past_events"],
-              filter: ["eq", "person_state", "active"],
+              fields: %w[full_name email role tenure future_events past_events],
+              filter: %w[eq person_state active],
               sort: ["tenure-"]
             )
 
@@ -107,7 +107,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["full_name", "email", "role", "home_location_name"],
+              fields: %w[full_name email role home_location_name],
               filter: ["eq", "show_to_clients", true]
             )
 
@@ -141,8 +141,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["full_name", "email", "tenure", "future_events"],
-              filter: ["in", "role", ["manager", "owner", "primary_owner"]]
+              fields: %w[full_name email tenure future_events],
+              filter: ["in", "role", %w[manager owner primary_owner]]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
@@ -175,7 +175,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["full_name", "email", "birthdate", "days_until_birthday"],
+              fields: %w[full_name email birthdate days_until_birthday],
               filter: ["lte", "days_until_birthday", 30],
               sort: ["days_until_birthday+"]
             )
@@ -210,8 +210,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["full_name", "staff_since_date", "tenure", "tenure_group", "past_events"],
-              filter: ["eq", "person_state", "active"],
+              fields: %w[full_name staff_since_date tenure tenure_group past_events],
+              filter: %w[eq person_state active],
               sort: ["tenure-"]
             )
 
@@ -244,12 +244,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["full_name", "email", "role", "home_location_name"],
+              fields: %w[full_name email role home_location_name],
               filter: ["eq", "also_client", true]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[3].include?("Location")
+            assert_includes result["data"]["attributes"]["rows"].first[3], "Location"
           end
 
           def test_query_group_by_role
@@ -278,7 +278,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["person_count", "total_future_events", "total_past_events"],
+              fields: %w[person_count total_future_events total_past_events],
               group: "role"
             )
 
@@ -312,7 +312,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["person_count", "total_future_events", "also_client_count"],
+              fields: %w[person_count total_future_events also_client_count],
               group: "tenure_group"
             )
 
@@ -346,7 +346,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["person_count", "total_future_events", "total_past_events"],
+              fields: %w[person_count total_future_events total_past_events],
               group: "home_location_name"
             )
 
@@ -362,7 +362,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [60001, "Ian Martinez", "standard"]
+                      [60_001, "Ian Martinez", "standard"]
                     ],
                     "fields" => [
                       { "name" => "person_id", "type" => "integer" },
@@ -378,7 +378,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: ["person_id", "full_name", "role"],
+              fields: %w[person_id full_name role],
               page: { limit: 1 }
             )
 
@@ -394,7 +394,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [70001, "Jessica Anderson", "manager", "active", "jessica@example.com", 25, 180, true]
+                      [70_001, "Jessica Anderson", "manager", "active", "jessica@example.com", 25, 180, true]
                     ],
                     "fields" => [
                       { "name" => "person_id", "type" => "integer" },
@@ -415,20 +415,20 @@ module Pike13
             )
 
             result = Pike13::Reporting::StaffMembers.query(
-              fields: [
-                "person_id",
-                "full_name",
-                "role",
-                "person_state",
-                "email",
-                "future_events",
-                "past_events",
-                "show_to_clients"
+              fields: %w[
+                person_id
+                full_name
+                role
+                person_state
+                email
+                future_events
+                past_events
+                show_to_clients
               ],
               filter: [
                 "and",
                 [
-                  ["eq", "person_state", "active"],
+                  %w[eq person_state active],
                   ["eq", "show_to_clients", true],
                   ["gt", "future_events", 10]
                 ]

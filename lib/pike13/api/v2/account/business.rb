@@ -10,7 +10,6 @@ module Pike13
             def all
               client.get("account/businesses")
             end
-
           end
         end
       end

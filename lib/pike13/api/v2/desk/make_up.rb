@@ -6,11 +6,6 @@ module Pike13
       module Desk
         class MakeUp < Base
           class << self
-            # GET /desk/make_ups/:id
-            def find(id)
-              client.get("desk/make_ups/#{id}")
-            end
-
             # GET /desk/make_ups/reasons
             def reasons
               client.get("desk/make_ups/reasons")

@@ -43,7 +43,7 @@ module Pike13
             result = Pike13::API::V2::Desk::PackProduct.create(
               name: "10 Pack",
               count: 10,
-              price_cents: 10000
+              price_cents: 10_000
             )
 
             assert_instance_of Hash, result

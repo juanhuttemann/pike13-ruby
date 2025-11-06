@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-01-01", 50000, 150, 75],
-                      ["2024-02-01", 55000, 160, 80]
+                      ["2024-01-01", 50_000, 150, 75],
+                      ["2024-02-01", 55_000, 160, 80]
                     ],
                     "fields" => [
                       { "name" => "month_start_date", "type" => "date" },
@@ -37,12 +37,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::MonthlyBusinessMetrics.query(
-              fields: ["month_start_date", "net_paid_amount", "member_count", "new_client_count"]
+              fields: %w[month_start_date net_paid_amount member_count new_client_count]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
             assert_equal "2024-01-01", result["data"]["attributes"]["rows"].first[0]
-            assert_equal 50000, result["data"]["attributes"]["rows"].first[1]
+            assert_equal 50_000, result["data"]["attributes"]["rows"].first[1]
           end
 
           def test_query_with_filter
@@ -53,8 +53,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-01-01", 50000],
-                      ["2024-02-01", 55000]
+                      ["2024-01-01", 50_000],
+                      ["2024-02-01", 55_000]
                     ],
                     "fields" => [
                       { "name" => "month_start_date", "type" => "date" },
@@ -69,8 +69,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::MonthlyBusinessMetrics.query(
-              fields: ["month_start_date", "net_paid_amount"],
-              filter: ["btw", "month_start_date", "2024-01-01", "2024-12-31"]
+              fields: %w[month_start_date net_paid_amount],
+              filter: %w[btw month_start_date 2024-01-01 2024-12-31]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
@@ -84,7 +84,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-01-01", 600000, 1200]
+                      ["2024-01-01", 600_000, 1200]
                     ],
                     "fields" => [
                       { "name" => "year_start_date", "type" => "date" },
@@ -100,12 +100,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::MonthlyBusinessMetrics.query(
-              fields: ["total_net_paid_amount", "total_new_client_count"],
+              fields: %w[total_net_paid_amount total_new_client_count],
               group: "year_start_date"
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal 600000, result["data"]["attributes"]["rows"].first[1]
+            assert_equal 600_000, result["data"]["attributes"]["rows"].first[1]
           end
 
           def test_query_with_sorting
@@ -116,8 +116,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-12-01", 75000],
-                      ["2024-11-01", 70000]
+                      ["2024-12-01", 75_000],
+                      ["2024-11-01", 70_000]
                     ],
                     "fields" => [
                       { "name" => "month_start_date", "type" => "date" },
@@ -132,7 +132,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::MonthlyBusinessMetrics.query(
-              fields: ["month_start_date", "net_paid_amount"],
+              fields: %w[month_start_date net_paid_amount],
               sort: ["month_start_date-"]
             )
 
@@ -147,7 +147,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-01-01", 50000]
+                      ["2024-01-01", 50_000]
                     ],
                     "fields" => [
                       { "name" => "month_start_date", "type" => "date" },
@@ -162,7 +162,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::MonthlyBusinessMetrics.query(
-              fields: ["month_start_date", "net_paid_amount"],
+              fields: %w[month_start_date net_paid_amount],
               page: { limit: 1, starting_after: "abc123" }
             )
 
@@ -178,7 +178,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-01-01", 50000]
+                      ["2024-01-01", 50_000]
                     ],
                     "fields" => [
                       { "name" => "month_start_date", "type" => "date" },
@@ -194,7 +194,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::MonthlyBusinessMetrics.query(
-              fields: ["month_start_date", "net_paid_amount"],
+              fields: %w[month_start_date net_paid_amount],
               total_count: true
             )
 
@@ -209,7 +209,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["2024-06-01", 75000, 200, 90, 850]
+                      ["2024-06-01", 75_000, 200, 90, 850]
                     ],
                     "fields" => [
                       { "name" => "month_start_date", "type" => "date" },
@@ -227,17 +227,17 @@ module Pike13
             )
 
             result = Pike13::Reporting::MonthlyBusinessMetrics.query(
-              fields: [
-                "month_start_date",
-                "net_paid_revenue_amount",
-                "member_count",
-                "new_client_count",
-                "completed_enrollment_count"
+              fields: %w[
+                month_start_date
+                net_paid_revenue_amount
+                member_count
+                new_client_count
+                completed_enrollment_count
               ],
               filter: [
                 "and",
                 [
-                  ["btw", "month_start_date", "2024-01-01", "2024-12-31"],
+                  %w[btw month_start_date 2024-01-01 2024-12-31],
                   ["gt", "net_paid_amount", 0]
                 ]
               ],

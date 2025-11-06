@@ -84,7 +84,8 @@ module Pike13
           end
 
           def test_destroy_lease
-            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/bookings/123/leases/456", response_body: {})
+            stub_pike13_request(:delete, "https://test.pike13.com/api/v2/desk/bookings/123/leases/456",
+                                response_body: {})
 
             result = Pike13::API::V2::Desk::Booking.destroy_lease(123, 456)
 

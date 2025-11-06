@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10001, "Sarah Johnson", "Yoga Flow", "2024-10-15", 15],
-                      [10002, "Mike Thompson", "CrossFit WOD", "2024-10-16", 12]
+                      [10_001, "Sarah Johnson", "Yoga Flow", "2024-10-15", 15],
+                      [10_002, "Mike Thompson", "CrossFit WOD", "2024-10-16", 12]
                     ],
                     "fields" => [
                       { "name" => "event_occurrence_id", "type" => "integer" },
@@ -38,7 +38,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["event_occurrence_id", "full_name", "event_name", "service_date", "enrollment_count"]
+              fields: %w[event_occurrence_id full_name event_name service_date enrollment_count]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
@@ -72,8 +72,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["full_name", "event_name", "service_date", "service_time", "completed_enrollment_count", "role"],
-              filter: ["eq", "person_id", 12345],
+              fields: %w[full_name event_name service_date service_time completed_enrollment_count role],
+              filter: ["eq", "person_id", 12_345],
               sort: ["service_date-"]
             )
 
@@ -108,11 +108,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["full_name", "email", "phone", "event_name", "service_date", "enrollment_count"]
+              fields: %w[full_name email phone event_name service_date enrollment_count]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[1].include?("@")
+            assert_includes result["data"]["attributes"]["rows"].first[1], "@"
           end
 
           def test_query_by_role_and_date
@@ -141,12 +141,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["full_name", "role", "event_name", "service_date", "completed_enrollment_count"],
+              fields: %w[full_name role event_name service_date completed_enrollment_count],
               filter: [
                 "and",
                 [
-                  ["eq", "role", "owner"],
-                  ["btw", "service_date", "2024-01-01", "2024-12-31"]
+                  %w[eq role owner],
+                  %w[btw service_date 2024-01-01 2024-12-31]
                 ]
               ]
             )
@@ -182,11 +182,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["full_name", "event_name", "service_date", "attendance_completed", "completed_enrollment_count", "noshowed_enrollment_count"]
+              fields: %w[full_name event_name service_date attendance_completed completed_enrollment_count
+                         noshowed_enrollment_count]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal true, result["data"]["attributes"]["rows"].first[3]
+            assert result["data"]["attributes"]["rows"].first[3]
           end
 
           def test_query_workload_analysis
@@ -216,11 +217,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["full_name", "event_name", "service_date", "duration_in_hours", "enrollment_count", "capacity"]
+              fields: %w[full_name event_name service_date duration_in_hours enrollment_count capacity]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert_equal 1.5, result["data"]["attributes"]["rows"].first[3]
+            assert_in_delta(1.5, result["data"]["attributes"]["rows"].first[3])
           end
 
           def test_query_group_by_staff_member
@@ -250,7 +251,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["event_occurrence_count", "total_enrollment_count", "total_completed_enrollment_count", "total_duration_in_hours"],
+              fields: %w[event_occurrence_count total_enrollment_count total_completed_enrollment_count
+                         total_duration_in_hours],
               group: "full_name"
             )
 
@@ -284,7 +286,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["person_count", "event_occurrence_count", "total_enrollment_count"],
+              fields: %w[person_count event_occurrence_count total_enrollment_count],
               group: "service_name"
             )
 
@@ -318,7 +320,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["person_count", "event_occurrence_count", "total_duration_in_hours"],
+              fields: %w[person_count event_occurrence_count total_duration_in_hours],
               group: "role"
             )
 
@@ -334,7 +336,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [50001, "David Lee", "Martial Arts"]
+                      [50_001, "David Lee", "Martial Arts"]
                     ],
                     "fields" => [
                       { "name" => "event_occurrence_id", "type" => "integer" },
@@ -350,7 +352,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: ["event_occurrence_id", "full_name", "event_name"],
+              fields: %w[event_occurrence_id full_name event_name],
               page: { limit: 1 }
             )
 
@@ -366,7 +368,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [60001, "Emily Brown", "emily@example.com", "owner", "Advanced Training", "2024-10-28", 15, 20, true]
+                      [60_001, "Emily Brown", "emily@example.com", "owner", "Advanced Training", "2024-10-28", 15, 20,
+                       true]
                     ],
                     "fields" => [
                       { "name" => "event_occurrence_id", "type" => "integer" },
@@ -388,21 +391,21 @@ module Pike13
             )
 
             result = Pike13::Reporting::EventOccurrenceStaffMembers.query(
-              fields: [
-                "event_occurrence_id",
-                "full_name",
-                "email",
-                "role",
-                "event_name",
-                "service_date",
-                "enrollment_count",
-                "capacity",
-                "attendance_completed"
+              fields: %w[
+                event_occurrence_id
+                full_name
+                email
+                role
+                event_name
+                service_date
+                enrollment_count
+                capacity
+                attendance_completed
               ],
               filter: [
                 "and",
                 [
-                  ["btw", "service_date", "2024-01-01", "2024-12-31"],
+                  %w[btw service_date 2024-01-01 2024-12-31],
                   ["eq", "attendance_completed", true],
                   ["gt", "enrollment_count", 10]
                 ]

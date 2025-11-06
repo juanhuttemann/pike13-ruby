@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [12345, "John Smith", "Monthly Membership", true, "2024-01-15"],
-                      [12346, "Jane Doe", "10 Class Pack", true, "2024-02-01"]
+                      [12_345, "John Smith", "Monthly Membership", true, "2024-01-15"],
+                      [12_346, "Jane Doe", "10 Class Pack", true, "2024-02-01"]
                     ],
                     "fields" => [
                       { "name" => "person_plan_id", "type" => "integer" },
@@ -38,11 +38,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["person_plan_id", "full_name", "plan_name", "is_available", "start_date"]
+              fields: %w[person_plan_id full_name plan_name is_available start_date]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 12345, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 12_345, result["data"]["attributes"]["rows"].first[0]
             assert_equal "John Smith", result["data"]["attributes"]["rows"].first[1]
           end
 
@@ -72,7 +72,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["full_name", "plan_name", "start_date", "end_date", "remaining_visit_count"],
+              fields: %w[full_name plan_name start_date end_date remaining_visit_count],
               filter: [
                 "and",
                 [
@@ -112,7 +112,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["full_name", "plan_name", "last_hold_start_date", "last_hold_end_date", "last_hold_by"],
+              fields: %w[full_name plan_name last_hold_start_date last_hold_end_date last_hold_by],
               filter: ["eq", "is_on_hold", true]
             )
 
@@ -146,13 +146,13 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["full_name", "email", "plan_name", "latest_invoice_due_date", "latest_invoice_item_amount"],
+              fields: %w[full_name email plan_name latest_invoice_due_date latest_invoice_item_amount],
               filter: ["eq", "latest_invoice_past_due", true],
               sort: ["latest_invoice_due_date+"]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[1].include?("@")
+            assert_includes result["data"]["attributes"]["rows"].first[1], "@"
           end
 
           def test_query_plan_usage
@@ -182,7 +182,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["full_name", "plan_name", "allowed_visit_count", "used_visit_count", "remaining_visit_count", "last_visit_date"],
+              fields: %w[full_name plan_name allowed_visit_count used_visit_count remaining_visit_count
+                         last_visit_date],
               filter: ["gt", "used_visit_count", 0]
             )
 
@@ -217,7 +218,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["person_plan_count", "is_available_count", "is_on_hold_count"],
+              fields: %w[person_plan_count is_available_count is_on_hold_count],
               group: "plan_type"
             )
 
@@ -252,8 +253,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["full_name", "plan_name", "next_plan_start_date", "next_plan_type", "next_plan_name"],
-              filter: ["not_null", "next_plan_id"]
+              fields: %w[full_name plan_name next_plan_start_date next_plan_type next_plan_name],
+              filter: %w[not_null next_plan_id]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -287,7 +288,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["full_name", "email", "plan_name", "start_date", "first_visit_date", "start_date_to_first_visit"],
+              fields: %w[full_name email plan_name start_date first_visit_date
+                         start_date_to_first_visit],
               filter: [
                 "and",
                 [
@@ -309,7 +311,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [54321, "Grace Taylor", "Monthly Membership"]
+                      [54_321, "Grace Taylor", "Monthly Membership"]
                     ],
                     "fields" => [
                       { "name" => "person_plan_id", "type" => "integer" },
@@ -325,7 +327,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: ["person_plan_id", "full_name", "plan_name"],
+              fields: %w[person_plan_id full_name plan_name],
               page: { limit: 1 }
             )
 
@@ -341,7 +343,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [67890, "Helen Garcia", "helen@example.com", "Unlimited Membership", true, false, 10, 8, "2024-09-30"]
+                      [67_890, "Helen Garcia", "helen@example.com", "Unlimited Membership", true, false, 10, 8,
+                       "2024-09-30"]
                     ],
                     "fields" => [
                       { "name" => "person_plan_id", "type" => "integer" },
@@ -363,23 +366,23 @@ module Pike13
             )
 
             result = Pike13::Reporting::PersonPlans.query(
-              fields: [
-                "person_plan_id",
-                "full_name",
-                "email",
-                "plan_name",
-                "is_available",
-                "is_on_hold",
-                "allowed_visit_count",
-                "used_visit_count",
-                "last_visit_date"
+              fields: %w[
+                person_plan_id
+                full_name
+                email
+                plan_name
+                is_available
+                is_on_hold
+                allowed_visit_count
+                used_visit_count
+                last_visit_date
               ],
               filter: [
                 "and",
                 [
                   ["eq", "is_available", true],
                   ["eq", "grants_membership", true],
-                  ["btw", "start_date", "2024-01-01", "2024-12-31"]
+                  %w[btw start_date 2024-01-01 2024-12-31]
                 ]
               ],
               sort: ["last_visit_date-"]
@@ -387,7 +390,7 @@ module Pike13
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
             assert_equal 9, result["data"]["attributes"]["fields"].size
-            assert_equal true, result["data"]["attributes"]["rows"].first[4]
+            assert result["data"]["attributes"]["rows"].first[4]
           end
         end
       end

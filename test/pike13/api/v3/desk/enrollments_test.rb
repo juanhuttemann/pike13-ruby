@@ -19,8 +19,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10001, "John Smith", "Yoga Class", "completed", "2024-10-15"],
-                      [10002, "Jane Doe", "Pilates", "registered", "2024-10-16"]
+                      [10_001, "John Smith", "Yoga Class", "completed", "2024-10-15"],
+                      [10_002, "Jane Doe", "Pilates", "registered", "2024-10-16"]
                     ],
                     "fields" => [
                       { "name" => "visit_id", "type" => "integer" },
@@ -38,11 +38,11 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["visit_id", "full_name", "service_name", "state", "service_date"]
+              fields: %w[visit_id full_name service_name state service_date]
             )
 
             assert_equal 2, result["data"]["attributes"]["rows"].size
-            assert_equal 10001, result["data"]["attributes"]["rows"].first[0]
+            assert_equal 10_001, result["data"]["attributes"]["rows"].first[0]
             assert_equal "John Smith", result["data"]["attributes"]["rows"].first[1]
           end
 
@@ -72,8 +72,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["full_name", "service_name", "service_date", "estimated_amount", "instructor_names"],
-              filter: ["eq", "state", "completed"],
+              fields: %w[full_name service_name service_date estimated_amount instructor_names],
+              filter: %w[eq state completed],
               sort: ["service_date-"]
             )
 
@@ -106,8 +106,8 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["full_name", "service_name", "service_date", "state"],
-              filter: ["btw", "service_date", "2024-01-01", "2024-12-31"]
+              fields: %w[full_name service_name service_date state],
+              filter: %w[btw service_date 2024-01-01 2024-12-31]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
@@ -139,12 +139,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["full_name", "email", "service_name", "service_date"],
+              fields: %w[full_name email service_name service_date],
               filter: ["eq", "first_visit", true]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[1].include?("@")
+            assert_includes result["data"]["attributes"]["rows"].first[1], "@"
           end
 
           def test_query_unpaid_visits
@@ -172,12 +172,12 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["full_name", "service_name", "service_date", "available_plans"],
+              fields: %w[full_name service_name service_date available_plans],
               filter: ["eq", "is_paid", false]
             )
 
             assert_equal 1, result["data"]["attributes"]["rows"].size
-            assert result["data"]["attributes"]["rows"].first[3].include?("Pass")
+            assert_includes result["data"]["attributes"]["rows"].first[3], "Pass"
           end
 
           def test_query_group_by_service
@@ -188,8 +188,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      ["Yoga Class", 125, 8, 156000],
-                      ["Pilates", 98, 5, 122500]
+                      ["Yoga Class", 125, 8, 156_000],
+                      ["Pilates", 98, 5, 122_500]
                     ],
                     "fields" => [
                       { "name" => "service_name", "type" => "string" },
@@ -206,7 +206,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["completed_enrollment_count", "noshowed_enrollment_count", "total_visits_amount"],
+              fields: %w[completed_enrollment_count noshowed_enrollment_count total_visits_amount],
               group: "service_name"
             )
 
@@ -244,15 +244,15 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: [
-                "enrollment_count",
-                "weekday_0_enrollment_count",
-                "weekday_1_enrollment_count",
-                "weekday_2_enrollment_count",
-                "weekday_3_enrollment_count",
-                "weekday_4_enrollment_count",
-                "weekday_5_enrollment_count",
-                "weekday_6_enrollment_count"
+              fields: %w[
+                enrollment_count
+                weekday_0_enrollment_count
+                weekday_1_enrollment_count
+                weekday_2_enrollment_count
+                weekday_3_enrollment_count
+                weekday_4_enrollment_count
+                weekday_5_enrollment_count
+                weekday_6_enrollment_count
               ],
               group: "service_month_start_date"
             )
@@ -286,7 +286,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["enrollment_count", "client_booked_count"],
+              fields: %w[enrollment_count client_booked_count],
               group: "service_type"
             )
 
@@ -302,7 +302,7 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10050, "Sarah Smith", "Barre"]
+                      [10_050, "Sarah Smith", "Barre"]
                     ],
                     "fields" => [
                       { "name" => "visit_id", "type" => "integer" },
@@ -318,7 +318,7 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: ["visit_id", "full_name", "service_name"],
+              fields: %w[visit_id full_name service_name],
               page: { limit: 1 }
             )
 
@@ -334,7 +334,8 @@ module Pike13
                 "data" => {
                   "attributes" => {
                     "rows" => [
-                      [10075, "Mike Johnson", "Advanced Training", "completed", "2024-10-25", true, 3500, "Monthly Membership"]
+                      [10_075, "Mike Johnson", "Advanced Training", "completed", "2024-10-25", true, 3500,
+                       "Monthly Membership"]
                     ],
                     "fields" => [
                       { "name" => "visit_id", "type" => "integer" },
@@ -355,21 +356,21 @@ module Pike13
             )
 
             result = Pike13::Reporting::Enrollments.query(
-              fields: [
-                "visit_id",
-                "full_name",
-                "service_name",
-                "state",
-                "service_date",
-                "is_paid",
-                "estimated_amount",
-                "paid_with"
+              fields: %w[
+                visit_id
+                full_name
+                service_name
+                state
+                service_date
+                is_paid
+                estimated_amount
+                paid_with
               ],
               filter: [
                 "and",
                 [
-                  ["btw", "service_date", "2024-01-01", "2024-12-31"],
-                  ["eq", "state", "completed"],
+                  %w[btw service_date 2024-01-01 2024-12-31],
+                  %w[eq state completed],
                   ["eq", "is_paid", true]
                 ]
               ],
