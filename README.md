@@ -130,6 +130,9 @@ Pike13::Desk::Person.destroy(123)
 ```ruby
 # Get business details
 Pike13::Desk::Business.find
+
+# Get franchisees (for franchise businesses)
+Pike13::Desk::Business.franchisees
 ```
 
 #### Events & Event Occurrences
@@ -179,10 +182,17 @@ Pike13::Desk::Appointment.available_slots_summary(
 **Note:** Creating bookings requires an `idempotency_token` parameter to prevent duplicate bookings.
 
 ```ruby
+# Booking operations
 Pike13::Desk::Booking.find(123)
 Pike13::Desk::Booking.create(event_occurrence_id: 789, person_id: 123, idempotency_token: SecureRandom.uuid)
 Pike13::Desk::Booking.update(456, state: "completed")
 Pike13::Desk::Booking.destroy(456)
+
+# Lease management within bookings
+Pike13::Desk::Booking.find_lease(booking_id: 123, id: 456)
+Pike13::Desk::Booking.create_lease(123, event_occurrence_id: 789, person: { id: 1 })
+Pike13::Desk::Booking.update_lease(123, 456, person: { id: 2 })
+Pike13::Desk::Booking.destroy_lease(123, 456)
 ```
 
 #### Visits
@@ -298,6 +308,7 @@ Client-facing interface with limited read-only access.
 
 ```ruby
 Pike13::Front::Business.find                  # Get business info
+Pike13::Front::Business.franchisees           # Get franchisees (for franchise businesses)
 Pike13::Front::Branding.find                  # Get branding
 ```
 
@@ -333,11 +344,17 @@ Pike13::Front::Appointment.available_slots_summary(service_id: 100, from: "2025-
 **Note:** Creating bookings requires an `idempotency_token` parameter to prevent duplicate bookings.
 
 ```ruby
+# Booking operations
 Pike13::Front::Booking.find(123)
-Pike13::Front::Booking.find_lease(booking_id: 123, id: 456)
 Pike13::Front::Booking.create(event_occurrence_id: 789, person_id: 123, idempotency_token: SecureRandom.uuid)
 Pike13::Front::Booking.update(456, state: "completed")
 Pike13::Front::Booking.destroy(456)
+
+# Lease management within bookings
+Pike13::Front::Booking.find_lease(booking_id: 123, id: 456)
+Pike13::Front::Booking.create_lease(123, event_occurrence_id: 789, person: { id: 1 })
+Pike13::Front::Booking.update_lease(123, 456, person: { id: 2 })
+Pike13::Front::Booking.destroy_lease(123, 456)
 ```
 
 #### Visits
