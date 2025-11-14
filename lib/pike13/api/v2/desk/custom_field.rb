@@ -10,11 +10,6 @@ module Pike13
             def all
               client.get("desk/custom_fields")
             end
-
-            # GET /desk/custom_fields/:id
-            def find(id)
-              client.get("desk/custom_fields/#{id}")
-            end
           end
         end
       end

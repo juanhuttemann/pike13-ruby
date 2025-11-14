@@ -283,7 +283,6 @@ Pike13::Desk::WaitlistEntry.find(1200)      # Find waitlist entry
 
 ```ruby
 Pike13::Desk::CustomField.all               # List custom fields
-Pike13::Desk::CustomField.find(30)          # Find custom field
 ```
 
 #### Person-Related Resources

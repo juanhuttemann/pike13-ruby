@@ -30,4 +30,14 @@ end
 
 RuboCop::RakeTask.new
 
+desc "Build gem"
+task :build_gem do
+  sh "gem build pike13.gemspec"
+end
+
+desc "Clean build artifacts"
+task :clean do
+  sh "rm -f pike13-*.gem"
+end
+
 task default: %i[test rubocop]
