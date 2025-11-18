@@ -23,6 +23,21 @@ module Pike13
             assert_instance_of Hash, events["events"].first
           end
 
+          def test_all_events_with_params
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/events?from=2018-05-01&to=2018-05-20&service_ids=2,3", response_body: {
+                                  "events" => [{ "id" => 1 }]
+                                })
+
+            events = Pike13::API::V2::Desk::Event.all(
+              from: "2018-05-01",
+              to: "2018-05-20",
+              service_ids: "2,3"
+            )
+
+            assert_instance_of Hash, events
+            assert_equal 1, events["events"].size
+          end
+
           def test_find_event
             stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/events/123", response_body: {
                                   "events" => [{ "id" => 123 }]

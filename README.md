@@ -117,6 +117,8 @@ Full staff interface with read/write access to all resources.
 
 ```ruby
 Pike13::Desk::Person.all                    # List all people
+Pike13::Desk::Person.all(is_member: true, include_balances: true)  # Filter with parameters
+Pike13::Desk::Person.all(created_since: "2024-01-01", sort: "-updated_at")  # Date and sorting
 Pike13::Desk::Person.find(123)              # Find a person
 Pike13::Desk::Person.me                     # Get authenticated user
 Pike13::Desk::Person.search("john")         # Search people
@@ -139,6 +141,8 @@ Pike13::Desk::Business.franchisees
 
 ```ruby
 Pike13::Desk::Event.all                                    # List events
+Pike13::Desk::Event.all(from: "2024-01-01", to: "2024-12-31", service_ids: "1,2,3")  # Filter with parameters
+Pike13::Desk::Event.all(ids: "100,200,300")               # Filter by specific event IDs
 Pike13::Desk::Event.find(100)                             # Find event
 Pike13::Desk::EventOccurrence.all(from: "2025-01-01", to: "2025-01-31")
 Pike13::Desk::EventOccurrence.find(789)                   # Find occurrence
@@ -198,7 +202,6 @@ Pike13::Desk::Booking.destroy_lease(123, 456)
 #### Visits
 
 ```ruby
-Pike13::Desk::Visit.all                     # List all visits
 Pike13::Desk::Visit.find(456)              # Find visit
 Pike13::Desk::Visit.summary(person_id: 123) # Get visit summary for a person
 ```
@@ -321,6 +324,8 @@ Pike13::Front::Person.me                      # Get authenticated client user (o
 
 ```ruby
 Pike13::Front::Event.all                                    # List events
+Pike13::Front::Event.all(from: "2024-01-01", to: "2024-12-31", service_ids: "1,2,3")  # Filter with parameters
+Pike13::Front::Event.all(ids: "100,200,300")               # Filter by specific event IDs
 Pike13::Front::Event.find(100)                             # Find event
 Pike13::Front::EventOccurrence.all(from: "2025-01-01", to: "2025-01-31")
 Pike13::Front::EventOccurrence.find(789)                   # Find occurrence

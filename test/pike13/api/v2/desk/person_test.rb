@@ -26,6 +26,17 @@ module Pike13
             assert_instance_of Hash, people["people"].first
           end
 
+          def test_all_people_with_params
+            stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people?is_member=true&include_balances=true", response_body: {
+                                  "people" => [{ "id" => 1, "first_name" => "John" }]
+                                })
+
+            people = Pike13::API::V2::Desk::Person.all(is_member: true, include_balances: true)
+
+            assert_instance_of Hash, people
+            assert_equal 1, people["people"].size
+          end
+
           def test_find_person
             stub_pike13_request(:get, "https://test.pike13.com/api/v2/desk/people/123", response_body: {
                                   "people" => [{ "id" => 123, "first_name" => "John" }]

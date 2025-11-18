@@ -7,8 +7,8 @@ module Pike13
         class Person < Base
           class << self
             # GET /desk/people
-            def all
-              client.get("desk/people")
+            def all(**params)
+              client.get("desk/people", params)
             end
 
             # GET /desk/people/:id

@@ -6,11 +6,6 @@ module Pike13
       module Desk
         class Visit < Base
           class << self
-            # GET /desk/visits
-            def all(**params)
-              client.get("desk/visits", params)
-            end
-
             # GET /desk/visits/:id
             def find(id)
               client.get("desk/visits/#{id}")

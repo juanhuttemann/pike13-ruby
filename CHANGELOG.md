@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2025-11-18
+
+### Added
+- **Enhanced Event and People list methods**: Added support for query parameters in `all` methods
+  - `Pike13::Desk::Event.all(**params)` now accepts `from`, `to`, `ids`, `service_ids` parameters
+  - `Pike13::Desk::Person.all(**params)` now accepts `created_since`, `updated_since`, `is_member`, `include_relationships`, `include_balances`, `sort` parameters
+  - `Pike13::Front::Event.all(**params)` now accepts `from`, `to`, `ids`, `service_ids` parameters
+
+### Fixed
+- **Desk::Visit**: Removed non-existent `all` method that referenced an unsupported `/desk/visits` list endpoint. The Pike13 API v2 only supports individual visit operations via find, create, update, and destroy methods.
+
 ## [0.1.3] - 2025-11-13
 
 ### Fixed
